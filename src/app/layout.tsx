@@ -3,6 +3,7 @@
 import type { Metadata } from 'next';
 import { Inter, Cormorant_Garamond } from 'next/font/google';
 import '../styles/globals.scss';
+import { MainLayout } from '@/components/layout/MainLayout';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -16,9 +17,9 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: 'Nádia Baptista Psicóloga no Porto',
+  title: 'Nádia Baptista Psicóloga em Porto',
   description:
-    'Atendimento psicológico no Porto. Consultas presenciais e online com a psicóloga Nádia Baptista, focadas em escuta, empatia e crescimento pessoal.',
+    'Atendimento psicológico em Porto. Consultas presenciais e online com a psicóloga Nádia Baptista, focadas em escuta, empatia e crescimento pessoal.',
 };
 
 type RootLayoutProps = {
@@ -30,7 +31,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html lang='pt'>
       <body className={`${inter.variable} ${cormorant.variable}`}>
         <div className='page-shell'>
-          <div className='page-shell__inner'>{children}</div>
+          <div className='page-shell__inner'>
+            <MainLayout>{children}</MainLayout>
+          </div>
         </div>
       </body>
     </html>

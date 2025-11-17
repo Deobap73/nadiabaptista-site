@@ -1,6 +1,8 @@
 // src/styles/globals.scss
 
 @use './tokens.scss';
+@use './components/layout';
+@use './components/buttons';
 
 *,
 *::before,

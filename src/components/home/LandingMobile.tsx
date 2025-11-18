@@ -7,10 +7,30 @@ interface Props {
 
 export default function LandingMobile({ onContinue }: Props) {
   return (
-    <div>
-      <h1>Landing Mobile</h1>
-      <p>Pequena descrição aqui</p>
-      <button onClick={onContinue}>Seja bem vindo</button>
-    </div>
+    <main className='landingMobile' aria-labelledby='landingMobileTitle'>
+      <div className='landingMobileInner'>
+        <div className='landingMobileLogo'>Nadia Baptista</div>
+
+        <div className='landingMobilePortrait' aria-hidden='true'>
+          N
+        </div>
+
+        <h1 id='landingMobileTitle' className='landingMobileName'>
+          Nadia Baptista
+        </h1>
+
+        <p className='landingMobileRole'>Psicologa em Porto</p>
+
+        <p className='landingMobileIntro'>
+          Consultas de psicologia para jovens adultos e adultos que atravessam momentos de
+          ansiedade, mudanca ou sobrecarga emocional. Um espaco calmo, seguro e confidencial onde
+          pode falar com tempo sobre o que esta a viver.
+        </p>
+
+        <button type='button' className='landingMobileButton' onClick={onContinue}>
+          Seja bem vindo
+        </button>
+      </div>
+    </main>
   );
 }

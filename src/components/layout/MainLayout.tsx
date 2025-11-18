@@ -6,15 +6,21 @@ import React from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
 
-type MainLayoutProps = {
+interface MainLayoutProps {
   children: React.ReactNode;
-};
+}
 
-export function MainLayout({ children }: MainLayoutProps) {
+/**
+ * MainLayout
+ * Wraps every page with the global header and footer.
+ * Pages only care about their own content and use `pageContainer`
+ * for horizontal alignment.
+ */
+export default function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div className='site-shell'>
+    <div className='siteShell'>
       <Header />
-      <main className='site-main'>{children}</main>
+      <main>{children}</main>
       <Footer />
     </div>
   );

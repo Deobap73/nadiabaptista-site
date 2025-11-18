@@ -1,40 +1,25 @@
 // src/app/layout.tsx
 
+import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
-import { Inter, Cormorant_Garamond } from 'next/font/google';
 import '../styles/globals.scss';
-import { MainLayout } from '@/components/layout/MainLayout';
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-body',
-});
-
-const cormorant = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-heading',
-});
+import MainLayout from '../components/layout/MainLayout';
 
 export const metadata: Metadata = {
-  title: 'Nádia Baptista Psicóloga em Porto',
+  title: 'Nadia Baptista · Psychology student in Porto',
   description:
-    'Atendimento psicológico em Porto. Consultas presenciais e online com a psicóloga Nádia Baptista, focadas em escuta, empatia e crescimento pessoal.',
+    'Website of Nadia Baptista, psychology student in Porto. Studies, portfolio, blog and contact in a calm and clear space.',
 };
 
-type RootLayoutProps = {
-  children: React.ReactNode;
-};
+interface RootLayoutProps {
+  children: ReactNode;
+}
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang='pt'>
-      <body className={`${inter.variable} ${cormorant.variable}`}>
-        <div className='page-shell'>
-          <div className='page-shell__inner'>
-            <MainLayout>{children}</MainLayout>
-          </div>
-        </div>
+    <html lang='en'>
+      <body>
+        <MainLayout>{children}</MainLayout>
       </body>
     </html>
   );

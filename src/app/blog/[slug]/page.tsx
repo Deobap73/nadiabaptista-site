@@ -1,5 +1,6 @@
 // src/app/blog/[slug]/page.tsx
 
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { mockPosts } from '../../../lib/blog/mockPosts';
@@ -10,8 +11,24 @@ interface BlogPostPageProps {
   }>;
 }
 
+export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const post = mockPosts.find((p) => p.slug === slug);
+
+  if (!post) {
+    return {
+      title: 'Post not found · Blog · Nadia Baptista',
+      description: 'The blog post you are looking for could not be found.',
+    };
+  }
+
+  return {
+    title: `${post.title} · Blog · Nadia Baptista`,
+    description: post.excerpt,
+  };
+}
+
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  // In newer Next versions, params is a Promise in dev
   const { slug } = await params;
 
   const post = mockPosts.find((p) => p.slug === slug);

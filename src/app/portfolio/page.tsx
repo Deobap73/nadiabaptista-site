@@ -1,6 +1,15 @@
 // src/app/portfolio/page.tsx
 
+import type { Metadata } from 'next';
 import PortfolioItemCard from '@/components/portfolio/PortfolioItemCard';
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: 'Portfolio · Nadia Baptista · Psychology student in Porto',
+    description:
+      'Early portfolio of Nadia Baptista as a psychology student in Porto, including academic path, skills and future practical experiences.',
+  };
+}
 
 export default function PortfolioPage() {
   const portfolioItems = [

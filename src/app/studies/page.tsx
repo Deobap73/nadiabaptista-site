@@ -1,6 +1,15 @@
 // src/app/studies/page.tsx
 
+import type { Metadata } from 'next';
 import StudyProjectCard from '@/components/studies/StudyProjectCard';
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: 'Studies · Nadia Baptista · Psychology student in Porto',
+    description:
+      'Overview of the main study areas, projects and academic interests of Nadia Baptista during her psychology degree in Porto.',
+  };
+}
 
 export default function StudiesPage() {
   const studyProjects = [

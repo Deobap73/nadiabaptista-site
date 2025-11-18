@@ -389,3 +389,215 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+
+/* Home About Highlight */
+
+.homeAbout {
+  padding: clamp(2.5rem, 5vw, 3.5rem) 0;
+  background-color: #f8fafb;
+}
+
+.homeAboutInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spaceLg);
+}
+
+.homeAboutText {
+  max-width: 680px;
+}
+
+.homeAboutKicker {
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--colorPrimary);
+  margin-bottom: var(--spaceSm);
+}
+
+.homeAboutTitle {
+  font-family: var(--fontHeading);
+  font-size: clamp(1.9rem, 3vw, 2.3rem);
+  margin: 0 0 var(--spaceSm);
+}
+
+.homeAboutIntro {
+  font-size: 0.98rem;
+  line-height: 1.7;
+  margin: 0 0 var(--spaceSm);
+}
+
+.homeAboutBody {
+  font-size: 0.96rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.homeAboutActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spaceSm);
+  margin-top: var(--spaceMd);
+}
+
+.homeAboutPrimaryLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1.5rem;
+  border-radius: 999px;
+  border: none;
+  background-color: var(--colorPrimary);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.homeAboutSecondaryLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--colorPrimary);
+  font-size: 0.95rem;
+  color: var(--colorPrimary);
+}
+
+.homeAboutSide {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spaceSm);
+}
+
+.homeAboutTag {
+  align-self: flex-start;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  background-color: var(--colorPrimaryLight);
+  font-size: 0.85rem;
+}
+
+.homeAboutNoteBox {
+  border-radius: 16px;
+  padding: var(--spaceLg);
+  background-color: #ffffff;
+  border: 1px solid #dde3e7;
+}
+
+.homeAboutNoteTitle {
+  font-family: var(--fontHeading);
+  font-size: 1.1rem;
+  margin: 0 0 var(--spaceSm);
+}
+
+.homeAboutNoteText {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Layout maior para About */
+
+@media (min-width: 768px) {
+  .homeAboutInner {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--spaceXl);
+  }
+
+  .homeAboutText {
+    flex: 3;
+  }
+
+  .homeAboutSide {
+    flex: 2;
+  }
+}
+
+/* Home Newsletter Banner */
+
+.homeNewsletter {
+  padding: clamp(2.5rem, 5vw, 3.5rem) 0;
+  background-color: var(--colorPrimaryLight);
+}
+
+.homeNewsletterInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spaceLg);
+}
+
+.homeNewsletterText {
+  max-width: 640px;
+}
+
+.homeNewsletterKicker {
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--colorPrimary);
+  margin-bottom: var(--spaceSm);
+}
+
+.homeNewsletterTitle {
+  font-family: var(--fontHeading);
+  font-size: clamp(1.8rem, 3vw, 2.2rem);
+  margin: 0 0 var(--spaceSm);
+}
+
+.homeNewsletterIntro {
+  font-size: 0.96rem;
+  line-height: 1.7;
+  margin: 0 0 var(--spaceSm);
+}
+
+.homeNewsletterBody {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.homeNewsletterActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spaceSm);
+}
+
+.homeNewsletterPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.6rem;
+  border-radius: 999px;
+  border: none;
+  background-color: var(--colorPrimary);
+  color: #ffffff;
+  font-size: 0.96rem;
+  font-weight: 500;
+}
+
+.homeNewsletterSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--colorPrimary);
+  font-size: 0.95rem;
+  color: var(--colorPrimary);
+}
+
+/* Layout maior para Newsletter */
+
+@media (min-width: 768px) {
+  .homeNewsletterInner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .homeNewsletterActions {
+    flex-shrink: 0;
+  }
+}

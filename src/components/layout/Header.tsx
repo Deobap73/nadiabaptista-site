@@ -1,48 +1,34 @@
 // src/components/layout/Header.tsx
 
-'use client';
-
 import Link from 'next/link';
 
-export function Header() {
+export default function Header() {
   return (
-    <header className='site-header'>
-      <div className='site-header__inner'>
-        <div className='site-header__brand'>
+    <header className='siteHeader'>
+      <div className='pageContainer siteHeaderInner'>
+        <div className='siteHeaderBrand'>
           <Link href='/'>
-            <span className='site-header__title'>Nádia Baptista</span>
-            <span className='site-header__subtitle'>Psicóloga em Porto</span>
+            <span className='siteHeaderLogo'>Nadia Baptista</span>
+            <span className='siteHeaderTagline'>Estudante de psicologia</span>
           </Link>
         </div>
 
-        <nav className='site-header__nav' aria-label='Navegação principal'>
-          <ul className='site-header__nav-list'>
-            <li>
-              <Link href='/about' className='site-header__nav-link'>
-                Sobre
-              </Link>
+        <nav className='siteHeaderNav' aria-label='Navegacao principal'>
+          <ul className='siteHeaderNavList'>
+            <li className='siteHeaderNavItem'>
+              <Link href='/'>Home</Link>
             </li>
-            <li>
-              <Link href='/services' className='site-header__nav-link'>
-                Serviços
-              </Link>
+            <li className='siteHeaderNavItem'>
+              <Link href='/studies'>Studies</Link>
             </li>
-            <li>
-              <Link href='/faq' className='site-header__nav-link'>
-                Perguntas frequentes
-              </Link>
+            <li className='siteHeaderNavItem'>
+              <Link href='/portfolio'>Portfolio</Link>
             </li>
-            <li>
-              <Link href='/blog' className='site-header__nav-link'>
-                Blog
-              </Link>
+            <li className='siteHeaderNavItem'>
+              <Link href='/blog'>Blog</Link>
             </li>
-            <li>
-              <Link
-                href='/contact'
-                className='site-header__nav-link site-header__nav-link--primary'>
-                Contacto
-              </Link>
+            <li className='siteHeaderNavItem'>
+              <Link href='/contact'>Contact</Link>
             </li>
           </ul>
         </nav>

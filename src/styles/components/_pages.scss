@@ -1,0 +1,159 @@
+/* src/styles/components/_pages.scss */
+
+/* Generic page layout */
+
+.pageSection {
+  padding: clamp(2.5rem, 5vw, 3.5rem) 0;
+}
+
+.pageHeader {
+  max-width: 720px;
+  margin-bottom: var(--spaceLg);
+}
+
+.pageKicker {
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--colorPrimary);
+  margin-bottom: var(--spaceSm);
+}
+
+.pageTitle {
+  font-family: var(--fontHeading);
+  font-size: clamp(1.9rem, 3vw, 2.4rem);
+  margin: 0 0 var(--spaceSm);
+}
+
+.pageIntro {
+  font-size: 0.98rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Content blocks inside pages */
+
+.pageBlock {
+  margin-top: var(--spaceXl);
+}
+
+.pageBlockHeader {
+  max-width: 640px;
+  margin-bottom: var(--spaceMd);
+}
+
+.pageBlockTitle {
+  font-family: var(--fontHeading);
+  font-size: 1.4rem;
+  margin: 0 0 var(--spaceSm);
+}
+
+.pageBlockText {
+  font-size: 0.96rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Shared card grid */
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spaceMd);
+  margin-top: var(--spaceMd);
+}
+
+@media (min-width: 768px) {
+  .cardGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Study cards */
+
+.studyCard {
+  border-radius: 16px;
+  padding: var(--spaceLg);
+  background-color: #ffffff;
+  border: 1px solid #e2e7eb;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02);
+}
+
+.studyCardHeader {
+  margin-bottom: var(--spaceSm);
+}
+
+.studyCardTitle {
+  font-family: var(--fontHeading);
+  font-size: 1.2rem;
+  margin: 0 0 var(--spaceXs);
+}
+
+.studyCardArea {
+  font-size: 0.9rem;
+  color: #555555;
+  margin: 0;
+}
+
+.studyCardPeriod {
+  font-size: 0.85rem;
+  color: #777777;
+  margin: var(--spaceXs) 0 0;
+}
+
+.studyCardDescription {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0 0 var(--spaceSm);
+}
+
+.studyCardContext {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+  color: #555555;
+}
+
+/* Portfolio cards */
+
+.portfolioCard {
+  border-radius: 16px;
+  padding: var(--spaceLg);
+  background-color: #ffffff;
+  border: 1px solid #e2e7eb;
+}
+
+.portfolioCardHeader {
+  margin-bottom: var(--spaceSm);
+}
+
+.portfolioCardTitle {
+  font-family: var(--fontHeading);
+  font-size: 1.2rem;
+  margin: 0 0 var(--spaceXs);
+}
+
+.portfolioCardType {
+  font-size: 0.9rem;
+  color: #555555;
+  margin: 0;
+}
+
+.portfolioCardPeriod {
+  font-size: 0.85rem;
+  color: #777777;
+  margin: var(--spaceXs) 0 0;
+}
+
+.portfolioCardDescription {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0 0 var(--spaceSm);
+}
+
+.portfolioCardHighlight {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+  color: #555555;
+}

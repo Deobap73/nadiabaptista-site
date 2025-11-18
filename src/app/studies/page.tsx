@@ -1,53 +1,76 @@
 // src/app/studies/page.tsx
 
+import StudyProjectCard from '@/components/studies/StudyProjectCard';
+
 export default function StudiesPage() {
+  const studyProjects = [
+    {
+      title: 'Fundamentals of Clinical Psychology',
+      area: 'Core course - clinical focus',
+      period: 'Ongoing',
+      description:
+        'Work with basic clinical concepts, such as assessment of symptoms, interview structure and first contact with clinical case studies.',
+      context:
+        'Useful later for building a safe and structured way of receiving people in a clinical setting.',
+    },
+    {
+      title: 'Young Adult Mental Health',
+      area: 'Seminar or optional course',
+      period: 'Planned',
+      description:
+        'Interest in topics such as anxiety, academic pressure and life transitions in young adults.',
+      context:
+        'Can be the base for future projects, articles and clinical work focused on this age group.',
+    },
+    {
+      title: 'Research Methods in Psychology',
+      area: 'Academic research',
+      period: 'Ongoing',
+      description:
+        'Development of basic research skills, from reading scientific articles to planning simple research questions.',
+      context:
+        'Helps keep practice later connected with scientific evidence and critical thinking.',
+    },
+  ];
+
   return (
     <main className='pageContainer'>
       <section className='pageSection' aria-labelledby='studiesTitle'>
-        <header>
-          <p className='pageKicker'>Percurso academico</p>
-          <h1 id='studiesTitle'>Estudos e areas de interesse</h1>
+        <header className='pageHeader'>
+          <p className='pageKicker'>Academic path</p>
+          <h1 id='studiesTitle' className='pageTitle'>
+            Studies and areas of interest
+          </h1>
           <p className='pageIntro'>
-            Esta pagina apresenta as areas de interesse, projetos academicos e experiencias praticas
-            que fazem parte do caminho da Nadia enquanto estudante de psicologia. O objetivo e
-            mostrar como esta a construir a base teorica e humana que mais tarde sustentara a
-            pratica clinica.
+            This page presents the areas of psychology that Nadia is most drawn to, along with
+            subjects and projects that are part of her path as a student. The goal is to show how
+            she is building the base that will later support her clinical work.
           </p>
         </header>
 
-        <section aria-labelledby='areasTitle'>
-          <h2 id='areasTitle'>Areas de interesse em psicologia</h2>
-          <p>
-            Aqui mais tarde podemos detalhar as areas que mais a interessam, como por exemplo
-            psicologia clinica, intervencao com jovens adultos, saude mental em contexto
-            universitario ou outras tematicas que estejam presentes no percurso de estudo.
-          </p>
-        </section>
+        <section className='pageBlock' aria-labelledby='studyProjectsTitle'>
+          <div className='pageBlockHeader'>
+            <h2 id='studyProjectsTitle' className='pageBlockTitle'>
+              Study projects and key subjects
+            </h2>
+            <p className='pageBlockText'>
+              These examples are only a starting point. Over time, this section can grow with new
+              projects, course work, group assignments and research experiences.
+            </p>
+          </div>
 
-        <section aria-labelledby='projectsTitle'>
-          <h2 id='projectsTitle'>Projetos e trabalhos academicos</h2>
-          <p>
-            Este espaco pode reunir resumos de trabalhos academicos, artigos, relatorios de cadeiras
-            importantes ou projetos de investigacao em que tenha participado. No futuro podemos usar
-            cards individuais para cada projeto.
-          </p>
-        </section>
-
-        <section aria-labelledby='practiceTitle'>
-          <h2 id='practiceTitle'>Estagios, voluntariado e pratica</h2>
-          <p>
-            Quando existirem experiencias praticas, como estagios ou voluntariado em contexto de
-            saude mental, podemos descreve las aqui com foco no papel desempenhado e no que foi
-            aprendido em cada contexto.
-          </p>
-        </section>
-
-        <section aria-labelledby='eventsTitle'>
-          <h2 id='eventsTitle'>Conferencias, seminarios e formacoes</h2>
-          <p>
-            Participacao em eventos academicos e formacoes complementares tambem pode ser listada
-            neste espaco, reforcando o compromisso continuo com a atualizacao e aprendizagem.
-          </p>
+          <div className='cardGrid'>
+            {studyProjects.map((item) => (
+              <StudyProjectCard
+                key={item.title}
+                title={item.title}
+                area={item.area}
+                period={item.period}
+                description={item.description}
+                context={item.context}
+              />
+            ))}
+          </div>
         </section>
       </section>
     </main>

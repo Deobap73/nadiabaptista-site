@@ -3,10 +3,12 @@
 @import './tokens';
 @import './components/layout';
 @import './components/buttons';
-/* @import './components/forms'; */
+/* @import "./components/forms"; */
 @import './components/home';
+@import './components/pages';
 
 /* Reset simples */
+
 *,
 *::before,
 *::after {
@@ -26,7 +28,6 @@ body {
   color: var(--colorText);
 }
 
-/* Elementos base */
 main {
   min-height: 100vh;
 }
@@ -46,7 +47,6 @@ button {
   cursor: pointer;
 }
 
-/* Pequena ajuda de layout geral */
 .pageContainer {
   max-width: var(--layoutMaxWidth);
   margin: 0 auto;

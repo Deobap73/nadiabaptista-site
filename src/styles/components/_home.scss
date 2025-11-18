@@ -190,7 +190,7 @@
   color: #444444;
 }
 
-/* Layout para ecras maiores */
+/* Layout para ecras maiores no hero */
 
 @media (min-width: 768px) {
   .homeHeroInner {
@@ -205,5 +205,187 @@
 
   .homeHeroVisual {
     flex: 2;
+  }
+}
+
+/* Home How I Can Help */
+
+.homeHelp {
+  padding: clamp(2.5rem, 5vw, 3.5rem) 0;
+  background-color: #f5f7f8;
+}
+
+.homeHelpInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spaceLg);
+}
+
+.homeHelpHeader {
+  max-width: 640px;
+}
+
+.homeHelpKicker {
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--colorPrimary);
+  margin-bottom: var(--spaceSm);
+}
+
+.homeHelpTitle {
+  font-family: var(--fontHeading);
+  font-size: clamp(1.8rem, 3vw, 2.2rem);
+  margin: 0 0 var(--spaceSm);
+}
+
+.homeHelpIntro {
+  font-size: 0.98rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.homeHelpGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spaceMd);
+}
+
+.homeHelpCard {
+  border-radius: 16px;
+  padding: var(--spaceLg);
+  background-color: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03);
+}
+
+.homeHelpCardTitle {
+  font-family: var(--fontHeading);
+  font-size: 1.25rem;
+  margin: 0 0 var(--spaceSm);
+}
+
+.homeHelpCardText {
+  font-size: 0.96rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.homeHelpFooter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spaceSm);
+  max-width: 640px;
+}
+
+.homeHelpFootText {
+  font-size: 0.92rem;
+  margin: 0;
+}
+
+.homeHelpLink {
+  font-size: 0.95rem;
+  color: var(--colorPrimary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Layout maior para a grelha de cards */
+
+@media (min-width: 768px) {
+  .homeHelpGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .homeHelpInner {
+    gap: var(--spaceXl);
+  }
+}
+
+/* Home Quick Links */
+
+.homeQuickLinks {
+  padding: clamp(2.5rem, 5vw, 3.5rem) 0;
+  background-color: var(--colorPrimary);
+  color: #ffffff;
+}
+
+.homeQuickLinksInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spaceLg);
+}
+
+.homeQuickLinksHeader {
+  max-width: 640px;
+}
+
+.homeQuickLinksKicker {
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: var(--spaceSm);
+  color: var(--colorSecondary);
+}
+
+.homeQuickLinksTitle {
+  font-family: var(--fontHeading);
+  font-size: clamp(1.8rem, 3vw, 2.2rem);
+  margin: 0 0 var(--spaceSm);
+}
+
+.homeQuickLinksIntro {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.homeQuickLinksNav {
+  width: 100%;
+}
+
+.homeQuickLinksList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spaceMd);
+}
+
+.homeQuickLinksItem {
+  border-radius: 16px;
+  padding: var(--spaceLg);
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.homeQuickLinksItemTitle {
+  font-family: var(--fontHeading);
+  font-size: 1.15rem;
+  margin: 0 0 var(--spaceSm);
+}
+
+.homeQuickLinksItemText {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0 0 var(--spaceSm);
+}
+
+.homeQuickLinksItemLink {
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: #ffffff;
+}
+
+/* Layout maior para quick links */
+
+@media (min-width: 768px) {
+  .homeQuickLinksInner {
+    gap: var(--spaceXl);
+  }
+
+  .homeQuickLinksList {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }

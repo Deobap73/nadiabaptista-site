@@ -1,8 +1,10 @@
 // src/components/layout/Header.tsx
 
+'use client';
+
 import Link from 'next/link';
 
-export default function Header() {
+export function Header() {
   return (
     <header className='siteHeader'>
       <div className='pageContainer siteHeaderInner'>

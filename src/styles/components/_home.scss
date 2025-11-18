@@ -1,5 +1,7 @@
 /* src/styles/components/_home.scss */
 
+/* Landing mobile de entrada */
+
 .landingMobile {
   min-height: 100vh;
   display: flex;
@@ -76,4 +78,132 @@
 .landingMobileButton:focus-visible {
   outline: 2px solid var(--colorSecondary);
   outline-offset: 3px;
+}
+
+/* Home hero desktop e mobile */
+
+.homeHero {
+  padding: clamp(2.5rem, 5vw, 4rem) 0;
+  background-color: var(--colorBackground);
+}
+
+.homeHeroInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spaceXl);
+}
+
+.homeHeroContent {
+  max-width: 640px;
+}
+
+.homeHeroKicker {
+  font-size: 0.9rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--colorPrimary);
+  margin-bottom: var(--spaceSm);
+}
+
+.homeHeroTitle {
+  font-family: var(--fontHeading);
+  font-size: clamp(2.1rem, 4vw, 2.8rem);
+  line-height: 1.15;
+  margin: 0 0 var(--spaceMd);
+}
+
+.homeHeroText {
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 0 0 var(--spaceLg);
+}
+
+.homeHeroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spaceSm);
+  margin-bottom: var(--spaceMd);
+}
+
+.homeHeroPrimaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.6rem;
+  border-radius: 999px;
+  border: none;
+  background-color: var(--colorPrimary);
+  color: #ffffff;
+  font-size: 0.98rem;
+  font-weight: 500;
+}
+
+.homeHeroPrimaryButton:focus-visible {
+  outline: 2px solid var(--colorSecondary);
+  outline-offset: 3px;
+}
+
+.homeHeroSecondaryLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--colorPrimary);
+  font-size: 0.95rem;
+}
+
+.homeHeroNote {
+  font-size: 0.9rem;
+  color: #555555;
+  margin: 0;
+}
+
+.homeHeroVisual {
+  flex: 1;
+}
+
+.homeHeroCard {
+  border-radius: 16px;
+  padding: var(--spaceLg);
+  background-color: var(--colorPrimaryLight);
+  color: var(--colorText);
+}
+
+.homeHeroCardTitle {
+  font-family: var(--fontHeading);
+  font-size: 1.25rem;
+  margin: 0 0 var(--spaceSm);
+}
+
+.homeHeroCardList {
+  list-style: disc;
+  padding-left: 1.3rem;
+  margin: 0 0 var(--spaceSm);
+  font-size: 0.96rem;
+  line-height: 1.6;
+}
+
+.homeHeroCardFoot {
+  font-size: 0.9rem;
+  margin: 0;
+  color: #444444;
+}
+
+/* Layout para ecras maiores */
+
+@media (min-width: 768px) {
+  .homeHeroInner {
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .homeHeroContent {
+    flex: 3;
+  }
+
+  .homeHeroVisual {
+    flex: 2;
+  }
 }

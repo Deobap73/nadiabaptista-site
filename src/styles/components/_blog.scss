@@ -1,4 +1,4 @@
-/* src/styles/components/_blog.scss */
+// src/styles/components/_blog.scss
 
 /* Blog list */
 
@@ -59,7 +59,7 @@
 }
 
 .blogCardMeta {
-  font-size: 0.85rem;
+  font-size: var(--fontSizeBodyXs);
   color: #666666;
   margin: 0;
   display: flex;
@@ -68,17 +68,17 @@
 }
 
 .blogCardDot {
-  font-size: 0.8rem;
+  font-size: var(--fontSizeBodyXs);
 }
 
 .blogCardTitle {
   font-family: var(--fontHeading);
-  font-size: 1.2rem;
+  font-size: var(--fontSizeH3);
   margin: 0;
 }
 
 .blogCardExcerpt {
-  font-size: 0.95rem;
+  font-size: var(--fontSizeBody);
   line-height: 1.6;
   margin: 0;
 }
@@ -93,7 +93,7 @@
 }
 
 .blogCardTag {
-  font-size: 0.8rem;
+  font-size: var(--fontSizeBodyXs);
   padding: 0.25rem 0.55rem;
   border-radius: 999px;
   background-color: #f2f5f7;
@@ -101,7 +101,7 @@
 }
 
 .blogEmpty {
-  font-size: 0.96rem;
+  font-size: var(--fontSizeBody);
   line-height: 1.7;
   margin: var(--spaceLg) 0;
 }
@@ -120,12 +120,12 @@
 
 .blogPostTitle {
   font-family: var(--fontHeading);
-  font-size: clamp(2rem, 3vw, 2.5rem);
+  font-size: var(--fontSizeH1);
   margin: 0 0 var(--spaceSm);
 }
 
 .blogPostMeta {
-  font-size: 0.9rem;
+  font-size: var(--fontSizeBodySm);
   color: #666666;
   margin: 0;
   display: flex;
@@ -134,7 +134,7 @@
 }
 
 .blogPostDot {
-  font-size: 0.8rem;
+  font-size: var(--fontSizeBodyXs);
 }
 
 .blogPostTags {
@@ -147,7 +147,7 @@
 }
 
 .blogPostTag {
-  font-size: 0.8rem;
+  font-size: var(--fontSizeBodyXs);
   padding: 0.3rem 0.65rem;
   border-radius: 999px;
   background-color: #f2f5f7;
@@ -177,7 +177,7 @@
 }
 
 .blogPostParagraph {
-  font-size: 1rem;
+  font-size: var(--fontSizeBody);
   line-height: 1.8;
   margin: 0;
 }

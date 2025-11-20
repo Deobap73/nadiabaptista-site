@@ -45,7 +45,7 @@ export default function HomeHero() {
 
               {/* Texto à direita */}
               <div className='home-hero__text'>
-                <p className='home-hero__name-prefix'>Dª Nadia</p>
+                <p className='home-hero__name-prefix'>Nadia</p>
                 <h1 id='home-hero-heading' className='home-hero__heading'>
                   Baptista
                 </h1>

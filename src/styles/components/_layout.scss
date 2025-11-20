@@ -38,12 +38,12 @@
 
 .site-header__title {
   font-family: var(--font-heading);
-  font-size: 1.35rem;
+  font-size: var(--fontSizeH3);
   line-height: 1.1;
 }
 
 .site-header__subtitle {
-  font-size: 0.875rem;
+  font-size: var(--fontSizeBodySm);
   color: var(--color-text-muted);
 }
 
@@ -62,7 +62,7 @@
 }
 
 .site-header__nav-link {
-  font-size: 0.95rem;
+  font-size: var(--fontSizeBodySm);
   color: var(--color-text-muted);
 }
 
@@ -101,12 +101,12 @@
 
 .site-footer__title {
   font-family: var(--font-heading);
-  font-size: 1.1rem;
+  font-size: var(--fontSizeH3);
 }
 
 .site-footer__text {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: var(--fontSizeBody);
 }
 
 .site-footer__links {
@@ -116,7 +116,7 @@
 }
 
 .site-footer__link {
-  font-size: 0.9rem;
+  font-size: var(--fontSizeBodySm);
   color: var(--color-text-muted);
 }
 
@@ -126,6 +126,6 @@
 
 .site-footer__copy {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: var(--fontSizeBodyXs);
   color: var(--color-text-muted);
 }

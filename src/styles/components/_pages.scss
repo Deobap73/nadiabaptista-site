@@ -1,4 +1,4 @@
-/* src/styles/components/_pages.scss */
+// src/styles/components/_pages.scss
 
 /* Generic page layout */
 
@@ -12,7 +12,7 @@
 }
 
 .pageKicker {
-  font-size: 0.85rem;
+  font-size: var(--fontSizeBodyXs);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--colorPrimary);
@@ -21,12 +21,12 @@
 
 .pageTitle {
   font-family: var(--fontHeading);
-  font-size: clamp(1.9rem, 3vw, 2.4rem);
+  font-size: var(--fontSizeH2);
   margin: 0 0 var(--spaceSm);
 }
 
 .pageIntro {
-  font-size: 0.98rem;
+  font-size: var(--fontSizeBody);
   line-height: 1.7;
   margin: 0;
 }
@@ -44,12 +44,12 @@
 
 .pageBlockTitle {
   font-family: var(--fontHeading);
-  font-size: 1.4rem;
+  font-size: var(--fontSizeH3);
   margin: 0 0 var(--spaceSm);
 }
 
 .pageBlockText {
-  font-size: 0.96rem;
+  font-size: var(--fontSizeBody);
   line-height: 1.7;
   margin: 0;
 }
@@ -85,30 +85,30 @@
 
 .studyCardTitle {
   font-family: var(--fontHeading);
-  font-size: 1.2rem;
+  font-size: var(--fontSizeH3);
   margin: 0 0 var(--spaceXs);
 }
 
 .studyCardArea {
-  font-size: 0.9rem;
+  font-size: var(--fontSizeBodySm);
   color: #555555;
   margin: 0;
 }
 
 .studyCardPeriod {
-  font-size: 0.85rem;
+  font-size: var(--fontSizeBodyXs);
   color: #777777;
   margin: var(--spaceXs) 0 0;
 }
 
 .studyCardDescription {
-  font-size: 0.95rem;
+  font-size: var(--fontSizeBody);
   line-height: 1.7;
   margin: 0 0 var(--spaceSm);
 }
 
 .studyCardContext {
-  font-size: 0.9rem;
+  font-size: var(--fontSizeBodySm);
   line-height: 1.6;
   margin: 0;
   color: #555555;
@@ -129,30 +129,30 @@
 
 .portfolioCardTitle {
   font-family: var(--fontHeading);
-  font-size: 1.2rem;
+  font-size: var(--fontSizeH3);
   margin: 0 0 var(--spaceXs);
 }
 
 .portfolioCardType {
-  font-size: 0.9rem;
+  font-size: var(--fontSizeBodySm);
   color: #555555;
   margin: 0;
 }
 
 .portfolioCardPeriod {
-  font-size: 0.85rem;
+  font-size: var(--fontSizeBodyXs);
   color: #777777;
   margin: var(--spaceXs) 0 0;
 }
 
 .portfolioCardDescription {
-  font-size: 0.95rem;
+  font-size: var(--fontSizeBody);
   line-height: 1.7;
   margin: 0 0 var(--spaceSm);
 }
 
 .portfolioCardHighlight {
-  font-size: 0.9rem;
+  font-size: var(--fontSizeBodySm);
   line-height: 1.6;
   margin: 0;
   color: #555555;
@@ -174,7 +174,7 @@
 }
 
 .notFoundKicker {
-  font-size: 0.85rem;
+  font-size: var(--fontSizeBodyXs);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--colorPrimary);
@@ -183,12 +183,12 @@
 
 .notFoundTitle {
   font-family: var(--fontHeading);
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-size: var(--fontSizeH1);
   margin: 0 0 var(--spaceMd);
 }
 
 .notFoundText {
-  font-size: 1rem;
+  font-size: var(--fontSizeBody);
   line-height: 1.7;
   margin: 0 0 var(--spaceLg);
   color: #444444;
@@ -200,7 +200,7 @@
   border-radius: 999px;
   background-color: var(--colorPrimary);
   color: #ffffff;
-  font-size: 0.95rem;
+  font-size: var(--fontSizeBodySm);
   font-weight: 500;
   text-decoration: none;
 }

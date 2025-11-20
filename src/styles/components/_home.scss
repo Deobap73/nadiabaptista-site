@@ -190,3 +190,88 @@
     width: 80%;
   }
 }
+
+/* How I can help */
+
+.home-how-help {
+  padding: 6rem 0;
+  background-color: var(--colorBackground);
+
+  &__container {
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  &__header {
+    max-width: 44rem;
+    margin: 0 auto 3rem;
+    text-align: center;
+  }
+
+  &__title {
+    font-family: var(--fontHeading);
+    font-size: 2rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--colorPrimary);
+    margin-bottom: 1.5rem;
+  }
+
+  &__intro {
+    font-family: var(--fontBody);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--colorText);
+  }
+
+  &__cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5rem;
+  }
+
+  &__card {
+    background-color: var(--colorMainBackground);
+    padding: 2rem 1.75rem;
+    border-radius: 0.5rem;
+  }
+
+  &__card-title {
+    font-family: var(--fontHeading);
+    font-size: 1.1rem;
+    text-align: center;
+    color: var(--colorPrimary);
+    margin-bottom: 1rem;
+  }
+
+  &__card-text {
+    font-family: var(--fontBody);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    text-align: center;
+    color: var(--colorText);
+  }
+
+  @media (max-width: 768px) {
+    padding: 3rem 0;
+
+    &__header {
+      margin-bottom: 2rem;
+    }
+
+    &__cards {
+      grid-template-columns: 1fr;
+      row-gap: 1.5rem;
+    }
+
+    &__card {
+      padding: 1.5rem 1.25rem;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .home-how-help__container {
+      width: 80%;
+    }
+  }
+}

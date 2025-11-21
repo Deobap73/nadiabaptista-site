@@ -265,9 +265,6 @@
   padding: 4rem 0;
 
   /* wrapper desktop e mobile */
-  &__desktop {
-    /* desktop visível por padrão */
-  }
 
   &__mobile {
     display: none; /* só mostra em mobile no media query */
@@ -561,6 +558,138 @@
       height: 600px;
       order: 1;
       justify-self: center;
+    }
+  }
+}
+
+/* ********************************************************** */
+/* Home newsletter */
+/* ********************************************************** */
+
+.home-newsletter {
+  position: relative;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  padding: 4rem var(--layout-page-padding-x) 5rem;
+  overflow: hidden;
+
+  &__wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    transform: rotate(180deg);
+
+    svg {
+      position: relative;
+      display: block;
+      width: calc(100% + 1.3px);
+      height: 69px;
+    }
+
+    &--shape {
+      fill: #ffffff;
+    }
+  }
+
+  &__inner {
+    width: 80%;
+
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    gap: 1rem;
+  }
+
+  &__header {
+    text-align: center;
+    max-width: 40rem;
+    margin: 0 auto 2.5rem;
+  }
+
+  &__heading {
+    font-family: var(--fontHeading);
+    font-size: var(--fontSizeH1);
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+
+  &__description {
+    font-family: var(--font-body);
+    font-size: var(--fontSizeBodyMd);
+    line-height: 1.6;
+  }
+
+  &__form {
+    /* max-width: 60rem; */
+    margin: 0 5%;
+  }
+
+  &__fields {
+    display: grid;
+    gap: 1rem;
+  }
+
+  &__field-group {
+    text-align: left;
+
+    &--email {
+      grid-column: auto;
+    }
+
+    &--button {
+      text-align: center;
+    }
+  }
+
+  &__label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: var(--fontSizeBodySm);
+    opacity: 0.9;
+  }
+
+  &__input {
+    width: 100%;
+    padding: 0.55rem 0.9rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background-color: rgba(197, 211, 214, 0.9);
+    font-family: var(--font-body);
+    font-size: var(--fontSizeBodySm);
+    color: var(--color-text);
+
+    &::placeholder {
+      color: rgba(15, 23, 42, 0.6);
+    }
+  }
+
+  &__button {
+    width: 100%;
+    width: fit-content;
+    padding-inline: 1.8rem;
+    white-space: nowrap;
+    border-radius: 10px;
+    background-color: var(--colorSecondary);
+    color: var(--colorText);
+    font-size: var(--fontSizeBodySm);
+  }
+
+  @media (min-width: 768px) {
+    padding: 4.5rem var(--layout-page-padding-x) 6rem;
+
+    &__fields {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      align-items: flex-end;
+      column-gap: 3.25rem;
+    }
+
+    &__field-group--email {
+      grid-column: span 2;
     }
   }
 }

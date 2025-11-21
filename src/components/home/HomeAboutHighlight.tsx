@@ -1,48 +1,49 @@
 // src/components/home/HomeAboutHighlight.tsx
 
+import Image from 'next/image';
 import Link from 'next/link';
+import { homeImages } from '@/lib/images';
 
 export default function HomeAboutHighlight() {
   return (
-    <section className='homeAbout' aria-labelledby='homeAboutTitle'>
-      <div className='pageContainer homeAboutInner'>
-        <div className='homeAboutText'>
-          <p className='homeAboutKicker'>Sobre a Nadia</p>
-          <h2 id='homeAboutTitle' className='homeAboutTitle'>
-            Um caminho em psicologia que ainda esta a crescer
-          </h2>
-          <p className='homeAboutIntro'>
-            A Nadia e estudante de psicologia em Porto e esta a construir, passo a passo, a base
-            teorica e humana que mais tarde quer levar para a pratica clinica. O interesse principal
-            dela esta ligado a saude mental de jovens adultos e adultos em momentos de mudanca.
-          </p>
-          <p className='homeAboutBody'>
-            Este site nao apresenta ainda servicos clinicos. E um espaco para partilhar estudos,
-            projetos, reflexoes e o percurso ate se tornar psicologa. A ideia e que, com o tempo,
-            quem chegar aqui consiga ver com clareza quem ela e e o cuidado que coloca em tudo o que
-            faz.
-          </p>
-
-          <div className='homeAboutActions'>
-            <Link href='/portfolio' className='homeAboutPrimaryLink'>
-              Ver percurso e competencias
-            </Link>
-            <Link href='/studies' className='homeAboutSecondaryLink'>
-              Explorar estudos e projetos
-            </Link>
+    <section className='home-about-highlight' aria-labelledby='home-about-highlight-heading'>
+      <div className='home-about-highlight__inner'>
+        {/* Imagem */}
+        <div className='home-about-highlight__media'>
+          <div className='home-about-highlight__image-wrapper'>
+            <Image
+              src={homeImages.aboutDesktop}
+              alt='Retrato profissional da psicóloga Nadia Baptista'
+              width={480}
+              height={600}
+              sizes='(min-width: 1024px) 480px, 100vw'
+              className='home-about-highlight__image'
+              priority
+            />
           </div>
         </div>
 
-        <div className='homeAboutSide' aria-hidden='true'>
-          <div className='homeAboutTag'>Estudante de psicologia em Porto</div>
-          <div className='homeAboutNoteBox'>
-            <p className='homeAboutNoteTitle'>Como gosto de trabalhar</p>
-            <p className='homeAboutNoteText'>
-              Escuta atenta, curiosidade genuina pela historia de cada pessoa e cuidado com o ritmo
-              de cada processo. Estes sao os principios que guiam o caminho da Nadia enquanto futura
-              psicologa.
-            </p>
-          </div>
+        {/* Conteúdo de texto */}
+        <div className='home-about-highlight__content'>
+          <header className='home-about-highlight__header'>
+            <h2 id='home-about-highlight-heading' className='home-about-highlight__title'>
+              <span className='home-about-highlight__title-line'>Nadia Baptista</span>
+            </h2>
+            <span className='home-about-highlight__divider' aria-hidden='true' />
+          </header>
+
+          <p className='home-about-highlight__text'>
+            Acredito em conduzir o aconselhamento da maneira que gostaria que fosse feito para mim.
+            As sessões são uma série de conversas onde discutimos situações difíceis da vida e
+            encontramos opções, soluções e formas de lidar com elas. Eu ofereço ferramentas para
+            abordar a vida de maneira diferente, reduzindo a necessidade de aconselhamento a longo
+            prazo. Se experiências anteriores estiverem a ser um obstáculo, nós exploramo las no
+            contexto de avançar em vez de viver no passado.
+          </p>
+
+          <Link href='/about' className='home-about-highlight__button btn btn--primary'>
+            Mais informações
+          </Link>
         </div>
       </div>
     </section>

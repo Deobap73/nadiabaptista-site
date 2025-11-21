@@ -1,68 +1,113 @@
 // src/components/home/HomeQuickLinks.tsx
-
 import Link from 'next/link';
+import Image from 'next/image';
+import { homeImages } from '@/lib/images';
+
+type QuickLink = {
+  id: string;
+  label: string;
+  href: string;
+  imageSrc: string;
+  alt: string;
+};
+
+const QUICK_LINKS: QuickLink[] = [
+  {
+    id: 'portfolio',
+    label: 'Portfolio',
+    href: '/about', // placeholder por agora
+    imageSrc: homeImages.portfolioDesktop,
+    alt: 'Retrato profissional da psicóloga, em preto e branco',
+  },
+  {
+    id: 'studies',
+    label: 'Studies',
+    href: '/services', // placeholder por agora
+    imageSrc: homeImages.studiesDesktop,
+    alt: 'Psicóloga sentada à secretária com documentos de estudo',
+  },
+  {
+    id: 'blog',
+    label: 'Blog',
+    href: '/blog',
+    imageSrc: homeImages.blogDesktop,
+    alt: 'Psicóloga a sorrir enquanto escreve no portátil',
+  },
+];
 
 export default function HomeQuickLinks() {
   return (
-    <section className='homeQuickLinks' aria-labelledby='homeQuickLinksTitle'>
-      <div className='pageContainer homeQuickLinksInner'>
-        <header className='homeQuickLinksHeader'>
-          <p className='homeQuickLinksKicker'>Acessos rapidos</p>
-          <h2 id='homeQuickLinksTitle' className='homeQuickLinksTitle'>
-            Explore o percurso e o trabalho da Nadia
+    <section className='home-quick-links' aria-labelledby='home-quick-links-title-desktop'>
+      {/* DESKTOP */}
+      <div className='home-quick-links__desktop'>
+        <div className='home-quick-links__container'>
+          {/* Fundo azul a toda a largura com altura fixa */}
+          <div className='home-quick-links__bg-full'></div>
+
+          <div className='home-quick-links__band'>
+            {/* Lado esquerdo, texto vertical apenas em desktop */}
+            <div className='home-quick-links__explore'>
+              <span>Explore</span>
+            </div>
+
+            {/* Conteúdo principal */}
+            <div className='home-quick-links__content'>
+              <h2 id='home-quick-links-title-desktop' className='home-quick-links__title'>
+                Recursos úteis
+              </h2>
+
+              <div className='home-quick-links__grid'>
+                {QUICK_LINKS.map((item) => (
+                  <Link key={item.id} href={item.href} className='home-quick-links__card'>
+                    <div className='home-quick-links__image-wrapper'>
+                      <Image
+                        src={item.imageSrc}
+                        alt={item.alt}
+                        width={260}
+                        height={320}
+                        className='home-quick-links__image'
+                      />
+                    </div>
+                    <span className='home-quick-links__label'>{item.label}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* MOBILE */}
+      <div className='home-quick-links__mobile' aria-labelledby='home-quick-links-title-mobile'>
+        <div className='home-quick-links__mobile-inner'>
+          <h2 id='home-quick-links-title-mobile' className='home-quick-links__mobile-title'>
+            Recursos úteis
           </h2>
-          <p className='homeQuickLinksIntro'>
-            Se quiser conhecer melhor o caminho academico, as experiencias e os textos que a Nadia
-            vai partilhando, pode usar estes atalhos.
-          </p>
-        </header>
 
-        <nav className='homeQuickLinksNav' aria-label='Acessos rapidos principais'>
-          <ul className='homeQuickLinksList'>
-            <li className='homeQuickLinksItem'>
-              <h3 className='homeQuickLinksItemTitle'>Studies</h3>
-              <p className='homeQuickLinksItemText'>
-                Areas de interesse, projetos academicos e participacao em formacoes e seminarios.
-              </p>
-              <Link href='/studies' className='homeQuickLinksItemLink'>
-                Ir para Studies
-              </Link>
-            </li>
+          <div className='home-quick-links__mobile-grid'>
+            {QUICK_LINKS.map((item) => (
+              <Link key={item.id} href={item.href} className='home-quick-links__mobile-card'>
+                {/* Fundo azul controlado por ti (absolute) */}
+                <div className='home-quick-links__mobile-bg-full'></div>
 
-            <li className='homeQuickLinksItem'>
-              <h3 className='homeQuickLinksItemTitle'>Portfolio</h3>
-              <p className='homeQuickLinksItemText'>
-                Visao geral do percurso, competencias e experiencias relevantes enquanto futura
-                psicologa.
-              </p>
-              <Link href='/portfolio' className='homeQuickLinksItemLink'>
-                Ver Portfolio
-              </Link>
-            </li>
+                {/* Conteúdo por cima do fundo */}
+                <div className='home-quick-links__mobile-content'>
+                  <span className='home-quick-links__mobile-label'>{item.label}</span>
 
-            <li className='homeQuickLinksItem'>
-              <h3 className='homeQuickLinksItemTitle'>Blog</h3>
-              <p className='homeQuickLinksItemText'>
-                Textos e reflexoes sobre psicologia, saude mental e temas que surgem ao longo dos
-                estudos.
-              </p>
-              <Link href='/blog' className='homeQuickLinksItemLink'>
-                Ler artigos
+                  <div className='home-quick-links__mobile-image-wrapper'>
+                    <Image
+                      src={item.imageSrc}
+                      alt={item.alt}
+                      width={260}
+                      height={320}
+                      className='home-quick-links__mobile-image'
+                    />
+                  </div>
+                </div>
               </Link>
-            </li>
-
-            <li className='homeQuickLinksItem'>
-              <h3 className='homeQuickLinksItemTitle'>Contact</h3>
-              <p className='homeQuickLinksItemText'>
-                Espaco para entrar em contacto em contexto academico ou para futuras oportunidades
-                profissionais.
-              </p>
-              <Link href='/contact' className='homeQuickLinksItemLink'>
-                Ir para Contact
-              </Link>
-            </li>
-          </ul>
-        </nav>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

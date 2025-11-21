@@ -1,4 +1,4 @@
-// src/styles/components/_blog.scss
+/* src/styles/components/_blog.scss */
 
 /* Blog list */
 
@@ -8,13 +8,13 @@
 
 .blogListHeader {
   max-width: 720px;
-  margin-bottom: var(--spaceLg);
+  margin-bottom: var(--space-24);
 }
 
 .blogListGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--spaceMd);
+  gap: var(--space-16);
 }
 
 @media (min-width: 768px) {
@@ -52,10 +52,10 @@
 }
 
 .blogCardBody {
-  padding: var(--spaceMd);
+  padding: var(--space-16);
   display: flex;
   flex-direction: column;
-  gap: var(--spaceSm);
+  gap: var(--space-8);
 }
 
 .blogCardMeta {
@@ -103,7 +103,7 @@
 .blogEmpty {
   font-size: var(--fontSizeBody);
   line-height: 1.7;
-  margin: var(--spaceLg) 0;
+  margin: var(--space-24) 0;
 }
 
 /* Single blog post */
@@ -115,13 +115,13 @@
 }
 
 .blogPostHeader {
-  margin-bottom: var(--spaceLg);
+  margin-bottom: var(--space-24);
 }
 
 .blogPostTitle {
   font-family: var(--fontHeading);
   font-size: var(--fontSizeH1);
-  margin: 0 0 var(--spaceSm);
+  margin: 0 0 var(--space-8);
 }
 
 .blogPostMeta {
@@ -140,7 +140,7 @@
 .blogPostTags {
   list-style: none;
   padding: 0;
-  margin: var(--spaceSm) 0 0;
+  margin: var(--space-8) 0 0;
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
@@ -155,7 +155,7 @@
 }
 
 .blogPostHero {
-  margin-bottom: var(--spaceLg);
+  margin-bottom: var(--space-24);
 }
 
 .blogPostHeroImageWrap {
@@ -173,7 +173,7 @@
 .blogPostContent {
   display: flex;
   flex-direction: column;
-  gap: var(--spaceSm);
+  gap: var(--space-8);
 }
 
 .blogPostParagraph {

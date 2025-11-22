@@ -4,7 +4,7 @@
 
 .home-hero {
   position: relative;
-  padding: 0 0 4rem;
+  /* padding: 0 0 4rem; */
   background-color: var(--colorBackground);
 
   /* versões desktop e mobile */
@@ -126,7 +126,7 @@
     width: 100%;
     max-width: none;
     background: var(--colorMainBackgroundMobile);
-    aspect-ratio: 9 / 16;
+    /* aspect-ratio: 9 / 16; */
     overflow: hidden;
   }
 
@@ -691,5 +691,99 @@
     &__field-group--email {
       grid-column: span 2;
     }
+  }
+}
+
+/* ********************************************************** */
+/* Landing inicial mobile */
+/* ********************************************************** */
+
+.landing-mobile {
+  min-height: 100vh;
+  background: var(--colorMainBackgroundMobile);
+  display: flex;
+  flex-direction: column;
+
+  &__inner {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+  }
+
+  /* LOGO */
+  &__logo {
+    margin: var(--space-24) 0;
+
+    img {
+      width: 200px;
+      height: auto;
+    }
+  }
+
+  /* TEXTO */
+  &__text-block {
+    margin-bottom: var(--space-24);
+    color: var(--color-primary);
+    max-width: 220px;
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1;
+  }
+
+  &__title {
+    font-family: var(--fontHeading);
+    font-size: var(--fontSizeH2);
+    line-height: 1.1;
+    margin-bottom: var(--space-12);
+    text-align: center;
+    & span {
+      font-size: var(--fontSizeH1);
+    }
+  }
+
+  &__divider {
+    width: 2px;
+    height: 38px;
+    background-color: var(--color-primary);
+    margin-bottom: var(--space-12);
+  }
+
+  &__intro {
+    font-size: var(--fontSizeBody);
+    line-height: 1.6;
+    color: var(--colorText);
+    text-align: center;
+  }
+
+  /* FOTO */
+  &__photo {
+    position: absolute;
+    top: 30%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: var(--space-12);
+    margin-bottom: var(--space-32);
+
+    img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+    }
+  }
+
+  /* BOTÃO */
+  &__cta {
+    margin: 0 auto;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    display: block;
+    /* border-radius: 8px; */
   }
 }

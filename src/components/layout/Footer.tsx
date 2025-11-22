@@ -46,8 +46,8 @@ export default function Footer() {
         <div className='site-footer__col'>
           <h3 className='site-footer__title'>Contacto</h3>
           <ul className='site-footer__list'>
-            <li>+351 935 097 461</li>
-            <li>Rua Cooperativa as 7 Bicas</li>
+            <li>+351 000 000 000</li>
+            <li>Senhora da Hora</li>
             <li>Senhora da Hora</li>
           </ul>
         </div>

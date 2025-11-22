@@ -3,7 +3,6 @@
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import '../styles/globals.scss';
-import MainLayout from '../components/layout/MainLayout';
 
 export const metadata: Metadata = {
   title: 'Nadia Baptista · Psychology student in Porto',
@@ -18,9 +17,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang='en'>
-      <body>
-        <MainLayout>{children}</MainLayout>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

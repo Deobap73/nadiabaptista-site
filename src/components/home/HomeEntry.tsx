@@ -1,10 +1,12 @@
 // src/components/home/HomeEntry.tsx
+
 'use client';
 
 import { useState, useEffect } from 'react';
 import HomeDesktop from './HomeDesktop';
 import LandingMobile from './LandingMobile';
 import HomeMobile from './HomeMobile';
+import MainLayout from '../layout/MainLayout';
 
 export default function HomeEntry() {
   const [isMobile, setIsMobile] = useState(false);
@@ -14,18 +16,31 @@ export default function HomeEntry() {
     const check = () => {
       setIsMobile(window.innerWidth < 768);
     };
+
     check();
     window.addEventListener('resize', check);
+
     return () => window.removeEventListener('resize', check);
   }, []);
 
+  // Desktop: sempre com layout completo
   if (!isMobile) {
-    return <HomeDesktop />;
+    return (
+      <MainLayout>
+        <HomeDesktop />
+      </MainLayout>
+    );
   }
 
+  // Mobile antes de entrar no site: apenas Landing, sem footer
   if (!showMobileHome) {
-    return <LandingMobile onContinue={() => setShowMobileHome(true)} />;
+    return <LandingMobile onEnter={() => setShowMobileHome(true)} />;
   }
 
-  return <HomeMobile />;
+  // Mobile depois de clicar "Seja bem vindo": HomeMobile com footer
+  return (
+    <MainLayout>
+      <HomeMobile />
+    </MainLayout>
+  );
 }

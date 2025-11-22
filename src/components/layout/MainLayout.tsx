@@ -12,15 +12,13 @@ interface MainLayoutProps {
 
 /**
  * MainLayout
- * Wraps every page with the global header and footer.
- * Pages only care about their own content and use `pageContainer`
- * for horizontal alignment.
+ * Wraps page content with the global shell: header (no momento comentado) and footer.
  */
 export default function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div className='siteShell'>
+    <div className='site-shell'>
       {/* <Header /> */}
-      <main>{children}</main>
+      <main className='site-main'>{children}</main>
       <Footer />
     </div>
   );

@@ -1,36 +1,59 @@
 // src/components/home/LandingMobile.tsx
 'use client';
 
-interface Props {
-  onContinue: () => void;
-}
+import Image from 'next/image';
+import { homeImages } from '@/lib/images';
 
-export default function LandingMobile({ onContinue }: Props) {
+type LandingMobileProps = {
+  onEnter: () => void;
+};
+
+export default function LandingMobile({ onEnter }: LandingMobileProps) {
   return (
-    <main className='landingMobile' aria-labelledby='landingMobileTitle'>
-      <div className='landingMobileInner'>
-        <div className='landingMobileLogo'>Nadia Baptista</div>
-
-        <div className='landingMobilePortrait' aria-hidden='true'>
-          N
+    <section className='landing-mobile' aria-labelledby='landing-heading'>
+      <div className='landing-mobile__inner'>
+        {/* LOGO */}
+        <div className='landing-mobile__logo'>
+          <Image
+            src={homeImages.logoNadia}
+            alt='Assinatura Nadia Baptista Psicóloga'
+            width={240}
+            height={90}
+            priority
+          />
         </div>
 
-        <h1 id='landingMobileTitle' className='landingMobileName'>
-          Nadia Baptista
-        </h1>
+        {/* TEXTO */}
+        <div className='landing-mobile__text-block'>
+          <h1 id='landing-heading' className='landing-mobile__title'>
+            Nádia
+            <br />
+            <span>Baptista</span>
+          </h1>
 
-        <p className='landingMobileRole'>Psicologa em Porto</p>
+          <div className='landing-mobile__divider' aria-hidden='true'></div>
 
-        <p className='landingMobileIntro'>
-          Consultas de psicologia para jovens adultos e adultos que atravessam momentos de
-          ansiedade, mudanca ou sobrecarga emocional. Um espaco calmo, seguro e confidencial onde
-          pode falar com tempo sobre o que esta a viver.
-        </p>
+          <p className='landing-mobile__intro'>
+            Encontre o espaço seguro para se ouvir. Juntos, criaremos o caminho para a sua maior
+            clareza mental.
+          </p>
+        </div>
 
-        <button type='button' className='landingMobileButton' onClick={onContinue}>
-          Seja bem vindo
-        </button>
+        {/* FOTO */}
+        <div className='landing-mobile__photo'>
+          <Image
+            src={homeImages.landingMobile}
+            alt='Retrato da psicóloga Nadia Baptista'
+            width={360}
+            height={520}
+            priority
+          />
+          {/* BOTÃO */}
+          <button type='button' className='landing-mobile__cta btn btn--primary' onClick={onEnter}>
+            Seja bem vindo
+          </button>
+        </div>
       </div>
-    </main>
+    </section>
   );
 }

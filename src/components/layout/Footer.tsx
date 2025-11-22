@@ -1,32 +1,94 @@
 // src/components/layout/Footer.tsx
 
-'use client';
-
 import Link from 'next/link';
+import Image from 'next/image';
+import { homeImages } from '@/lib/images';
+import { SiteIcons } from '@/lib/icons';
 
-export function Footer() {
+const Instagram = SiteIcons.instagram;
+const Facebook = SiteIcons.facebook;
+const Linkedin = SiteIcons.linkedin;
+
+export default function Footer() {
   const year = new Date().getFullYear();
-
   return (
     <footer className='site-footer'>
       <div className='site-footer__inner'>
-        <div className='site-footer__info'>
-          <p className='site-footer__title'>Nádia Baptista</p>
-          <p className='site-footer__text'>
-            Psicóloga em Porto. Espaço de escuta, cuidado e crescimento emocional.
+        {/* Coluna 1 */}
+        <div className='site-footer__col'>
+          <h3 className='site-footer__title'>Explore</h3>
+          <ul className='site-footer__list'>
+            <li>
+              <Link href='/services'>Serviços</Link>
+            </li>
+            <li>
+              <Link href='/about'>Sobre Mim</Link>
+            </li>
+            <li>
+              <Link href='/blog'>Leia o meu Blog</Link>
+            </li>
+            <li>
+              <Link href='/contact'>Contacto</Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* Coluna 2 */}
+        <div className='site-footer__col'>
+          <h3 className='site-footer__title'>Horários</h3>
+          <ul className='site-footer__list'>
+            <li>Segunda a Sexta</li>
+            <li>9h - 16h</li>
+          </ul>
+        </div>
+
+        {/* Coluna 3 */}
+        <div className='site-footer__col'>
+          <h3 className='site-footer__title'>Contacto</h3>
+          <ul className='site-footer__list'>
+            <li>+351 935 097 461</li>
+            <li>Rua Cooperativa as 7 Bicas</li>
+            <li>Senhora da Hora</li>
+          </ul>
+        </div>
+
+        {/* Texto e ícones */}
+        <div className='site-footer__col site-footer__col--wide'>
+          <p className='site-footer__ethics'>
+            Compromisso com o rigor ético e a confidencialidade. Todos os processos são conduzidos
+            segundo o código de ética profissional da Psicologia.
           </p>
-        </div>
 
-        <div className='site-footer__links'>
-          <Link href='/contact' className='site-footer__link'>
-            Marcar consulta
-          </Link>
-          <Link href='/privacy' className='site-footer__link'>
-            Política de privacidade
-          </Link>
+          <div className='site-footer__social'>
+            <Link href='https://instagram.com' aria-label='Instagram'>
+              <span className='site-footer__icon'>
+                <Instagram />
+              </span>
+            </Link>
+            <Link href='https://facebook.com' aria-label='Facebook'>
+              <span className='site-footer__icon'>
+                <Facebook />
+              </span>
+            </Link>
+            <Link href='https://linkedin.com' aria-label='LinkedIn'>
+              <span className='site-footer__icon'>
+                <Linkedin />
+              </span>
+            </Link>
+          </div>
         </div>
+      </div>
 
-        <p className='site-footer__copy'>© {year} Nádia Baptista. Todos os direitos reservados.</p>
+      <div className='site-footer__bottom'>
+        <p>© {year} Todos os direitos reservados. Desenvolvido por</p>
+
+        <Image
+          src={homeImages.logo_theHumanTechDigitals}
+          alt='The Human Tech Digitals'
+          width={130}
+          height={40}
+          className='site-footer__devlogo'
+        />
       </div>
     </footer>
   );

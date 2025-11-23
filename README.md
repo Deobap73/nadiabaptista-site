@@ -12,18 +12,22 @@ The HomePage is built in sections. Each part is responsive and follows a clean g
 
 ### Desktop Hero
 ![Home Hero Desktop](docs/images/HomeHeroDesktop.webp)
+
 This image shows the top section of the desktop layout. It includes the full width blue background layer and the logo placed on the grid container.
 
 ### Desktop Quick Links
 ![Quick Links Desktop](docs/images/HomeQuickLinksDesktop.webp)
+
 This preview shows the three main links on desktop. Each card uses a Cloudinary image and follows the spacing tokens defined in `tokens.scss`.
 
 ### Desktop Newsletter Banner
 ![Newsletter Banner Desktop](docs/images/HomeNewsletterBannerdesktop.webp)
+
 This section shows the soft wave background and the text centered in a simple one column layout.
 
 ### Desktop Footer
 ![Footer Desktop](docs/images/FooterDesktop.webp)
+
 This screenshot shows the footer on desktop with the logo, links and social items aligned on the grid.
 
 ---
@@ -34,18 +38,22 @@ The mobile version uses a two step flow. First the Landing screen, then the Home
 
 ### Mobile Landing
 ![Landing Page Mobile](docs/images/landingPageMobile.webp)
+
 This image shows the first mobile screen. It has the logo, portrait and a short introduction needed for SEO.
 
 ### Mobile Quick Links
 ![Quick Links Mobile](docs/images/HomeQuickLinksMobile.webp)
+
 This preview shows the link cards adapted to a single column mobile grid.
 
 ### Mobile Newsletter Banner
 ![Newsletter Banner Mobile](docs/images/HomeNewsletterBannerMobile.webp)
+
 This image shows the wave background scaled for small screens.
 
 ### Mobile Footer
 ![Footer Mobile](docs/images/FooterMobile.webp)
+
 This screenshot shows the footer stacked in a simple vertical layout.
 
 ---
@@ -300,3 +308,21 @@ Location
   <img src="https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white" />
 </p>
 ```
+
+## 🤝 About the Creator
+
+This project is part of my professional front-end developer portfolio, demonstrating attention to detail, clean code structure and modern UI development techniques.
+
+---
+
+## 📩 Contact
+
+Email: mailto:contact@deolindobaptista.com
+
+LinkedIn: https://www.linkedin.com/in/deolindobaptista/
+
+GitHub: https://github.com/Deobap73
+
+---
+
+### ⭐ If you find this project useful, consider giving it a star!

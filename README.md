@@ -8,12 +8,12 @@ The work follows a clear structure. Pages, components and styles are added in sm
 
 ```
 
-  ![Badge](https://img.shields.io/badge/Next.js-000000?logo=nextdotjs&logoColor=white)
-  ![Badge](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
-  ![Badge](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
-  ![Badge](https://img.shields.io/badge/SCSS-CF649A?logo=sass&logoColor=white")
-  ![Badge](https://img.shields.io/badge/Cloudinary-3448C5?logo=cloudinary&logoColor=white)
-  ![Badge](https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white)
+  ![Badge](https://img.shields.io/badge/Next.js-white-nextdotjs?style=flat&logo=next.js&logoColor=white&label=Next.js)
+  ![Badge](https://img.shields.io/badge/TypeScript-Strict-blueviolet-typescript)
+  ![Badge](https://img.shields.io/badge/React-18-blue-react)
+  ![Badge](https://img.shields.io/badge/SCSS-BEM-green)
+  ![Badge](https://img.shields.io/badge/Cloudinary-blue?logo=cloudinary)
+  ![Badge](https://img.shields.io/badge/Vercel-white-vercel)
 
 ```
 

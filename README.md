@@ -4,6 +4,20 @@ This repository contains the website for **Nadia Baptista**, a psychology studen
 
 The work follows a clear structure. Pages, components and styles are added in small steps to keep the code simple and easy to understand. The design aims to create trust with a calm, academic tone.
 
+# Badges
+
+```
+
+  ![Badge](https://img.shields.io/badge/Next.js-000000?logo=nextdotjs&logoColor=white)
+  ![Badge](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+  ![Badge](https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB)
+  ![Badge](https://img.shields.io/badge/SCSS-CF649A?logo=sass&logoColor=white")
+  ![Badge](https://img.shields.io/badge/Cloudinary-3448C5?logo=cloudinary&logoColor=white)
+  ![Badge](https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white)
+
+```
+
+
 ---
 
 # HomePage Preview
@@ -296,18 +310,7 @@ Location
 
 ---
 
-# Badges
 
-```
-<p align="left">
-  <img src="https://img.shields.io/badge/Next.js-000000?logo=nextdotjs&logoColor=white" />
-  <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" />
-  <img src="https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB" />
-  <img src="https://img.shields.io/badge/SCSS-CF649A?logo=sass&logoColor=white" />
-  <img src="https://img.shields.io/badge/Cloudinary-3448C5?logo=cloudinary&logoColor=white" />
-  <img src="https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white" />
-</p>
-```
 
 ## 🤝 About the Creator
 

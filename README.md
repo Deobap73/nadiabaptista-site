@@ -9,8 +9,8 @@ The work follows a clear structure. Pages, components and styles are added in sm
 
 
   ![Badge](https://img.shields.io/badge/Next.js-white-nextdotjs?style=flat&logo=next.js&logoColor=white&label=Next.js)
-  ![Badge](https://img.shields.io/badge/TypeScript-Strict-blueviolet-typescript)
-  ![Badge](https://img.shields.io/badge/React-18-blue-react)
+  ![Badge](https://img.shields.io/badge/TypeScript-Strict-blueviolet)
+  ![Badge](https://img.shields.io/badge/React-18-blue)
   ![Badge](https://img.shields.io/badge/SCSS-BEM-green)
   ![Badge](https://img.shields.io/badge/Cloudinary-blue?logo=cloudinary)
   ![Badge](https://img.shields.io/badge/Vercel-white-vercel)

@@ -4,6 +4,20 @@ This repository contains the website for **Nadia Baptista**, a psychology studen
 
 The work follows a clear structure. Pages, components and styles are added in small steps to keep the code simple and easy to understand. The design aims to create trust with a calm, academic tone.
 
+# Badges
+
+
+
+  ![Badge](https://img.shields.io/badge/Next.js-white-nextdotjs?style=flat&logo=next.js&logoColor=white&label=Next.js)
+  ![Badge](https://img.shields.io/badge/TypeScript-Strict-blueviolet)
+  ![Badge](https://img.shields.io/badge/React-18-blue)
+  ![Badge](https://img.shields.io/badge/SCSS-BEM-green)
+  ![Badge](https://img.shields.io/badge/Cloudinary-blue?logo=cloudinary)
+  ![Badge](https://img.shields.io/badge/Vercel-white-vercel)
+
+
+
+
 ---
 
 # HomePage Preview
@@ -12,18 +26,22 @@ The HomePage is built in sections. Each part is responsive and follows a clean g
 
 ### Desktop Hero
 ![Home Hero Desktop](docs/images/HomeHeroDesktop.webp)
+
 This image shows the top section of the desktop layout. It includes the full width blue background layer and the logo placed on the grid container.
 
 ### Desktop Quick Links
 ![Quick Links Desktop](docs/images/HomeQuickLinksDesktop.webp)
+
 This preview shows the three main links on desktop. Each card uses a Cloudinary image and follows the spacing tokens defined in `tokens.scss`.
 
 ### Desktop Newsletter Banner
 ![Newsletter Banner Desktop](docs/images/HomeNewsletterBannerdesktop.webp)
+
 This section shows the soft wave background and the text centered in a simple one column layout.
 
 ### Desktop Footer
 ![Footer Desktop](docs/images/FooterDesktop.webp)
+
 This screenshot shows the footer on desktop with the logo, links and social items aligned on the grid.
 
 ---
@@ -34,18 +52,22 @@ The mobile version uses a two step flow. First the Landing screen, then the Home
 
 ### Mobile Landing
 ![Landing Page Mobile](docs/images/landingPageMobile.webp)
+
 This image shows the first mobile screen. It has the logo, portrait and a short introduction needed for SEO.
 
 ### Mobile Quick Links
 ![Quick Links Mobile](docs/images/HomeQuickLinksMobile.webp)
+
 This preview shows the link cards adapted to a single column mobile grid.
 
 ### Mobile Newsletter Banner
 ![Newsletter Banner Mobile](docs/images/HomeNewsletterBannerMobile.webp)
+
 This image shows the wave background scaled for small screens.
 
 ### Mobile Footer
 ![Footer Mobile](docs/images/FooterMobile.webp)
+
 This screenshot shows the footer stacked in a simple vertical layout.
 
 ---
@@ -288,15 +310,22 @@ Location
 
 ---
 
-# Badges
 
-```
-<p align="left">
-  <img src="https://img.shields.io/badge/Next.js-000000?logo=nextdotjs&logoColor=white" />
-  <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" />
-  <img src="https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB" />
-  <img src="https://img.shields.io/badge/SCSS-CF649A?logo=sass&logoColor=white" />
-  <img src="https://img.shields.io/badge/Cloudinary-3448C5?logo=cloudinary&logoColor=white" />
-  <img src="https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white" />
-</p>
-```
+
+## 🤝 About the Creator
+
+This project is part of my professional front-end developer portfolio, demonstrating attention to detail, clean code structure and modern UI development techniques.
+
+---
+
+## 📩 Contact
+
+Email: mailto:contact@deolindobaptista.com
+
+LinkedIn: https://www.linkedin.com/in/deolindobaptista/
+
+GitHub: https://github.com/Deobap73
+
+---
+
+### ⭐ If you find this project useful, consider giving it a star!

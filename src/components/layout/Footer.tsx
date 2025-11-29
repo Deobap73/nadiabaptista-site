@@ -80,15 +80,21 @@ export default function Footer() {
       </div>
 
       <div className='site-footer__bottom'>
-        <p>© {year} Todos os direitos reservados. Desenvolvido por</p>
+        <p>© {year} Todos os direitos reservados. Desenvolvido por - </p>
 
-        <Image
-          src={homeImages.logo_theHumanTechDigitals}
-          alt='The Human Tech Digitals'
-          width={130}
-          height={40}
-          className='site-footer__devlogo'
-        />
+        <a
+          className='footer__link--legal'
+          href='https://thehumantechblog.com/about'
+          target='_blank'
+          rel='noopener noreferrer'>
+          <Image
+            src={homeImages.logo_theHumanTechDigitals}
+            alt='The Human Tech Digitals'
+            width={160}
+            height={30}
+            className='site-footer__devlogo'
+          />
+        </a>
       </div>
     </footer>
   );

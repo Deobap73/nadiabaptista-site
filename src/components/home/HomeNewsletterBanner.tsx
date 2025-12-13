@@ -16,7 +16,7 @@ export default function HomeNewsletterBanner() {
         </svg>
       </div>
 
-      <div className='home-newsletter__inner'>
+      <div className='home-newsletter__inner site-container site-container--wide'>
         <header className='home-newsletter__header'>
           <h2 id='home-newsletter-heading' className='home-newsletter__heading'>
             Nutra a Sua Mente

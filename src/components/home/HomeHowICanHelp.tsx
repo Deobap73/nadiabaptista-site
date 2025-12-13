@@ -6,7 +6,7 @@ import { howICanHelpCards, type HelpCard } from '@/content/home/howICanHelpCards
 const HomeHowICanHelp: React.FC = () => {
   return (
     <section className='home-how-help' aria-labelledby='home-how-help-title'>
-      <div className='home-how-help__container'>
+      <div className='home-how-help__container site-container'>
         <header className='home-how-help__header'>
           <h2 id='home-how-help-title' className='home-how-help__title'>
             COMO POSSO AJUDAR

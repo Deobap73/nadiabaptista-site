@@ -28,5 +28,13 @@ export const homeImages: HomeImages = {
   aboutDesktop: `${CLOUDINARY_BASE}/NadiaBaptista-site/home/about-desktop.webp`,
 };
 
-// In the future we can add other sections like:
-// export const siteImages = { home: homeImages, about: aboutImages, ... };
+// About page images
+export type AboutImages = {
+  aboutHeroDesktop: string;
+  aboutHeroMobile: string;
+};
+
+export const AboutImages: AboutImages = {
+  aboutHeroDesktop: `${CLOUDINARY_BASE}/NadiaBaptista-site/about/aboutPage-hero-desktop.webp`,
+  aboutHeroMobile: `${CLOUDINARY_BASE}/NadiaBaptista-site/about/aboutPage-hero-mobile.webp`,
+};

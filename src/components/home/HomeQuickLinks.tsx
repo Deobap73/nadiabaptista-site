@@ -40,7 +40,7 @@ export default function HomeQuickLinks() {
     <section className='home-quick-links' aria-labelledby='home-quick-links-title-desktop'>
       {/* DESKTOP */}
       <div className='home-quick-links__desktop'>
-        <div className='home-quick-links__container'>
+        <div className='home-quick-links__container site-container site-container--wide'>
           {/* Fundo azul a toda a largura com altura fixa */}
           <div className='home-quick-links__bg-full'></div>
 
@@ -79,7 +79,7 @@ export default function HomeQuickLinks() {
 
       {/* MOBILE */}
       <div className='home-quick-links__mobile' aria-labelledby='home-quick-links-title-mobile'>
-        <div className='home-quick-links__mobile-inner'>
+        <div className='home-quick-links__mobile-inner site-container site-container--wide'>
           <h2 id='home-quick-links-title-mobile' className='home-quick-links__mobile-title'>
             Recursos úteis
           </h2>

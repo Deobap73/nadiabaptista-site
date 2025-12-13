@@ -16,9 +16,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
   const isMainBackgroundRoute = pathname === '/' || pathname === '/contact';
 
-  const shellClassName = isMainBackgroundRoute
-    ? 'site-shell site-shell--main-bg'
-    : 'site-shell site-shell--default-bg';
+  const shellClassName = isMainBackgroundRoute ? 'site-shell site-shell--main-bg' : 'site-shell';
 
   return (
     <div className={shellClassName}>

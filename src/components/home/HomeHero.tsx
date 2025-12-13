@@ -10,7 +10,7 @@ export default function HomeHero() {
       <div className='home-hero__desktop'>
         <div className='home-hero__bg-full'></div>
 
-        <div className='home-hero__container'>
+        <div className='home-hero__container site-container site-container--wide'>
           <div className='home-hero__inner'>
             <div className='home-hero__content'>
               <div className='home-hero__image-wrapper'>

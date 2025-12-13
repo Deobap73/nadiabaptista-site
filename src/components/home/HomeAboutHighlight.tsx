@@ -7,7 +7,7 @@ import { homeImages } from '@/lib/images';
 export default function HomeAboutHighlight() {
   return (
     <section className='home-about-highlight' aria-labelledby='home-about-highlight-heading'>
-      <div className='home-about-highlight__inner'>
+      <div className='home-about-highlight__inner site-container site-container--wide'>
         {/* Imagem */}
         <div className='home-about-highlight__media'>
           <div className='home-about-highlight__image-wrapper'>

@@ -111,3 +111,22 @@
   font-size: var(--fontSizeBodyXs);
   color: var(--color-text-muted);
 }
+
+body.is-landing-mobile {
+  .site-footer {
+    display: none;
+  }
+}
+
+.site-container {
+  width: 100%;
+  max-width: var(--layout-max-width);
+  margin: 0 auto;
+  padding: 0 var(--layout-page-padding-x);
+}
+
+.site-container--wide {
+  max-width: none;
+  width: 90%;
+  padding: 0;
+}

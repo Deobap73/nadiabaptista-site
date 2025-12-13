@@ -1,6 +1,7 @@
 // src/components/home/LandingMobile.tsx
 'use client';
 
+import { useEffect } from 'react';
 import Image from 'next/image';
 import { homeImages } from '@/lib/images';
 
@@ -9,10 +10,16 @@ type LandingMobileProps = {
 };
 
 export default function LandingMobile({ onEnter }: LandingMobileProps) {
+  useEffect(() => {
+    document.body.classList.add('is-landing-mobile');
+    return () => {
+      document.body.classList.remove('is-landing-mobile');
+    };
+  }, []);
+
   return (
     <section className='landing-mobile' aria-labelledby='landing-heading'>
       <div className='landing-mobile__inner'>
-        {/* LOGO */}
         <div className='landing-mobile__logo'>
           <Image
             src={homeImages.logoNadia}
@@ -23,7 +30,6 @@ export default function LandingMobile({ onEnter }: LandingMobileProps) {
           />
         </div>
 
-        {/* TEXTO */}
         <div className='landing-mobile__text-block'>
           <h1 id='landing-heading' className='landing-mobile__title'>
             Nádia
@@ -39,7 +45,6 @@ export default function LandingMobile({ onEnter }: LandingMobileProps) {
           </p>
         </div>
 
-        {/* FOTO */}
         <div className='landing-mobile__photo'>
           <Image
             src={homeImages.landingMobile}
@@ -48,7 +53,7 @@ export default function LandingMobile({ onEnter }: LandingMobileProps) {
             height={520}
             priority
           />
-          {/* BOTÃO */}
+
           <button type='button' className='landing-mobile__cta btn btn--primary' onClick={onEnter}>
             Seja bem vindo
           </button>

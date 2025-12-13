@@ -1,13 +1,13 @@
 /* src/styles/components/_home.scss */
 
+/* ********************************************************** */
 /* Home hero */
+/* ********************************************************** */
 
 .home-hero {
   position: relative;
-  /* padding: 0 0 4rem; */
   background-color: var(--colorBackground);
 
-  /* versões desktop e mobile */
   &__desktop {
     display: none;
   }
@@ -16,7 +16,6 @@
     display: block;
   }
 
-  /* Fundo azul a toda a largura com altura fixa */
   &__bg-full {
     position: absolute;
     top: 0;
@@ -26,43 +25,14 @@
     background-color: var(--colorMainBackground);
   }
 
-  /* Conteúdo central alinhado com o layout */
   &__container {
     position: relative;
-    width: 90%;
-    margin: 0 auto;
   }
 
   &__inner {
     padding-top: 3rem;
   }
 
-  /* Logo no topo */
-  &__logo-wrapper {
-    text-align: center;
-    margin-bottom: 5.5rem;
-  }
-
-  &__logo {
-    display: inline-block;
-    margin-bottom: 0.4rem;
-
-    img {
-      width: 100%;
-      height: auto;
-      object-fit: contain;
-    }
-  }
-
-  &__profession {
-    font-family: var(--fontBody);
-    font-size: var(--fontSizeBodySm);
-    letter-spacing: 0.06em;
-    text-transform: none;
-    color: var(--colorPrimary);
-  }
-
-  /* Grid principal desktop foto + texto */
   &__content {
     display: grid;
     justify-items: center;
@@ -70,7 +40,6 @@
     column-gap: 3.5rem;
   }
 
-  /* Foto */
   &__image-wrapper {
     aspect-ratio: 4 / 5;
     border-radius: 1.5rem;
@@ -83,9 +52,9 @@
     width: 100%;
     height: auto;
     object-fit: cover;
+    display: block;
   }
 
-  /* Texto do lado direito */
   &__text {
     display: flex;
     flex-direction: column;
@@ -121,12 +90,9 @@
     text-align: center;
   }
 
-  /* Versão mobile imagem única */
   &__mobile-image-wrapper {
     width: 100%;
-    max-width: none;
     background: var(--colorMainBackgroundMobile);
-    /* aspect-ratio: 9 / 16; */
     overflow: hidden;
   }
 
@@ -134,9 +100,9 @@
     object-fit: cover;
     width: 100%;
     height: 85%;
+    display: block;
   }
 
-  /* Breakpoints a partir de tablet mostra desktop */
   @media (min-width: 768px) {
     padding: 0 0 5rem;
 
@@ -154,17 +120,10 @@
   }
 
   @media (min-width: 1024px) {
+    padding: 0 0 6rem;
+
     &__bg-full {
       height: 800px;
-    }
-
-    padding: 0 0 6rem;
-  }
-
-  /* Ajuste progressivo do container em ecrãs maiores */
-  @media (min-width: 1440px) {
-    &__container {
-      width: 80%;
     }
   }
 }
@@ -178,9 +137,8 @@
   background-color: var(--colorBackground);
 
   &__container {
-    margin: 0 auto;
-    padding: 0 1.5rem;
-    max-width: var(--layoutMaxWidth);
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   &__header {
@@ -249,12 +207,6 @@
       padding: 1.5rem 1.25rem;
     }
   }
-
-  @media (min-width: 1440px) {
-    &__container {
-      width: 80%;
-    }
-  }
 }
 
 /* ********************************************************** */
@@ -264,19 +216,14 @@
 .home-quick-links {
   padding: 4rem 0;
 
-  /* wrapper desktop e mobile */
-
   &__mobile {
-    display: none; /* só mostra em mobile no media query */
+    display: none;
   }
 
   &__container {
     position: relative;
-    width: 90%;
-    margin: 0 auto;
   }
 
-  /* Fundo azul a toda a largura (desktop) */
   &__bg-full {
     position: absolute;
     top: 0;
@@ -295,7 +242,6 @@
     column-gap: 2.5rem;
   }
 
-  /* Texto vertical "Explore" só em desktop */
   &__explore {
     display: flex;
     align-items: center;
@@ -311,7 +257,6 @@
     }
   }
 
-  /* Conteúdo principal desktop */
   &__content {
     text-align: center;
   }
@@ -361,13 +306,9 @@
     color: var(--colorText);
   }
 
-  /* -------------------------------------------------------- */
-  /* MOBILE STYLES                                           */
-  /* -------------------------------------------------------- */
   @media (max-width: 768px) {
     padding: 3rem 0;
 
-    /* esconde desktop, mostra mobile */
     &__desktop {
       display: none;
     }
@@ -376,10 +317,9 @@
       display: block;
     }
 
-    /* layout global mobile */
     &__mobile-inner {
-      width: 90%;
-      margin: 0 auto;
+      width: 100%;
+      margin: 0;
     }
 
     &__mobile-title {
@@ -404,7 +344,6 @@
       text-decoration: none;
     }
 
-    /* fundo azul controlado por ti */
     &__mobile-bg-full {
       position: absolute;
       height: 450px;
@@ -414,7 +353,6 @@
       z-index: 0;
     }
 
-    /* conteúdo por cima do fundo azul */
     &__mobile-content {
       position: relative;
       z-index: 1;
@@ -446,12 +384,6 @@
       display: block;
     }
   }
-
-  @media (min-width: 1440px) {
-    &__container {
-      width: 80%;
-    }
-  }
 }
 
 /* ********************************************************** */
@@ -463,8 +395,6 @@
   background-color: var(--colorBackground);
 
   &__inner {
-    width: 80%;
-
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -517,8 +447,7 @@
 
   &__image-wrapper {
     position: relative;
-    width: 90%;
-    /* max-width: 360px; */
+    width: 94%;
     margin: 0 auto;
     aspect-ratio: 3 / 5;
     border-radius: 1.5rem;
@@ -535,7 +464,6 @@
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       align-items: center;
-      /* gap: 1rem; */
     }
 
     &__content {
@@ -595,8 +523,6 @@
   }
 
   &__inner {
-    width: 80%;
-
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -625,7 +551,6 @@
   }
 
   &__form {
-    /* max-width: 60rem; */
     margin: 0 5%;
   }
 
@@ -646,13 +571,6 @@
     }
   }
 
-  &__label {
-    display: block;
-    margin-bottom: 0.35rem;
-    font-size: var(--fontSizeBodySm);
-    opacity: 0.9;
-  }
-
   &__input {
     width: 100%;
     padding: 0.55rem 0.9rem;
@@ -669,7 +587,6 @@
   }
 
   &__button {
-    width: 100%;
     width: fit-content;
     padding-inline: 1.8rem;
     white-space: nowrap;
@@ -709,11 +626,9 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-
     align-items: center;
   }
 
-  /* LOGO */
   &__logo {
     margin: var(--space-24) 0;
 
@@ -723,7 +638,6 @@
     }
   }
 
-  /* TEXTO */
   &__text-block {
     margin-bottom: var(--space-24);
     color: var(--color-primary);
@@ -741,7 +655,8 @@
     line-height: 1.1;
     margin-bottom: var(--space-12);
     text-align: center;
-    & span {
+
+    span {
       font-size: var(--fontSizeH1);
     }
   }
@@ -760,7 +675,6 @@
     text-align: center;
   }
 
-  /* FOTO */
   &__photo {
     position: absolute;
     top: 30%;
@@ -778,12 +692,10 @@
     }
   }
 
-  /* BOTÃO */
   &__cta {
     margin: 0 auto;
     padding: 0.75rem 2rem;
     font-size: 1rem;
     display: block;
-    /* border-radius: 8px; */
   }
 }

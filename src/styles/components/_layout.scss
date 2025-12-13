@@ -13,12 +13,10 @@
 
 /* ---------------------------------------------------------- */
 /* Background context by route                                */
-/* HomePage and ContactPage                                   */
+/* Only affects header and main                               */
 /* ---------------------------------------------------------- */
 
 .site-shell--main-bg {
-  background-color: var(--colorMainBackground);
-
   .site-header {
     background-color: var(--colorMainBackground);
   }
@@ -28,11 +26,7 @@
   }
 }
 
-/* All other pages */
-
 .site-shell--default-bg {
-  background-color: var(--colorBackground);
-
   .site-header {
     background-color: var(--colorBackground);
   }
@@ -49,7 +43,7 @@
 .site-header {
   top: 0;
   z-index: 20;
-  /* border-bottom: 1px solid var(--color-border-subtle); */
+  backdrop-filter: blur(10px);
 }
 
 .site-header__inner {
@@ -75,10 +69,12 @@
 
 /* ---------------------------------------------------------- */
 /* Footer                                                     */
+/* Always uses default background                             */
 /* ---------------------------------------------------------- */
 
 .site-footer {
   margin-top: var(--space-32);
+  background-color: var(--colorBackground);
 }
 
 .site-footer__inner {

@@ -91,7 +91,7 @@
     flex-direction: column;
     align-items: center;
     max-width: 420px;
-    color: var(--colorPrimary);
+    color: var(--colorText);
   }
 
   &__name-prefix {
@@ -358,7 +358,7 @@
     margin-top: 1rem;
     font-family: var(--fontHeading);
     font-size: var(--fontSizeH2);
-    color: var(--colorPrimary);
+    color: var(--colorText);
   }
 
   /* -------------------------------------------------------- */
@@ -484,7 +484,7 @@
     font-family: var(--fontHeading);
     font-size: 2rem;
     line-height: 1.1;
-    color: var(--colorPrimary);
+    color: var(--colorText);
   }
 
   &__title-line {
@@ -504,7 +504,7 @@
     margin: 0 auto 2rem;
     font-size: 0.9375rem;
     line-height: 1.7;
-    color: var(--colorPrimary);
+    color: var(--colorText);
   }
 
   &__button {

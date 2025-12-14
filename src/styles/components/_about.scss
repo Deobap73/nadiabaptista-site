@@ -182,5 +182,178 @@
 }
 
 /* ********************************************************** */
-/* AboutMotivationSentence */
+/* AboutMyStorie */
 /* ********************************************************** */
+
+.about_mystorie {
+  background: var(--colorBackground);
+}
+
+.about_mystorie__container {
+  max-width: var(--layout-max-width);
+  margin: 5% auto;
+  padding: var(--space-64) var(--layout-page-padding-x);
+}
+
+.about_mystorie__top {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-24);
+  align-items: start;
+}
+
+.about_mystorie__intro {
+  max-width: 56ch;
+}
+
+.about_mystorie__title {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  margin-bottom: var(--space-16);
+  color: var(--colorText);
+}
+
+.about_mystorie__text {
+  line-height: 1.75;
+  color: var(--color-text-muted);
+}
+
+.about_mystorie__image_top {
+  width: 100%;
+  max-width: 640px;
+}
+
+.about_mystorie__bottom {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-24);
+  margin-top: var(--space-32);
+  position: relative;
+}
+
+.about_mystorie__panel {
+  background: var(--colorPrimary);
+  color: #ffffff;
+  padding: var(--space-32);
+  position: relative;
+  z-index: 1;
+  border-radius: 4px;
+}
+
+.about_mystorie__panel_text {
+  line-height: 1.75;
+  max-width: 46ch;
+}
+
+.about_mystorie__image_bottom {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+.about_mystorie__img {
+  max-width: 640px;
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
+}
+
+@media (min-width: 1024px) {
+  .about_mystorie__top {
+    grid-template-columns: 360px 1fr;
+    gap: var(--space-48);
+  }
+
+  .about_mystorie__image_top {
+    justify-self: end;
+    max-width: 560px;
+  }
+
+  .about_mystorie__bottom {
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin-top: calc(var(--space-64) * -0.01);
+    align-items: end;
+  }
+
+  .about_mystorie__panel {
+    grid-column: 2;
+    grid-row: 1;
+    width: 140%;
+    min-height: 580px;
+    padding: var(--space-48);
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    z-index: 1;
+    /* margin-bottom: var(--space-48); */
+    position: absolute;
+    top: 0;
+    right: 0;
+    &_text {
+      text-align: justify;
+    }
+  }
+
+  .about_mystorie__image_bottom {
+    grid-column: 1;
+    grid-row: 1;
+    max-width: 620px;
+    z-index: 2;
+    margin-top: 9.8%;
+  }
+}
+
+@media (max-width: 1023px) {
+  .about_mystorie__container {
+    margin: 0 auto;
+  }
+
+  .about_mystorie__intro {
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .about_mystorie__top {
+    justify-items: center;
+    grid-template-areas:
+      'image'
+      'text';
+  }
+
+  .about_mystorie__image_top {
+    grid-area: image;
+    margin: 0 auto;
+  }
+
+  .about_mystorie__text {
+    grid-area: text;
+    margin: 0 auto;
+    max-width: 56ch;
+    text-align: center;
+  }
+
+  .about_mystorie__bottom {
+    justify-items: center;
+  }
+
+  .about_mystorie__image_bottom {
+    margin: 0 auto;
+    max-width: 640px;
+  }
+
+  .about_mystorie__panel {
+    margin: 0 auto;
+    max-width: 640px;
+  }
+
+  .about_mystorie__panel_text {
+    margin: 0 auto;
+    max-width: 56ch;
+    text-align: center;
+  }
+}

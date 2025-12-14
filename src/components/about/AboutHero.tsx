@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { AboutImages } from '../../lib/images';
+import { aboutImages } from '../../lib/images';
 
 export default function AboutHero() {
   return (
@@ -15,7 +15,7 @@ export default function AboutHero() {
             <div className='about_hero__image_wrap'>
               <div className='about_hero__image_desktop'>
                 <Image
-                  src={AboutImages.aboutHeroDesktop}
+                  src={aboutImages.aboutHeroDesktop}
                   alt='Retrato profissional da Nadia Baptista sentada num sofa, num ambiente calmo e iluminado'
                   width={920}
                   height={1100}
@@ -26,7 +26,7 @@ export default function AboutHero() {
 
               <div className='about_hero__image_mobile'>
                 <Image
-                  src={AboutImages.aboutHeroMobile}
+                  src={aboutImages.aboutHeroMobile}
                   alt='Retrato profissional da Nadia Baptista sentada num sofa, num ambiente calmo e iluminado'
                   width={920}
                   height={1100}

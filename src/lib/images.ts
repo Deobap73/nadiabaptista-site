@@ -42,3 +42,12 @@ export const aboutImages: AboutImages = {
   aboutMyStorie1: `${CLOUDINARY_BASE}/NadiaBaptista-site/about/aboutPage-MyStorie-1-desktop.webp`,
   aboutMyStorie2: `${CLOUDINARY_BASE}/NadiaBaptista-site/about/aboutPage-MyStorie-2-desktop.webp`,
 };
+
+// blog page image
+export type BlogImages = {
+  blogHeroDesktop: string;
+};
+
+export const blogImages: BlogImages = {
+  blogHeroDesktop: `${CLOUDINARY_BASE}/NadiaBaptista-site/blog/blogPage-hero-desktop.webp`,
+};

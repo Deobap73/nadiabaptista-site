@@ -15,9 +15,8 @@ export default function BlogPage() {
       <div className='blog_page__container site-container'>
         <BlogTopArticles posts={posts} />
         <BlogLatestArticles posts={posts} />
-
-        <HomeNewsletterBanner />
       </div>
+      <HomeNewsletterBanner />
     </main>
   );
 }

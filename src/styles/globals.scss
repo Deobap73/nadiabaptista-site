@@ -1,16 +1,15 @@
 /* src/styles/globals.scss */
 
-@import './tokens';
-@import './components/layout';
-@import './components/buttons';
-@import './components/footer';
-@import './components/home';
-@import './components/about';
-@import './components/pages';
-@import './components/blog';
+@use './tokens';
+@use './components/layout';
+@use './components/buttons';
+@use './components/footer';
+@use './components/home';
+@use './components/about';
+@use './components/pages';
+@use './components/blog';
 
 /* Reset simples */
-
 *,
 *::before,
 *::after {

@@ -51,3 +51,14 @@ export type BlogImages = {
 export const blogImages: BlogImages = {
   blogHeroDesktop: `${CLOUDINARY_BASE}/NadiaBaptista-site/blog/blogPage-hero-desktop.webp`,
 };
+
+// contact page image
+export type ContactImages = {
+  contactHeroDesktop: string;
+  contactHeroMobile: string;
+};
+
+export const contactImages: ContactImages = {
+  contactHeroDesktop: `${CLOUDINARY_BASE}/NadiaBaptista-site/contact/hero-contact.webp`,
+  contactHeroMobile: `${CLOUDINARY_BASE}/NadiaBaptista-site/contact/hero-contact-mobile.webp`,
+};

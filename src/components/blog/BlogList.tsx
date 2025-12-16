@@ -1,39 +1,34 @@
 // src/components/blog/BlogList.tsx
 
-import type { BlogPost } from '../../types/blog';
+import type { BlogPost } from '@/types/blog';
 import BlogCard from './BlogCard';
 
-interface BlogListProps {
+type BlogListProps = {
   posts: BlogPost[];
-}
+};
 
 export default function BlogList({ posts }: BlogListProps) {
-  if (!posts.length) {
-    return (
-      <p className='blogEmpty'>
-        There are no texts published yet. This space will gather notes and reflections as Nadia
-        keeps studying and writing.
-      </p>
-    );
-  }
+  const ordered = [...posts].sort((a, b) => {
+    const da = new Date(a.publishedAt).getTime();
+    const db = new Date(b.publishedAt).getTime();
+    return db - da;
+  });
 
-  const sortedPosts = [...posts].sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1));
+  const featured = ordered.filter((p) => p.featured).slice(0, 2);
+  const rest = ordered.filter((p) => !featured.some((f) => f.id === p.id));
 
   return (
-    <section className='blogListSection' aria-labelledby='blogListTitle'>
-      <header className='blogListHeader'>
-        <p className='pageKicker'>Blog</p>
-        <h1 id='blogListTitle' className='pageTitle'>
-          Notes and reflections along the way
-        </h1>
-        <p className='pageIntro'>
-          This blog gathers short texts written during the years of study. The idea is not to give
-          answers, but to share questions, readings and thoughts that appear along the path.
-        </p>
-      </header>
+    <section className='blog_list' aria-label='Artigos do blog'>
+      {featured.length ? (
+        <div className='blog_list__featured' aria-label='Artigos em destaque'>
+          {featured.map((post) => (
+            <BlogCard key={post.id} post={post} variant='featured' />
+          ))}
+        </div>
+      ) : null}
 
-      <div className='blogListGrid'>
-        {sortedPosts.map((post) => (
+      <div className='blog_list__grid' aria-label='Lista de artigos'>
+        {rest.map((post) => (
           <BlogCard key={post.id} post={post} />
         ))}
       </div>

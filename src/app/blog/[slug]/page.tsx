@@ -2,98 +2,46 @@
 
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
-import { mockPosts } from '../../../lib/blog/mockPosts';
+import BlogArticle from '@/components/blog/BlogArticle';
+import { getAllPosts, getPostBySlug } from '@/lib/blog/posts';
 
-interface BlogPostPageProps {
-  params: Promise<{
-    slug: string;
-  }>;
+type PageProps = {
+  params: Promise<{ slug: string }>;
+};
+
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  const posts = getAllPosts();
+  return posts.map((p) => ({ slug: p.slug }));
 }
 
-export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = mockPosts.find((p) => p.slug === slug);
 
-  if (!post) {
-    return {
-      title: 'Post not found · Blog · Nadia Baptista',
-      description: 'The blog post you are looking for could not be found.',
-    };
-  }
+  const post = getPostBySlug(slug);
+  if (!post) return { title: 'Artigo não encontrado' };
 
   return {
-    title: `${post.title} · Blog · Nadia Baptista`,
+    title: post.title,
     description: post.excerpt,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      images: [{ url: post.heroImageUrl }],
+    },
   };
 }
 
-export default async function BlogPostPage({ params }: BlogPostPageProps) {
+export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
 
-  const post = mockPosts.find((p) => p.slug === slug);
-
-  if (!post) {
-    notFound();
-  }
-
-  const date = new Date(post.publishedAt);
-
-  const formattedDate = date.toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  });
-
-  const paragraphs = post.content.split('\n\n');
+  const post = getPostBySlug(slug);
+  if (!post) notFound();
 
   return (
-    <main className='pageContainer'>
-      <article className='blogPost' aria-labelledby='blogPostTitle'>
-        <header className='blogPostHeader'>
-          <p className='pageKicker'>Blog</p>
-          <h1 id='blogPostTitle' className='blogPostTitle'>
-            {post.title}
-          </h1>
-
-          <p className='blogPostMeta'>
-            <span className='blogPostDate'>{formattedDate}</span>
-            <span className='blogPostDot'>•</span>
-            <span className='blogPostReading'>{post.readingTimeMinutes} min read</span>
-          </p>
-
-          {post.tags.length > 0 && (
-            <ul className='blogPostTags' aria-label='Tags'>
-              {post.tags.map((tag) => (
-                <li key={tag} className='blogPostTag'>
-                  {tag}
-                </li>
-              ))}
-            </ul>
-          )}
-        </header>
-
-        <div className='blogPostHero'>
-          <div className='blogPostHeroImageWrap'>
-            <Image
-              src={post.heroImageUrl}
-              alt={post.title}
-              fill
-              sizes='(max-width: 768px) 100vw, 800px'
-              className='blogPostHeroImage'
-              priority={post.featured}
-            />
-          </div>
-        </div>
-
-        <section className='blogPostContent'>
-          {paragraphs.map((para, index) => (
-            <p key={index} className='blogPostParagraph'>
-              {para}
-            </p>
-          ))}
-        </section>
-      </article>
+    <main className='blog_post_page'>
+      <BlogArticle post={post} />
     </main>
   );
 }

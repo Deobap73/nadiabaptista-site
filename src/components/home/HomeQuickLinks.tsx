@@ -15,14 +15,14 @@ const QUICK_LINKS: QuickLink[] = [
   {
     id: 'portfolio',
     label: 'Portfolio',
-    href: '/about', // placeholder por agora
+    href: '/portfolio', // placeholder por agora
     imageSrc: homeImages.portfolioDesktop,
     alt: 'Retrato profissional da psicóloga, em preto e branco',
   },
   {
     id: 'studies',
     label: 'Studies',
-    href: '/services', // placeholder por agora
+    href: '/studies', // placeholder por agora
     imageSrc: homeImages.studiesDesktop,
     alt: 'Psicóloga sentada à secretária com documentos de estudo',
   },

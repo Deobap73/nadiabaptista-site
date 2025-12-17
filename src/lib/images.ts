@@ -62,3 +62,16 @@ export const contactImages: ContactImages = {
   contactHeroDesktop: `${CLOUDINARY_BASE}/NadiaBaptista-site/contact/hero-contact.webp`,
   contactHeroMobile: `${CLOUDINARY_BASE}/NadiaBaptista-site/contact/hero-contact-mobile.webp`,
 };
+
+// Portfolio page image
+export type PortfolioImages = {
+  portfolioHeroDesktop: string;
+  portfolioHeroMobile: string;
+  portfolio_1: string;
+};
+
+export const portfolioImages: PortfolioImages = {
+  portfolioHeroDesktop: `${CLOUDINARY_BASE}/NadiaBaptista-site/portfolio/PortfolioPage-hero-desktop.webp`,
+  portfolioHeroMobile: `${CLOUDINARY_BASE}/NadiaBaptista-site/portfolio/PortfolioPage-hero-mobile.webp`,
+  portfolio_1: `${CLOUDINARY_BASE}/NadiaBaptista-site/portfolio/PortfolioPage-portfolio_1.webp`,
+};

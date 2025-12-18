@@ -3,6 +3,7 @@
 import PortfolioHero from '@/components/portfolio/PortfolioHero';
 import PortfolioContainer, { type PortfolioItem } from '@/components/portfolio/PortfolioContainer';
 import { portfolioImages } from '@/lib/images';
+import PortfolioDiplomas from '@/components/portfolio/PortfolioDiplomas';
 
 const portfolioItems: PortfolioItem[] = [
   {
@@ -33,6 +34,7 @@ export default function PortfolioPage() {
     <>
       <PortfolioHero />
       <PortfolioContainer items={portfolioItems} />
+      <PortfolioDiplomas />
     </>
   );
 }

@@ -8,8 +8,8 @@
   background: linear-gradient(
     to bottom,
     var(--colorBackground) 0%,
-    var(--colorBackground) 50%,
-    var(--colorPrimaryLight) 50%,
+    var(--colorBackground) 45%,
+    var(--colorPrimaryLight) 45%,
     var(--colorPrimaryLight) 100%
   );
 }
@@ -46,7 +46,7 @@
 
 .portfolio_hero__title {
   font-family: var(--fontHeading);
-  font-size: var(--fontSizeH1);
+  font-size: var(--fontSizeH2);
   line-height: 1.12;
   color: var(--colorPrimary);
   margin: 0;
@@ -58,7 +58,7 @@
 
 .portfolio_hero__paragraph {
   font-family: var(--fontBody);
-  font-size: var(--fontSizeH3);
+  font-size: var(--fontSizeBody);
   line-height: 1.7;
   color: var(--colorPrimary);
   margin: 0;
@@ -127,6 +127,7 @@
   }
 
   .portfolio_hero__paragraph {
+    font-size: var(--fontSizeH3);
     max-width: 560px;
     margin: 0 auto;
   }
@@ -147,5 +148,258 @@
     max-width: 100vw;
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
+  }
+}
+
+/* ********************************************************** */
+/* Portfolio container */
+/* ********************************************************** */
+
+.portfolio_container {
+  background: var(--colorBackground);
+
+  &__container {
+    padding: var(--space-72) var(--space-32);
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-72);
+  }
+
+  &__item {
+    position: relative;
+    max-width: 1040px;
+    margin: 0 auto;
+    min-height: 420px;
+
+    &__reverse {
+      position: relative;
+      max-width: 1040px;
+      margin: 0 auto;
+      min-height: 420px;
+    }
+  }
+
+  &__media {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 420px;
+    aspect-ratio: 1 / 1;
+    border-radius: 24px;
+    overflow: hidden;
+
+    &__reverse {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: auto;
+      width: 420px;
+      aspect-ratio: 1 / 1;
+      border-radius: 24px;
+      overflow: hidden;
+    }
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  &__card {
+    position: absolute;
+    top: 50%;
+    right: -75px;
+    width: 520px;
+    transform: translateY(-50%);
+    background: var(--colorPrimary);
+    color: #ffffff;
+    border-radius: 14px;
+    padding: var(--space-28);
+    z-index: 2;
+
+    &__reverse {
+      position: absolute;
+      top: 50%;
+      left: -75px;
+      right: auto;
+      width: 520px;
+      transform: translateY(-50%);
+      background: var(--colorPrimary);
+      color: #ffffff;
+      border-radius: 14px;
+      padding: var(--space-28);
+      z-index: 2;
+    }
+  }
+
+  &__title {
+    font-family: var(--fontHeading);
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-16);
+  }
+
+  &__text {
+    font-family: var(--fontBody);
+    font-size: 0.95rem;
+    line-height: 1.75;
+
+    p + p {
+      margin-top: var(--space-16);
+    }
+  }
+
+  /* Responsive */
+
+  @media (max-width: 1200px) {
+    &__item,
+    &__item__reverse {
+      max-width: 960px;
+      min-height: 390px;
+    }
+
+    &__media,
+    &__media__reverse {
+      width: 380px;
+    }
+
+    &__card {
+      width: 480px;
+      right: -56px;
+      padding: var(--space-24);
+    }
+
+    &__card__reverse {
+      width: 480px;
+      left: -56px;
+      padding: var(--space-24);
+    }
+  }
+
+  @media (max-width: 1023px) {
+    &__item,
+    &__item__reverse {
+      max-width: 720px;
+      min-height: 360px;
+    }
+
+    &__media,
+    &__media__reverse {
+      width: 340px;
+    }
+
+    &__card {
+      width: 420px;
+      right: -40px;
+    }
+
+    &__card__reverse {
+      width: 420px;
+      left: -40px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    /* Ajuste do padding geral do container para mobile */
+    &__container {
+      padding: var(--space-32) 16px; /* Menos padding lateral */
+    }
+
+    &__list {
+      gap: 48px; /* Espaço entre projectos */
+    }
+
+    /* --- RESET GERAL PARA MOBILE --- */
+    /* Prepara todos os itens para serem colunas flexíveis */
+    &__item,
+    &__item__reverse {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      max-width: 100%;
+      min-height: auto;
+      margin: 0;
+      padding-bottom: 0;
+    }
+
+    /* Configuração base da imagem para mobile */
+    &__media,
+    &__media__reverse {
+      position: relative;
+      top: auto;
+      left: auto;
+      right: auto; /* Reset do absolute */
+      width: 90%; /* Não ocupa a largura total para permitir desalinhamento */
+      max-width: 400px;
+      aspect-ratio: 1 / 1;
+      z-index: 1;
+      border-radius: 20px;
+    }
+
+    /* Configuração base do cartão para mobile */
+    &__card,
+    &__card__reverse {
+      position: relative;
+      top: auto;
+      left: auto;
+      right: auto;
+      bottom: auto; /* Reset do absolute */
+      transform: none;
+
+      width: 85%; /* Ligeiramente mais estreito que a imagem */
+      max-width: 360px;
+
+      /* A CHAVE DA SOBREPOSIÇÃO VERTICAL: Margem negativa */
+      margin-top: -64px;
+      z-index: 2;
+
+      padding: 24px;
+      border-radius: 16px;
+    }
+
+    /* --- LÓGICA DE ZIGUEZAGUE (O que corrige o teu problema) --- */
+
+    /* 1. ITEM NORMAL (Imagem à esquerda, Cartão à direita) */
+    &__item {
+      /* A imagem normal encosta à esquerda */
+      .portfolio_container__media {
+        margin-right: auto;
+        margin-left: 0;
+      }
+
+      /* O cartão normal encosta à direita */
+      .portfolio_container__card {
+        margin-left: auto;
+        margin-right: 0; /* Ligeiro offset da borda direita */
+      }
+    }
+
+    /* 2. ITEM INVERTIDO (Imagem à direita, Cartão à esquerda) */
+    &__item__reverse {
+      /* A imagem invertida encosta à direita */
+      .portfolio_container__media__reverse {
+        margin-left: auto;
+        margin-right: 0;
+      }
+
+      /* O cartão invertido encosta à esquerda */
+      .portfolio_container__card__reverse {
+        margin-right: auto;
+        margin-left: 0; /* Ligeiro offset da borda esquerda */
+      }
+    }
+
+    /* Reset das classes antigas que estavam no TSX, caso ainda lá estejam */
+    &__card__mobile,
+    &__card__mobile_reverse {
+      top: auto;
+      bottom: auto;
+    }
   }
 }

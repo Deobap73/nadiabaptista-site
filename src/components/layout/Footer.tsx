@@ -19,7 +19,7 @@ export default function Footer() {
           <h3 className='site-footer__title'>Explore</h3>
           <ul className='site-footer__list'>
             <li>
-              <Link href='/services'>Serviços</Link>
+              <Link href='/'>Home</Link>
             </li>
             <li>
               <Link href='/about'>Sobre Mim</Link>

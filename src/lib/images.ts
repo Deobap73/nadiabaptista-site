@@ -75,3 +75,26 @@ export const portfolioImages: PortfolioImages = {
   portfolioHeroMobile: `${CLOUDINARY_BASE}/NadiaBaptista-site/portfolio/PortfolioPage-hero-mobile.webp`,
   portfolio_1: `${CLOUDINARY_BASE}/NadiaBaptista-site/portfolio/PortfolioPage-portfolio_1.webp`,
 };
+
+// Portfolio page image
+export type StudiesImages = {
+  studiesHeroDesktop: string;
+  areasOfInterest_1: string;
+  areasOfInterest_2: string;
+  areasOfInterest_3: string;
+  conferences_1: string;
+  conferences_2: string;
+  seminars_1: string;
+  seminars_2: string;
+};
+
+export const studiesImages: StudiesImages = {
+  studiesHeroDesktop: `${CLOUDINARY_BASE}/NadiaBaptista-site/Studies/studiesPage-desktop.webp`,
+  areasOfInterest_1: `${CLOUDINARY_BASE}/NadiaBaptista-site/Studies/AreasOfInterest/psicologiaDesporto.webp`,
+  areasOfInterest_2: `${CLOUDINARY_BASE}/NadiaBaptista-site/Studies/AreasOfInterest/psicologiaClinica.webp`,
+  areasOfInterest_3: `${CLOUDINARY_BASE}/NadiaBaptista-site/Studies/AreasOfInterest/Neuropsicologia.webp`,
+  conferences_1: `${CLOUDINARY_BASE}/NadiaBaptista-site/Studies/ConferencesAndSeminars/Conferences_1.webp`,
+  conferences_2: `${CLOUDINARY_BASE}/NadiaBaptista-site/Studies/ConferencesAndSeminars/Conferences_2.webp`,
+  seminars_1: `${CLOUDINARY_BASE}/NadiaBaptista-site/Studies/ConferencesAndSeminars/Seminar_1.webp`,
+  seminars_2: `${CLOUDINARY_BASE}/NadiaBaptista-site/Studies/ConferencesAndSeminars/Seminar_2.webp`,
+};

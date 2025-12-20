@@ -365,12 +365,17 @@
   justify-content: center;
   padding: 10px 14px;
   border-radius: 999px;
-  border: 1px solid var(--color-border-subtle);
+  border: 2px solid var(--color-border-subtle);
   background: #ffffff;
   color: var(--colorText);
   text-decoration: none;
   font-size: var(--font-size-sm);
   white-space: nowrap;
+  &:hover,
+  &:focus {
+    background-color: var(--colorPrimary);
+    color: var(--colorBackground);
+  }
 }
 
 /* categories tabs */
@@ -485,12 +490,17 @@
   justify-content: center;
   padding: 10px 14px;
   border-radius: 999px;
-  border: 1px solid var(--color-border-subtle);
+  border: 2px solid var(--color-border-subtle);
   background: #ffffff;
   color: var(--colorText);
   text-decoration: none;
   font-size: var(--font-size-sm);
   white-space: nowrap;
+  &:hover,
+  &:focus {
+    background-color: var(--colorPrimary);
+    color: var(--colorBackground);
+  }
 }
 
 .blog_latest__layout {
@@ -616,11 +626,13 @@
   font-size: var(--font-size-sm);
   text-decoration: none;
   color: var(--colorText);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-sm);
+  border: 2px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
   transition: background-color 0.2s ease;
 
-  &:hover {
-    background-color: var(--colorSecondary);
+  &:hover,
+  &:focus {
+    background-color: var(--colorPrimary);
+    color: var(--colorBackground);
   }
 }

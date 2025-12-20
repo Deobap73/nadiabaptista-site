@@ -1,5 +1,4 @@
 // src/app/studies/areas/[slug]/page.tsx
-
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { studiesImages } from '@/lib/images';
@@ -33,11 +32,12 @@ const AREAS: Record<string, AreaContent> = {
 };
 
 type PageProps = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
-export default function StudiesAreaPage({ params }: PageProps) {
-  const area = AREAS[params.slug];
+export default async function StudiesAreaPage({ params }: PageProps) {
+  const { slug } = await params;
+  const area = AREAS[slug];
 
   if (!area) {
     notFound();
@@ -72,4 +72,12 @@ export default function StudiesAreaPage({ params }: PageProps) {
       </div>
     </section>
   );
+}
+
+export async function generateStaticParams() {
+  return [
+    { slug: 'psicologia-do-desporto' },
+    { slug: 'psicologia-clinica' },
+    { slug: 'neuropsicologia' },
+  ];
 }

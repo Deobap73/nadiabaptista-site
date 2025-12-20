@@ -20,7 +20,7 @@ export default function LandingMobile({ onEnter }: LandingMobileProps) {
   return (
     <section className='landing-mobile' aria-labelledby='landing-heading'>
       <div className='landing-mobile__inner'>
-        <div className='landing-mobile__logo'>
+        {/* <div className='landing-mobile__logo'>
           <Image
             src={homeImages.logoNadia}
             alt='Assinatura Nadia Baptista Psicóloga'
@@ -28,7 +28,7 @@ export default function LandingMobile({ onEnter }: LandingMobileProps) {
             height={90}
             priority
           />
-        </div>
+        </div> */}
 
         <div className='landing-mobile__text-block'>
           <h1 id='landing-heading' className='landing-mobile__title'>

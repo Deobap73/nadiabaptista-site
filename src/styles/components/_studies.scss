@@ -1,5 +1,8 @@
 /* src/styles/components/_studies.scss */
 
+/* ********************************************************** */
+/* Studies Hero */
+/* ********************************************************** */
 .studies_hero {
   background: var(--colorBackground);
   overflow-x: hidden;
@@ -56,9 +59,9 @@
     background: var(--colorPrimaryLight);
     border-radius: 18px;
     padding: var(--space-32);
+    padding: var(--space-64);
 
     @media (min-width: 768px) {
-      padding: var(--space-64);
       margin-top: -80px;
       text-align: justify;
     }
@@ -141,6 +144,76 @@
     &__text {
       padding-right: 40%;
       text-align: justify;
+    }
+  }
+}
+
+/* ********************************************************** */
+/* Studies quick links */
+/* ********************************************************** */
+
+.studies-quick-links {
+  padding: var(--space-72) 0;
+  background: var(--colorBackground);
+
+  &__container {
+    text-align: center;
+  }
+
+  &__title {
+    font-family: var(--fontHeading);
+    font-size: var(--fontSizeH2);
+    color: var(--colorPrimary);
+    margin-bottom: var(--space-40);
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-40);
+    justify-items: center;
+  }
+
+  &__card {
+    width: 100%;
+    max-width: 260px;
+    text-decoration: none;
+  }
+
+  &__panel {
+    background-color: var(--colorPrimary);
+    border-radius: 0.75rem;
+    padding: var(--space-24);
+    display: flex;
+    justify-content: center;
+  }
+
+  &__image-wrapper {
+    width: 100%;
+    aspect-ratio: 3 / 5;
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__label {
+    margin-top: var(--space-16);
+    font-family: var(--fontHeading);
+    font-size: var(--fontSizeH2);
+    color: var(--colorPrimary);
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    &__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-32);
     }
   }
 }

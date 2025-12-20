@@ -20,38 +20,41 @@ type QuickLinksSectionProps = {
 export default function QuickLinksSection({
   titleId,
   title,
-  exploreLabel = 'Explore',
+  exploreLabel = 'EXPLORE',
   items,
 }: QuickLinksSectionProps) {
   return (
-    <section className='home-quick-links' aria-labelledby={titleId}>
-      <div className='home-quick-links__desktop'>
-        <div className='home-quick-links__container site-container site-container--wide'>
-          <div className='home-quick-links__bg-full'></div>
+    <section className='quick-links' aria-labelledby={titleId}>
+      {/* Desktop */}
+      <div className='quick-links__desktop'>
+        <div className='quick-links__container site-container site-container--wide'>
+          <div className='quick-links__bg-full' aria-hidden='true'></div>
 
-          <div className='home-quick-links__band'>
-            <div className='home-quick-links__explore'>
+          <div className='quick-links__band'>
+            <div className='quick-links__explore'>
               <span>{exploreLabel}</span>
             </div>
 
-            <div className='home-quick-links__content'>
-              <h2 id={titleId} className='home-quick-links__title'>
+            <div className='quick-links__content'>
+              <h2 id={titleId} className='quick-links__title-desktop'>
                 {title}
               </h2>
 
-              <div className='home-quick-links__grid'>
+              <div className='quick-links__grid'>
                 {items.map((item) => (
-                  <Link key={item.id} href={item.href} className='home-quick-links__card'>
-                    <div className='home-quick-links__image-wrapper'>
+                  <Link key={item.id} href={item.href} className='quick-links__card'>
+                    <div className='quick-links__image-wrapper'>
                       <Image
                         src={item.imageSrc}
                         alt={item.alt}
-                        width={260}
-                        height={320}
-                        className='home-quick-links__image'
+                        width={520}
+                        height={860}
+                        className='quick-links__image'
+                        sizes='(min-width: 1024px) 260px, 100vw'
                       />
                     </div>
-                    <span className='home-quick-links__label'>{item.label}</span>
+
+                    <span className='quick-links__label'>{item.label}</span>
                   </Link>
                 ))}
               </div>
@@ -60,27 +63,29 @@ export default function QuickLinksSection({
         </div>
       </div>
 
-      <div className='home-quick-links__mobile' aria-labelledby={`${titleId}-mobile`}>
-        <div className='home-quick-links__mobile-inner site-container site-container--wide'>
-          <h2 id={`${titleId}-mobile`} className='home-quick-links__mobile-title'>
+      {/* Mobile */}
+      <div className='quick-links__mobile' aria-labelledby={`${titleId}-mobile`}>
+        <div className='quick-links__mobile-inner site-container site-container--wide'>
+          <h2 id={`${titleId}-mobile`} className='quick-links__mobile-title'>
             {title}
           </h2>
 
-          <div className='home-quick-links__mobile-grid'>
+          <div className='quick-links__mobile-grid'>
             {items.map((item) => (
-              <Link key={item.id} href={item.href} className='home-quick-links__mobile-card'>
-                <div className='home-quick-links__mobile-bg-full'></div>
+              <Link key={item.id} href={item.href} className='quick-links__mobile-card'>
+                <div className='quick-links__mobile-bg-full' aria-hidden='true'></div>
 
-                <div className='home-quick-links__mobile-content'>
-                  <span className='home-quick-links__mobile-label'>{item.label}</span>
+                <div className='quick-links__mobile-content'>
+                  <span className='quick-links__mobile-label'>{item.label}</span>
 
-                  <div className='home-quick-links__mobile-image-wrapper'>
+                  <div className='quick-links__mobile-image-wrapper'>
                     <Image
                       src={item.imageSrc}
                       alt={item.alt}
-                      width={260}
-                      height={320}
-                      className='home-quick-links__mobile-image'
+                      width={660}
+                      height={1100}
+                      className='quick-links__mobile-image'
+                      sizes='(max-width: 768px) 330px, 100vw'
                     />
                   </div>
                 </div>

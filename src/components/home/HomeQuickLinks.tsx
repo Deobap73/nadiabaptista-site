@@ -1,8 +1,8 @@
 // src/components/home/HomeQuickLinks.tsx
 import { homeImages } from '@/lib/images';
-import QuickLinksSection, { type QuickLinkItem } from '../shared/QuickLinksSection';
+import QuickLinksSection, { type QuickLinkItem } from '@/components/shared/QuickLinksSection';
 
-const QUICK_LINKS: QuickLinkItem[] = [
+const HOME_LINKS: QuickLinkItem[] = [
   {
     id: 'portfolio',
     label: 'Portfolio',
@@ -31,7 +31,8 @@ export default function HomeQuickLinks() {
     <QuickLinksSection
       titleId='home-quick-links-title'
       title='Recursos úteis'
-      items={QUICK_LINKS}
+      exploreLabel='EXPLORE'
+      items={HOME_LINKS}
     />
   );
 }

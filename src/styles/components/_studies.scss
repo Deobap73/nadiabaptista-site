@@ -582,3 +582,417 @@
     }
   }
 }
+
+/* ********************************************************** */
+/* Studies conferences and seminars */
+/* ********************************************************** */
+
+.studies_conferences {
+  background: var(--colorBackground);
+
+  &__container {
+    padding: var(--space-72) 0;
+  }
+
+  &__grid {
+    display: grid;
+    gap: 16px;
+    align-items: start;
+  }
+
+  &__intro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+  }
+
+  &__title {
+    font-family: var(--fontHeading);
+    font-size: var(--fontSizeH1);
+    font-weight: 500;
+    font-style: italic;
+    color: var(--colorText);
+    line-height: 1.05;
+    /* margin: 0; */
+  }
+
+  &__text {
+    max-width: 320px;
+    font-family: var(--fontHeading);
+    font-size: var(--fontSizeBody);
+    font-style: italic;
+    color: var(--colorText);
+    opacity: 0.9;
+    line-height: 1.4;
+  }
+
+  &__card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    background: #fff;
+  }
+
+  &__image {
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  &__cta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  &__button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 240px;
+    height: 46px;
+    border-radius: 999px;
+    background: var(--colorPrimary);
+    color: #fff;
+    text-decoration: none;
+    font-family: var(--fontBody);
+    font-size: 0.95rem;
+    font-weight: 500;
+    &:hover,
+    &:focus {
+      background-color: var(--colorBackground);
+      color: var(--colorPrimary);
+      border: 2px solid var(--colorPrimary);
+    }
+  }
+
+  /* Mobile layout */
+  &__card_recent {
+    height: 320px;
+  }
+
+  &__card_2,
+  &__card_3,
+  &__card_4 {
+    height: 260px;
+  }
+
+  @media (min-width: 1024px) {
+    &__grid {
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+      gap: 16px;
+      grid-template-areas:
+        'intro image2 image4'
+        'intro image2 image4'
+        'recent image2 image4'
+        'recent image3 image4'
+        'recent image3 image4'
+        'recent image3 cta';
+    }
+
+    &__intro {
+      grid-area: intro;
+      padding-top: var(--space-12);
+    }
+
+    &__card_recent {
+      grid-area: recent;
+      height: 100%;
+    }
+
+    &__card_2 {
+      grid-area: image2;
+      height: 100%;
+    }
+
+    &__card_3 {
+      grid-area: image3;
+      height: 100%;
+    }
+
+    &__card_4 {
+      grid-area: image4;
+      height: 100%;
+    }
+
+    &__cta {
+      grid-area: cta;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &__button {
+      width: 240px;
+    }
+  }
+}
+
+/* ********************************************************** */
+/* Studies conference detail page */
+/* ********************************************************** */
+
+.studies_conference_page {
+  background: var(--colorBackground);
+
+  &__container {
+    padding: var(--space-48) 0 var(--space-72);
+  }
+
+  &__back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 var(--space-16);
+    border-radius: 999px;
+    text-decoration: none;
+    font-family: var(--fontBody);
+    font-size: 0.95rem;
+    color: var(--colorText);
+    border: 1px solid var(--color-border-subtle);
+    background: #fff;
+    margin-bottom: var(--space-24);
+    &:hover,
+    &:focus {
+      background-color: var(--colorPrimary);
+      color: var(--colorBackground);
+    }
+  }
+
+  &__grid {
+    display: grid;
+    gap: var(--space-24);
+    align-items: start;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+  }
+
+  &__kicker {
+    font-family: var(--fontBody);
+    font-size: 0.9rem;
+    color: var(--colorText);
+    opacity: 0.8;
+    margin: 0;
+  }
+
+  &__title {
+    font-family: var(--fontHeading);
+    font-size: clamp(2.1rem, 1.4rem + 1.2vw, 3rem);
+    font-weight: 600;
+    color: var(--colorText);
+    line-height: 1.05;
+    margin: 0;
+  }
+
+  &__meta {
+    font-family: var(--fontBody);
+    font-size: 0.95rem;
+    color: var(--colorText);
+    opacity: 0.9;
+    margin: 0;
+  }
+
+  &__media {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    background: #fff;
+    min-height: 520px;
+  }
+
+  &__image {
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  @media (min-width: 1024px) {
+    &__grid {
+      grid-template-columns: 1fr 560px;
+      gap: var(--space-56);
+      align-items: start;
+    }
+
+    &__media {
+      min-height: 720px;
+    }
+  }
+}
+
+/* ********************************************************** */
+/* Studies conferences list page */
+/* ********************************************************** */
+
+.studies_conferences_list {
+  background: var(--colorBackground);
+
+  &__container {
+    padding: var(--space-48) 0 var(--space-72);
+  }
+
+  &__back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 var(--space-16);
+    border-radius: 999px;
+    text-decoration: none;
+    font-family: var(--fontBody);
+    font-size: 0.95rem;
+    color: var(--colorText);
+    border: 1px solid var(--color-border-subtle);
+    background: #fff;
+    margin-bottom: var(--space-24);
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+    margin-bottom: var(--space-32);
+  }
+
+  &__title {
+    font-family: var(--fontHeading);
+    font-size: clamp(2.1rem, 1.4rem + 1.2vw, 3rem);
+    font-weight: 600;
+    color: var(--colorText);
+    line-height: 1.05;
+    margin: 0;
+  }
+
+  &__text {
+    max-width: 560px;
+    font-family: var(--fontBody);
+    font-size: 1rem;
+    color: var(--colorText);
+    opacity: 0.9;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  &__grid {
+    display: grid;
+    gap: var(--space-24);
+  }
+
+  &__card {
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  }
+
+  &__media {
+    position: relative;
+    height: 260px;
+    overflow: hidden;
+  }
+
+  &__image {
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  &__content {
+    padding: var(--space-16);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  &__kicker {
+    font-family: var(--fontBody);
+    font-size: 0.9rem;
+    color: var(--colorText);
+    opacity: 0.75;
+    margin: 0;
+  }
+
+  &__card_title {
+    font-family: var(--fontHeading);
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--colorText);
+    line-height: 1.1;
+    margin: 0;
+  }
+
+  &__meta {
+    font-family: var(--fontBody);
+    font-size: 0.95rem;
+    color: var(--colorText);
+    opacity: 0.9;
+    margin: 0;
+    line-height: 1.35;
+  }
+
+  &__filters {
+    display: flex;
+    gap: var(--space-12);
+    flex-wrap: wrap;
+    margin-top: var(--space-16);
+  }
+
+  &__filter {
+    appearance: none;
+    border: 1px solid var(--color-border-subtle);
+    background: #fff;
+    color: var(--colorText);
+    font-family: var(--fontBody);
+    font-size: 0.95rem;
+    height: 40px;
+    padding: 0 var(--space-16);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  &__filter_active {
+    background: var(--colorPrimary);
+    border-color: var(--colorPrimary);
+    color: #fff;
+  }
+
+  &__title_row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-12);
+    flex-wrap: wrap;
+  }
+
+  &__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    padding: 0 var(--space-12);
+    border-radius: 999px;
+    border: 1px solid var(--color-border-subtle);
+    background: #fff;
+    font-family: var(--fontBody);
+    font-size: 0.9rem;
+    color: var(--colorText);
+    opacity: 0.9;
+  }
+
+  @media (min-width: 1024px) {
+    &__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-24);
+    }
+
+    &__media {
+      height: 220px;
+    }
+  }
+}

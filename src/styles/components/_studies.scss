@@ -330,7 +330,7 @@
 }
 
 .studies_projects__card_title--compact {
-  font-size: var(--fontSizeBody);
+  font-size: var(--fontSizeBodyLg);
   max-width: none;
 }
 
@@ -445,5 +445,140 @@
   .studies_projects__btn {
     min-width: 110px;
     padding: 9px 16px;
+  }
+}
+
+/* ********************************************************** */
+/* Studies internships and volunteering */
+/* ********************************************************** */
+
+.studies_internships {
+  background: var(--colorBackground);
+
+  &__container {
+    padding: var(--space-72) 0;
+  }
+
+  &__header {
+    text-align: center;
+    margin-bottom: var(--space-48);
+  }
+
+  &__title {
+    font-family: var(--fontHeading);
+    font-size: var(--fontSizeH2);
+    font-style: italic;
+    color: var(--colorText);
+    margin-bottom: var(--space-12);
+  }
+
+  &__subtitle {
+    max-width: 760px;
+    margin: 0 auto;
+    font-family: var(--fontBody);
+    color: var(--colorText);
+    line-height: 1.5;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-48);
+    align-items: start;
+    justify-items: center;
+    margin-bottom: var(--space-32);
+  }
+
+  &__card {
+    width: 100%;
+    max-width: 360px;
+    background: var(--color-primary);
+    color: var(--colorBackground);
+    border-radius: 6px;
+    padding: var(--space-32);
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  &__card_title {
+    font-family: var(--fontHeading);
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.25;
+    margin-bottom: var(--space-8);
+    color: var(--colorBackground);
+  }
+
+  &__card_subtitle {
+    font-family: var(--fontBody);
+    font-size: 0.85rem;
+    opacity: 0.9;
+    margin-bottom: var(--space-24);
+  }
+
+  &__card_text {
+    font-family: var(--fontBody);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    opacity: 0.95;
+    margin: 0;
+  }
+
+  &__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  &__page_btn {
+    height: 22px;
+    min-width: 22px;
+    padding: 0 6px;
+    border: 1px solid var(--color-border-subtle);
+    background: #eef2f5;
+    color: var(--colorText);
+    border-radius: 4px;
+    font-family: var(--fontBody);
+    font-size: 0.85rem;
+    cursor: pointer;
+
+    &[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &[aria-current='page'] {
+      background: #dfe6ec;
+      font-weight: 600;
+    }
+  }
+
+  &__page_ellipsis {
+    font-family: var(--fontBody);
+    color: var(--colorText);
+    opacity: 0.8;
+    padding: 0 2px;
+  }
+
+  @media (max-width: 960px) {
+    &__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-24);
+    }
+
+    &__card {
+      max-width: 520px;
+    }
+
+    &__container {
+      padding: var(--space-48) 0;
+    }
+
+    &__header {
+      margin-bottom: var(--space-32);
+    }
   }
 }

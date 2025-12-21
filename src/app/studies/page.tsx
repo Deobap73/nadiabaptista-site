@@ -3,6 +3,7 @@
 import StudiesQuickLinks from '@/components/studies/StudiesQuickLinks';
 import StudiesHero from '../../components/studies/StudiesHero';
 import StudiesProjectsInvestigation from '@/components/studies/StudiesProjectsInvestigation';
+import StudiesInternshipsAndVolunteering from '@/components/studies/StudiesInternshipsAndVolunteering';
 
 export default function StudiesPage() {
   return (
@@ -10,6 +11,7 @@ export default function StudiesPage() {
       <StudiesHero />
       <StudiesQuickLinks />
       <StudiesProjectsInvestigation />
+      <StudiesInternshipsAndVolunteering />
     </main>
   );
 }

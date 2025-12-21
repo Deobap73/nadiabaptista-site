@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { studiesImages } from '@/lib/images';
+import BackButton from '@/components/ui/BackButton';
 
 type AreaContent = {
   title: string;
@@ -51,7 +52,7 @@ export default async function StudiesAreaPage({ params }: PageProps) {
             {area.title}
           </h1>
         </header>
-
+        <BackButton />
         <div className='studies-area__grid'>
           <div className='studies-area__media'>
             <Image
@@ -69,6 +70,7 @@ export default async function StudiesAreaPage({ params }: PageProps) {
             <p className='studies-area__text'>{area.body}</p>
           </div>
         </div>
+        <BackButton />
       </div>
     </section>
   );

@@ -23,18 +23,18 @@ export default async function StudyProjectPage({ params }: PageProps) {
     <main className='site-main'>
       <section className='studies_project_page'>
         <div className='studies_project_page__container site-container site-container--wide'>
-          <BackButton />
-
           <header className='studies_project_page__header'>
             <h1 className='studies_project_page__title'>{project.title}</h1>
             <p className='studies_project_page__type'>{project.typeLabel}</p>
           </header>
 
+          <BackButton />
           <p className='studies_project_page__excerpt'>{project.excerpt}</p>
 
           <p className='studies_project_page__meta'>
             {project.institution}, {project.year}
           </p>
+          <BackButton />
         </div>
       </section>
     </main>

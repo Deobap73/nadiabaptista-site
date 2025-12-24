@@ -1,278 +1,215 @@
+
 # Nadia Baptista Psychology Website
 
-This repository contains the website for **Nadia Baptista**, a psychology student based in Porto. The project is part of a long term plan. It supports her student phase now and will grow into a full clinical website once she starts her practice.
+This repository contains the website for **Nadia Baptista**, a psychology student based in Porto.  
+The project follows a phased approach. It supports her academic phase now and is designed to grow into a full clinical website when she starts professional practice.
 
-The work follows a clear structure. Pages, components and styles are added in small steps to keep the code simple and easy to understand. The design aims to create trust with a calm, academic tone.
-
-# Badges
-
-
-
-  ![Badge](https://img.shields.io/badge/Next.js-white-nextdotjs?style=flat&logo=next.js&logoColor=white&label=Next.js)
-  ![Badge](https://img.shields.io/badge/TypeScript-Strict-blueviolet)
-  ![Badge](https://img.shields.io/badge/React-18-blue)
-  ![Badge](https://img.shields.io/badge/SCSS-BEM-green)
-  ![Badge](https://img.shields.io/badge/Cloudinary-blue?logo=cloudinary)
-  ![Badge](https://img.shields.io/badge/Vercel-white-vercel)
-
-
-
+The focus of the implementation is clarity, trust and calm visual communication. Development is done step by step, keeping the codebase readable, scalable and easy to evolve.
 
 ---
 
-# HomePage Preview
+## Badges
 
-The HomePage is built in sections. Each part is responsive and follows a clean grid.
+![Next.js](https://img.shields.io/badge/Next.js-white-nextdotjs?style=flat&logo=next.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blueviolet)
+![React](https://img.shields.io/badge/React-18-blue)
+![SCSS](https://img.shields.io/badge/SCSS-BEM-green)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-blue?logo=cloudinary)
+![Vercel](https://img.shields.io/badge/Vercel-white-vercel)
+
+---
+
+## HomePage Preview
+
+The HomePage is composed of independent sections. Each section respects the grid system and the spacing tokens defined in the design system.
 
 ### Desktop Hero
 ![Home Hero Desktop](docs/images/HomeHeroDesktop.webp)
 
-This image shows the top section of the desktop layout. It includes the full width blue background layer and the logo placed on the grid container.
+The hero introduces the site with a calm visual tone. It uses a full width background layer and a centered grid container for content.
 
 ### Desktop Quick Links
 ![Quick Links Desktop](docs/images/HomeQuickLinksDesktop.webp)
 
-This preview shows the three main links on desktop. Each card uses a Cloudinary image and follows the spacing tokens defined in `tokens.scss`.
+Quick access cards to the main areas of the site. Each card uses Cloudinary hosted images and shared spacing rules.
 
 ### Desktop Newsletter Banner
 ![Newsletter Banner Desktop](docs/images/HomeNewsletterBannerdesktop.webp)
 
-This section shows the soft wave background and the text centered in a simple one column layout.
+A simple banner section using soft background shapes and centered text.
 
 ### Desktop Footer
 ![Footer Desktop](docs/images/FooterDesktop.webp)
 
-This screenshot shows the footer on desktop with the logo, links and social items aligned on the grid.
+Footer layout with logo, navigation links and supporting information aligned to the grid.
 
 ---
 
-# Mobile Experience
+## Mobile Experience
 
-The mobile version uses a two step flow. First the Landing screen, then the Home screen. The logic uses only in memory state. No persistence is used.
+The mobile experience follows a two step flow.  
+First, a landing screen introduces Nadia and her role. After interaction, the full HomePage is displayed.
+
+All logic is handled with in memory state. No cookies or local storage are used.
 
 ### Mobile Landing
 ![Landing Page Mobile](docs/images/landingPageMobile.webp)
 
-This image shows the first mobile screen. It has the logo, portrait and a short introduction needed for SEO.
+This screen ensures that essential content is visible for SEO while keeping the experience light.
 
 ### Mobile Quick Links
 ![Quick Links Mobile](docs/images/HomeQuickLinksMobile.webp)
 
-This preview shows the link cards adapted to a single column mobile grid.
+Cards adapt to a single column layout with comfortable spacing.
 
 ### Mobile Newsletter Banner
 ![Newsletter Banner Mobile](docs/images/HomeNewsletterBannerMobile.webp)
 
-This image shows the wave background scaled for small screens.
+Background shapes scale correctly for small screens.
 
 ### Mobile Footer
 ![Footer Mobile](docs/images/FooterMobile.webp)
 
-This screenshot shows the footer stacked in a simple vertical layout.
+Footer stacks vertically with clear separation between elements.
 
 ---
 
-# Tech Stack
+## Tech Stack
 
-### Frontend and Backend
-- Next.js App Router
-- React Server Components and Client Components
+### Application
+- Next.js with App Router
+- React Server and Client Components
 - TypeScript
-- SCSS with a three level BEM structure
+- SCSS following BEM with a maximum of three nesting levels
 
-### Deployment
-- Hosted on Vercel
-- DNS managed on Hostinger
+### Hosting
+- Deployed on Vercel
+- Domain and DNS managed via Hostinger
 
-### Media
-- All images stored on Cloudinary
-- No local file storage
+### Media Management
+- All images hosted on Cloudinary
+- No images stored locally or in the database
 
 ### Content
-- Blog uses mock data during the first phase
-- Future plan includes Prisma and PostgreSQL
+- Blog uses mock data in phase one
+- Architecture prepared for Prisma and PostgreSQL
 
 ### Email
-- Contact form uses a Route Handler
-- Email is sent from the server through an external provider
+- Contact form handled via Route Handler
+- Server side email delivery using environment variables
 
 ### SEO
-- Each page uses `generateMetadata`
-- Page slugs for blog posts
-- Future multilingual support
-- Sitemap and robots files planned
+- Metadata handled with generateMetadata
+- Blog slugs implemented
+- Mobile SEO considered from the start
+- Sitemap and robots planned for later phase
 
 ---
 
-# Project Goals
+## Project Roadmap
 
-## Phase 1
-Student website
+### Phase 1 – Student Website
 - Full HomePage
-- Mobile entry flow
+- Mobile landing flow
 - Studies page
 - Portfolio page
 - Blog with mock posts
 - Contact page
-- Cloudinary setup
-- Clean and calm identity
+- Cloudinary integration
+- Defined design system
 
-## Phase 2
-Early pre clinical presence
+### Phase 2 – Pre Clinical Presence
 - Expanded About page
-- Base content for Services
+- Base Services structure
 - FAQ structure
 
-## Phase 3
-Clinical practice
+### Phase 3 – Clinical Practice
 - Activate Services and FAQ
-- Appointment system
-- Full blog with database
+- Appointment booking system
+- Database powered blog
 - Local SEO for Porto
 - Admin panel
 
 ---
 
-# Design System
+## Design System
 
-## Typography
+### Typography
 - Headings use Cormorant Garamond
 - Body text uses Inter
-- Tokens stored in `tokens.scss`
+- Defined in tokens.scss
 
-## Colors
-- Primary blue: #3C5979
+### Colors
+- Primary blue: #6986A7
 - Light blue: #C5D3D6
 - Secondary blue: #8FBAEA
-- White: #FFFFFF
-- Text near black
+- White background
+- Near black text color
 
-## Grid
+### Grid
 - Desktop: 12 column centered grid
 - Mobile: 4 column layout
 
-## Spacing tokens
-`--spaceXs`, `--spaceSm`, `--spaceMd`, `--spaceLg`, `--spaceXl`
+### Spacing
+Consistent spacing tokens defined globally and reused across components.
 
 ---
 
-# Mobile Flow
+## File Structure
 
-The mobile flow has two screens. The first shows the intro content and the second loads the HomePage. All logic uses simple in memory state.
-
-![Landing Page Mobile](docs/images/landingPageMobile.webp)
-
----
-
-# Current File Structure
-
-```
+```text
 src/
   app/
     layout.tsx
     page.tsx
-
     about/
-      page.tsx
-
     studies/
-      page.tsx
-
     portfolio/
-      page.tsx
-
     services/
-      page.tsx
-
     faq/
-      page.tsx
-
     contact/
-      page.tsx
-
     blog/
       page.tsx
-      [slug]/
-        page.tsx
-
+      [slug]/page.tsx
     admin/
-      layout.tsx
-      blog/
-        new/
-          page.tsx
-        [id]/
-          edit/
-            page.tsx
-
     api/
       contact/
-        route.ts
       upload/
-        route.ts
 
   components/
     layout/
-      Header.tsx
-      Footer.tsx
-      MainLayout.tsx
-
     home/
-      HomeEntry.tsx
-      HomeDesktop.tsx
-      HomeMobile.tsx
-      LandingMobile.tsx
-      HomeHero.tsx
-      HomeHowICanHelp.tsx
-      HomeQuickLinks.tsx
-      HomeAboutHighlight.tsx
-      HomeNewsletterBanner.tsx
-
     blog/
-      BlogCard.tsx
-      BlogList.tsx
-
     form/
-      TextInput.tsx
-      Textarea.tsx
-      FileUpload.tsx
 
   styles/
     globals.scss
     tokens.scss
     components/
-      _buttons.scss
-      _layout.scss
-      _forms.scss
-      _home.scss
 
   lib/
     email/
-      sendContactEmail.ts
     cloudinary/
-      cloudinaryServer.ts
     blog/
-      mockPosts.ts
 
   types/
-    blog.ts
-    contact.ts
 ```
 
 ---
 
-# Development Principles
+## Development Principles
 
-- Small and clear steps
-- One commit per feature
-- Simple code
-- No local media
-- Architecture planned for future growth
+- Incremental development
+- One feature per commit
+- Clear file structure
+- No premature complexity
+- Prepared for long term growth
 
 ---
 
-# Scripts
+## Scripts
 
-```
+```bash
 npm install
 npm run dev
 npm run build
@@ -281,9 +218,9 @@ npm start
 
 ---
 
-# Cloudinary Setup
+## Environment Variables
 
-```
+```env
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
@@ -291,41 +228,29 @@ CLOUDINARY_API_SECRET=
 
 ---
 
-# Contact Form
+## Future Work
 
-Location  
-`src/app/api/contact/route.ts`
-
----
-
-# Future Work
-
-- Content for HomePage
-- Studies and Portfolio pages
-- Multilingual version
+- Content enrichment
+- Multilingual support
 - Appointment system
 - Admin panel
-- Activate Services and FAQ
-- SEO for Porto
+- SEO expansion focused on Porto
 
 ---
 
+## About the Creator
 
-
-## 🤝 About the Creator
-
-This project is part of my professional front-end developer portfolio, demonstrating attention to detail, clean code structure and modern UI development techniques.
+This project is part of my professional frontend portfolio.  
+It reflects a strong focus on structure, design systems and long term maintainability.
 
 ---
 
-## 📩 Contact
+## Contact
 
-Email: mailto:contact@deolindobaptista.com
-
-LinkedIn: https://www.linkedin.com/in/deolindobaptista/
-
+Email: contact@deolindobaptista.com  
+LinkedIn: https://www.linkedin.com/in/deolindobaptista/  
 GitHub: https://github.com/Deobap73
 
 ---
 
-### ⭐ If you find this project useful, consider giving it a star!
+If this project is useful, feel free to star the repository.

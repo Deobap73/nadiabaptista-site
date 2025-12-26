@@ -16,13 +16,13 @@ function readCookieValue(name: string, cookieString: string): string | null {
 
 export function getSessionUserFromCookieString(cookieString: string): SessionUser | null {
   try {
-    const raw = readCookieValue('nb_role', cookieString);
-    if (!raw) return null;
+    const session = readCookieValue('nb_session', cookieString);
+    if (!session) return null;
 
-    if (raw === 'admin') return { isAuthenticated: true, role: 'admin' };
-    if (raw === 'user') return { isAuthenticated: true, role: 'user' };
+    const roleRaw = readCookieValue('nb_role', cookieString);
 
-    return null;
+    if (roleRaw === 'admin') return { isAuthenticated: true, role: 'admin' };
+    return { isAuthenticated: true, role: 'user' };
   } catch {
     return null;
   }

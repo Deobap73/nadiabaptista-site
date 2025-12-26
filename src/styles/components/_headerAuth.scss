@@ -1,0 +1,30 @@
+/* src/styles/components/_headerAuth.scss */
+
+/* ********************************************************** */
+/* Header auth controls */
+/* ********************************************************** */
+
+.header_auth {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+
+  &__link {
+    font-family: var(--fontBody);
+    font-size: 0.95rem;
+    color: var(--colorText);
+    text-decoration: none;
+    opacity: 0.9;
+  }
+
+  &__button {
+    border: 0;
+    border-radius: 999px;
+    padding: 10px 14px;
+    background: var(--colorPrimary);
+    color: var(--colorBackground);
+    font-family: var(--fontBody);
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+}

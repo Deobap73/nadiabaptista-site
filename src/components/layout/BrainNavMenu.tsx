@@ -4,9 +4,11 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { usePathname } from 'next/navigation';
 import type { CSSProperties } from 'react';
+import { getSessionUserFromCookieString } from '../../lib/auth/getSessionUser';
+import Toast from '../ui/Toast';
 
 type BrainNavMenuProps = {
   align?: 'left' | 'right';
@@ -15,11 +17,12 @@ type BrainNavMenuProps = {
 type MenuItem = {
   id: string;
   label: string;
-  href: string;
+  href?: string;
   icon: string;
   x: number;
   y: number;
   delayMs: number;
+  action?: 'login' | 'logout';
 };
 
 type CSSVars = CSSProperties & {
@@ -48,7 +51,7 @@ type IconOffset = {
   y?: number;
 };
 
-const MENU_ITEMS: MenuItem[] = [
+const BASE_MENU_ITEMS: MenuItem[] = [
   { id: 'blog', label: 'BLOG', href: '/blog', icon: '/nav/Blog.svg', x: 120, y: 54, delayMs: 40 },
   {
     id: 'about',
@@ -86,15 +89,6 @@ const MENU_ITEMS: MenuItem[] = [
     y: 126,
     delayMs: 240,
   },
-  {
-    id: 'login',
-    label: 'LOGIN',
-    href: '/login',
-    icon: '/nav/LogIn.svg',
-    x: 334,
-    y: 56,
-    delayMs: 290,
-  },
 ];
 
 const ICON_OFFSETS: Record<string, IconOffset> = {
@@ -104,6 +98,7 @@ const ICON_OFFSETS: Record<string, IconOffset> = {
   studies: { x: 0, y: 5 },
   contact: { x: -5, y: 12 },
   login: { x: -2, y: 11 },
+  logout: { x: -2, y: 11 },
 };
 
 function cssDelay(delayMs: number): CSSVars {
@@ -155,15 +150,58 @@ function isActiveRoute(pathname: string, href: string) {
   return false;
 }
 
+function subscribeCookieChanges(onStoreChange: () => void) {
+  const interval = window.setInterval(() => {
+    onStoreChange();
+  }, 500);
+
+  return () => window.clearInterval(interval);
+}
+
+function getCookieSnapshot() {
+  return typeof document === 'undefined' ? '' : document.cookie || '';
+}
+
 export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
   const pathname = usePathname() || '/';
 
   const [isOpen, setIsOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
 
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+
   const panelId = useId();
   const rootRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
+
+  const cookieString = useSyncExternalStore(subscribeCookieChanges, getCookieSnapshot, () => '');
+  const isAuthenticated = useMemo(() => {
+    const user = getSessionUserFromCookieString(cookieString);
+    return Boolean(user?.isAuthenticated);
+  }, [cookieString]);
+
+  const authItem: MenuItem = isAuthenticated
+    ? {
+        id: 'logout',
+        label: 'LOGOUT',
+        icon: '/nav/LogOut.svg',
+        x: 334,
+        y: 56,
+        delayMs: 290,
+        action: 'logout',
+      }
+    : {
+        id: 'login',
+        label: 'LOGIN',
+        icon: '/nav/LogIn.svg',
+        x: 334,
+        y: 56,
+        delayMs: 290,
+        action: 'login',
+      };
+
+  const menuItems: MenuItem[] = [...BASE_MENU_ITEMS, authItem];
 
   function closeMenu({ focusButton }: { focusButton: boolean }) {
     setIsOpen(false);
@@ -172,6 +210,25 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
 
   function toggleMenu() {
     setIsOpen((prev) => !prev);
+  }
+
+  function showToast(message: string) {
+    setToastMessage(message);
+    setToastOpen(true);
+  }
+
+  async function handleLogout() {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      showToast('Sessão terminada.');
+    } finally {
+      closeMenu({ focusButton: false });
+    }
+  }
+
+  function handleLogin() {
+    closeMenu({ focusButton: false });
+    window.dispatchEvent(new CustomEvent('nb_open_login_modal'));
   }
 
   useEffect(() => {
@@ -232,7 +289,7 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
     closeMenu({ focusButton: false });
   }
 
-  const geometry = buildGeometry(MENU_ITEMS);
+  const geometry = buildGeometry(menuItems);
 
   if (!isDesktop) {
     return (
@@ -255,13 +312,46 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
               data-open='true'>
               <nav className='brain_menu__mobile_nav open'>
                 <ul className='brain_menu__mobile_list'>
-                  {MENU_ITEMS.map((item) => {
-                    const active = isActiveRoute(pathname, item.href);
+                  {menuItems.map((item) => {
+                    if (item.action === 'login') {
+                      return (
+                        <li key={item.id} className='brain_menu__mobile_item'>
+                          <button
+                            type='button'
+                            className='brain_menu__mobile_link'
+                            onClick={handleLogin}
+                            aria-label={item.label}>
+                            <span className='brain_menu__mobile_icon'>
+                              <Image src={item.icon} alt='' width={24} height={24} />
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    }
+
+                    if (item.action === 'logout') {
+                      return (
+                        <li key={item.id} className='brain_menu__mobile_item'>
+                          <button
+                            type='button'
+                            className='brain_menu__mobile_link'
+                            onClick={() => void handleLogout()}
+                            aria-label={item.label}>
+                            <span className='brain_menu__mobile_icon'>
+                              <Image src={item.icon} alt='' width={24} height={24} />
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    }
+
+                    const href = item.href || '/';
+                    const active = isActiveRoute(pathname, href);
 
                     return (
                       <li key={item.id} className='brain_menu__mobile_item'>
                         <Link
-                          href={item.href}
+                          href={href}
                           onClick={() => setIsOpen(false)}
                           className={`brain_menu__mobile_link${
                             active ? ' brain_menu__mobile_link--active' : ''
@@ -279,65 +369,95 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
             </aside>
           </>
         ) : null}
+
+        <Toast isOpen={toastOpen} message={toastMessage} onClose={() => setToastOpen(false)} />
       </>
     );
   }
 
   return (
-    <div
-      ref={rootRef}
-      className={`brain_menu brain_menu--${align}`}
-      data-open={isOpen ? 'true' : 'false'}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}>
-      <button
-        ref={buttonRef}
-        type='button'
-        className='brain_menu__button'
-        onClick={toggleMenu}
-        aria-expanded={isOpen}
-        aria-controls={panelId}
-        aria-label='Abrir menu'>
-        <span className='brain_menu__brain' aria-hidden='true'>
-          <Image src='/nav/Brain.svg' alt='' width={44} height={44} />
-        </span>
-      </button>
+    <>
+      <div
+        ref={rootRef}
+        className={`brain_menu brain_menu--${align}`}
+        data-open={isOpen ? 'true' : 'false'}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}>
+        <button
+          ref={buttonRef}
+          type='button'
+          className='brain_menu__button'
+          onClick={toggleMenu}
+          aria-expanded={isOpen}
+          aria-controls={panelId}
+          aria-label='Abrir menu'>
+          <span className='brain_menu__brain' aria-hidden='true'>
+            <Image src='/nav/Brain.svg' alt='' width={44} height={44} />
+          </span>
+        </button>
 
-      <div id={panelId} className='brain_menu__popover' role='dialog' aria-label='Menu'>
-        <div className='brain_menu__radial' aria-hidden='true'>
-          <svg
-            className='brain_menu__svg'
-            viewBox={`0 0 ${geometry.width} ${geometry.height}`}
-            role='presentation'>
-            {geometry.nodes.map((n) => (
-              <line
-                key={`l_${n.id}`}
-                x1={n.x1}
-                y1={n.y1}
-                x2={n.x2}
-                y2={n.y2}
-                className='brain_menu__line'
-                style={cssDelay(n.delayMs)}
-              />
-            ))}
-          </svg>
+        <div id={panelId} className='brain_menu__popover' role='dialog' aria-label='Menu'>
+          <div className='brain_menu__radial' aria-hidden='true'>
+            <svg
+              className='brain_menu__svg'
+              viewBox={`0 0 ${geometry.width} ${geometry.height}`}
+              role='presentation'>
+              {geometry.nodes.map((n) => (
+                <line
+                  key={`l_${n.id}`}
+                  x1={n.x1}
+                  y1={n.y1}
+                  x2={n.x2}
+                  y2={n.y2}
+                  className='brain_menu__line'
+                  style={cssDelay(n.delayMs)}
+                />
+              ))}
+            </svg>
 
-          {geometry.nodes.map((n) => (
-            <Link
-              key={n.id}
-              href={n.href}
-              className='brain_menu__node'
-              style={cssNodePosition(n.x, n.y, n.delayMs, n.id)}
-              tabIndex={isOpen ? 0 : -1}
-              onClick={handleNodeClick}>
-              <span className='brain_menu__node_icon' aria-hidden='true'>
-                <Image src={n.icon} alt='' width={22} height={22} />
-              </span>
-              <span className='brain_menu__node_label'>{n.label}</span>
-            </Link>
-          ))}
+            {geometry.nodes.map((n) => {
+              if (n.action === 'login' || n.action === 'logout') {
+                return (
+                  <button
+                    key={n.id}
+                    type='button'
+                    className='brain_menu__node'
+                    style={cssNodePosition(n.x, n.y, n.delayMs, n.id)}
+                    tabIndex={isOpen ? 0 : -1}
+                    onClick={() => {
+                      if (n.action === 'login') handleLogin();
+                      if (n.action === 'logout') void handleLogout();
+                    }}>
+                    <span className='brain_menu__node_icon' aria-hidden='true'>
+                      <Image src={n.icon} alt='' width={22} height={22} />
+                    </span>
+                    <span className='brain_menu__node_label'>{n.label}</span>
+                  </button>
+                );
+              }
+
+              const href = n.href || '/';
+
+              return (
+                <Link
+                  key={n.id}
+                  href={href}
+                  className='brain_menu__node'
+                  style={cssNodePosition(n.x, n.y, n.delayMs, n.id)}
+                  tabIndex={isOpen ? 0 : -1}
+                  onClick={handleNodeClick}>
+                  <span className='brain_menu__node_icon' aria-hidden='true'>
+                    <Image src={n.icon} alt='' width={22} height={22} />
+                  </span>
+                  <span className='brain_menu__node_label'>{n.label}</span>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
+
+      <Toast isOpen={toastOpen} message={toastMessage} onClose={() => setToastOpen(false)} />
+    </>
   );
 }

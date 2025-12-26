@@ -1,19 +1,23 @@
 /* src/styles/globals.scss */
 
 @use './tokens';
-@use './components/layout';
-@use './components/buttons';
-@use './components/footer';
-@use './components/home';
 @use './components/about';
-@use './components/pages';
-@use './components/blog';
-@use './components/contact';
-@use './components/portfolio';
-@use './components/studies';
-@use './components/quick-links';
+@use './components/auth';
 @use './components/back-button';
+@use './components/blog';
 @use './components/BrainNavMenu';
+@use './components/buttons';
+@use './components/contact';
+@use './components/footer';
+@use './components/headerAuth';
+@use './components/home';
+@use './components/layout';
+@use './components/pages';
+@use './components/portfolio';
+@use './components/quick-links';
+@use './components/studies';
+@use './components/toast';
+
 /* Reset simples */
 *,
 *::before,

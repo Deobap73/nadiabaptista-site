@@ -1,6 +1,6 @@
 /* src/styles/components/_BrainNavMenu.scss */
 /* ********************************************************** */
-/* Brain menu - DESKTOP (MANTIDO IGUAL)                       */
+/* Brain menu                                                 */
 /* ********************************************************** */
 
 .brain_menu {
@@ -86,6 +86,11 @@
     pointer-events: auto;
     transition: opacity 200ms ease, transform 200ms ease;
     transition-delay: var(--delay);
+
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
   }
 
   &__node_icon {
@@ -162,22 +167,19 @@
 }
 
 /* ********************************************************** */
-/* Ajuste 1024 a 1299 para manter distância da lateral         */
+/* Ajuste 1024 a 1299                                         */
 /* ********************************************************** */
 
 @media (min-width: 1024px) and (max-width: 1299px) {
   :root {
-    /* cresce quando o ecrã desce de 1300 para 1024 */
     --menu-shift: clamp(0px, calc((1300px - 100vw) * 0.35), 120px);
   }
 
   .brain_menu {
-    /* mantém o popover como estava, sem shift extra */
     &__popover {
       transform: translate(-230px, -70px);
     }
 
-    /* move o conjunto todo, incluindo o Brain.svg */
     &--right {
       transform: translateX(calc(-1 * var(--menu-shift)));
     }
@@ -189,7 +191,7 @@
 }
 
 /* ********************************************************** */
-/* Mobile sidebar menu                                         */
+/* Mobile sidebar menu                                        */
 /* ********************************************************** */
 
 .brain_menu__mobile_toggle {
@@ -215,7 +217,7 @@
 .brain_menu__mobile_overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  /* background: rgba(0, 0, 0, 0.4); */
   z-index: 90;
   opacity: 0;
   pointer-events: none;
@@ -260,11 +262,20 @@
 .brain_menu__mobile_nav {
   opacity: 0;
   transition: opacity 0.3s ease;
-  background: #ffffff;
+
   height: 100%;
 
   &.open {
     opacity: 1;
+  }
+
+  button.brain_menu__mobile_link {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
   }
 }
 

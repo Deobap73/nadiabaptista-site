@@ -2,10 +2,11 @@
 
 'use client';
 
-import { useMemo, useSyncExternalStore } from 'react';
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { usePathname } from 'next/navigation';
 import BrainNavMenu from './BrainNavMenu';
 import AdminShortcut from './AdminShortcut';
+import LoginModal from '../auth/LoginModal';
 import { getSessionUserFromCookieString } from '../../lib/auth/getSessionUser';
 
 function getBrainMenuAlign(pathname: string): 'left' | 'right' {
@@ -44,6 +45,23 @@ export default function HeaderClientSlots() {
     return Boolean(user?.isAuthenticated && user?.role === 'admin');
   }, [cookieString]);
 
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [loginModalKey, setLoginModalKey] = useState(0);
+
+  useEffect(() => {
+    function openLogin() {
+      setLoginModalKey((v) => v + 1);
+      setIsLoginOpen(true);
+    }
+
+    window.addEventListener('nb_open_login_modal', openLogin as EventListener);
+    return () => window.removeEventListener('nb_open_login_modal', openLogin as EventListener);
+  }, []);
+
+  function handleLoggedIn() {
+    setIsLoginOpen(false);
+  }
+
   return (
     <>
       <div className='site-header__slot site-header__slot--left'>
@@ -55,6 +73,13 @@ export default function HeaderClientSlots() {
         {align === 'right' ? <BrainNavMenu align='right' /> : null}
         {isAdmin && opposite === 'right' ? <AdminShortcut /> : null}
       </div>
+
+      <LoginModal
+        key={loginModalKey}
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+        onLoggedIn={handleLoggedIn}
+      />
     </>
   );
 }

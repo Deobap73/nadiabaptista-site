@@ -1,14 +1,13 @@
 // src/components/layout/BrainNavMenu.tsx
-
 'use client';
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import type { CSSProperties } from 'react';
-import { getSessionUserFromCookieString } from '../../lib/auth/getSessionUser';
 import Toast from '../ui/Toast';
+import { useMe } from '@/lib/auth/useMe';
 
 type BrainNavMenuProps = {
   align?: 'left' | 'right';
@@ -150,18 +149,6 @@ function isActiveRoute(pathname: string, href: string) {
   return false;
 }
 
-function subscribeCookieChanges(onStoreChange: () => void) {
-  const interval = window.setInterval(() => {
-    onStoreChange();
-  }, 500);
-
-  return () => window.clearInterval(interval);
-}
-
-function getCookieSnapshot() {
-  return typeof document === 'undefined' ? '' : document.cookie || '';
-}
-
 export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
   const pathname = usePathname() || '/';
 
@@ -175,11 +162,8 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
-  const cookieString = useSyncExternalStore(subscribeCookieChanges, getCookieSnapshot, () => '');
-  const isAuthenticated = useMemo(() => {
-    const user = getSessionUserFromCookieString(cookieString);
-    return Boolean(user?.isAuthenticated);
-  }, [cookieString]);
+  const { me } = useMe();
+  const isAuthenticated = me.isAuthenticated;
 
   const authItem: MenuItem = isAuthenticated
     ? {
@@ -220,6 +204,7 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
   async function handleLogout() {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
+      window.dispatchEvent(new CustomEvent('nb_auth_changed'));
       showToast('Sessão terminada.');
     } finally {
       closeMenu({ focusButton: false });
@@ -296,7 +281,7 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
       <>
         <button
           type='button'
-          className={`brain_menu__mobile_toggle brain_menu__mobile_toggle--${align}`}
+          className={`brain_menu__mobile_toggle brain_menu__mobile_toggle__${align}`}
           onClick={toggleMenu}
           aria-expanded={isOpen}
           aria-label='Abrir menu'>
@@ -308,7 +293,7 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
             <div className='brain_menu__mobile_overlay open' onClick={() => setIsOpen(false)} />
 
             <aside
-              className={`brain_menu__mobile_drawer brain_menu__mobile_drawer--${align}`}
+              className={`brain_menu__mobile_drawer brain_menu__mobile_drawer__${align}`}
               data-open='true'>
               <nav className='brain_menu__mobile_nav open'>
                 <ul className='brain_menu__mobile_list'>
@@ -354,7 +339,7 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
                           href={href}
                           onClick={() => setIsOpen(false)}
                           className={`brain_menu__mobile_link${
-                            active ? ' brain_menu__mobile_link--active' : ''
+                            active ? ' brain_menu__mobile_link__active' : ''
                           }`}
                           aria-label={item.label}>
                           <span className='brain_menu__mobile_icon'>
@@ -379,7 +364,7 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
     <>
       <div
         ref={rootRef}
-        className={`brain_menu brain_menu--${align}`}
+        className={`brain_menu brain_menu__${align}`}
         data-open={isOpen ? 'true' : 'false'}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}>

@@ -99,13 +99,14 @@
 .admin_shortcut {
   width: 22px;
   height: 22px;
-  border: 0;
+  border: 1px solid #37516e10;
+  border-radius: 50%;
   background: transparent;
-  opacity: 0;
+  opacity: 1;
   cursor: pointer;
-  @media (max-width: 1023px) {
+  /* @media (max-width: 1023px) {
     display: none;
-  }
+  } */
 }
 
 /* ---------------------------------------------------------- */

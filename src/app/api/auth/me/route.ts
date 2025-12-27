@@ -1,23 +1,16 @@
 // src/app/api/auth/me/route.ts
-
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { getSessionUserFromCookieString } from '@/lib/auth/getSessionUser';
+import { requireAdmin } from '@/lib/auth/requireAdmin';
 
 export async function GET() {
   try {
-    const cookieStore = await cookies();
-    const cookieString = cookieStore
-      .getAll()
-      .map((c) => `${c.name}=${encodeURIComponent(c.value)}`)
-      .join('; ');
+    const session = await requireAdmin();
 
-    const user = getSessionUserFromCookieString(cookieString);
+    if (!session) {
+      return NextResponse.json({ isAuthenticated: false, role: null }, { status: 200 });
+    }
 
-    return NextResponse.json({
-      isAuthenticated: user?.isAuthenticated ?? false,
-      role: user?.role ?? null,
-    });
+    return NextResponse.json({ isAuthenticated: true, role: 'admin' as const }, { status: 200 });
   } catch {
     return NextResponse.json({ isAuthenticated: false, role: null }, { status: 200 });
   }

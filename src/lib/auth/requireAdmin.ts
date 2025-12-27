@@ -1,6 +1,6 @@
 // src/lib/auth/requireAdmin.ts
-
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { unsealData } from 'iron-session';
 
 type SessionPayload = {
@@ -18,9 +18,7 @@ export async function requireAdmin() {
   if (!secret) return null;
 
   try {
-    const payload = await unsealData<SessionPayload>(token, {
-      password: secret,
-    });
+    const payload = await unsealData<SessionPayload>(token, { password: secret });
 
     if (!payload.userId || payload.role !== 'ADMIN') return null;
 
@@ -28,4 +26,10 @@ export async function requireAdmin() {
   } catch {
     return null;
   }
+}
+
+export async function requireAdminOrRedirect() {
+  const session = await requireAdmin();
+  if (!session) redirect('/');
+  return session;
 }

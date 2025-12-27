@@ -1,23 +1,53 @@
 // src/components/layout/AdminShortcut.tsx
-
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+
+type MeResponse = {
+  isAuthenticated: boolean;
+  role: 'admin' | null;
+};
 
 export default function AdminShortcut() {
   const router = useRouter();
+  const [canAccess, setCanAccess] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function load() {
+      try {
+        const res = await fetch('/api/auth/me', { method: 'GET' });
+        const data = (await res.json()) as MeResponse;
+
+        if (!isMounted) return;
+
+        setCanAccess(Boolean(data.isAuthenticated && data.role === 'admin'));
+      } catch {
+        if (!isMounted) return;
+        setCanAccess(false);
+      }
+    }
+
+    load();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   function handleClick() {
     router.push('/admin');
   }
+
+  if (!canAccess) return null;
 
   return (
     <button
       type='button'
       className='admin_shortcut'
       onClick={handleClick}
-      aria-hidden='true'
-      tabIndex={-1}
-    />
+      aria-label='Open admin'></button>
   );
 }

@@ -1,5 +1,4 @@
 // src/components/auth/LoginModal.tsx
-
 'use client';
 
 import Image from 'next/image';
@@ -50,6 +49,7 @@ export default function LoginModal({ isOpen, onClose, onLoggedIn }: Props) {
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
@@ -64,6 +64,7 @@ export default function LoginModal({ isOpen, onClose, onLoggedIn }: Props) {
       const role = data.role ?? 'user';
 
       onLoggedIn(role);
+      window.dispatchEvent(new CustomEvent('nb_auth_changed'));
       onClose();
 
       setStatus('idle');
@@ -158,16 +159,11 @@ export default function LoginModal({ isOpen, onClose, onLoggedIn }: Props) {
               {errorMessage ? <p className='auth_modal__error'>{errorMessage}</p> : null}
 
               <div className='auth_modal__actions'>
-                <button
-                  className='auth_modal__go'
-                  type='button'
-                  onClick={handleSubmit}
-                  disabled={!canSubmit}
-                  aria-label='Entrar'>
+                <div className='auth_modal__go'>
                   <span className='auth_modal__go_icon' aria-hidden='true'>
                     ›
                   </span>
-                </button>
+                </div>
 
                 <button
                   className='auth_modal__submit'
@@ -176,6 +172,8 @@ export default function LoginModal({ isOpen, onClose, onLoggedIn }: Props) {
                   disabled={!canSubmit}>
                   {status === 'loading' ? 'A entrar...' : 'LOG IN'}
                 </button>
+
+                <div className='auth_modal__circle'></div>
               </div>
 
               <p className='auth_modal__footer'>

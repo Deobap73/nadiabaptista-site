@@ -1,0 +1,132 @@
+/* src/styles/components/_admin.scss */
+
+/* ********************************************************** */
+/* Admin layout */
+/* ********************************************************** */
+
+.admin_layout {
+  background: var(--colorBackground);
+}
+
+/* ********************************************************** */
+/* Admin shell */
+/* ********************************************************** */
+
+.admin_shell {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: calc(100vh - 0px);
+
+  &__nav {
+    border-right: 1px solid var(--color-border-subtle);
+    background: var(--colorBackground);
+  }
+
+  &__nav_inner {
+    padding: var(--space-24);
+    position: sticky;
+    top: 0;
+  }
+
+  &__nav_title {
+    font-family: var(--fontHeading);
+    font-size: 1.4rem;
+    font-style: italic;
+    color: var(--colorText);
+    margin-bottom: var(--space-16);
+  }
+
+  &__nav_links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  &__nav_link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-family: var(--fontBody);
+    font-size: 0.95rem;
+    color: var(--colorText);
+    border: 1px solid transparent;
+
+    &:hover {
+      border-color: var(--color-border-subtle);
+      background: rgba(197, 211, 214, 0.35);
+    }
+  }
+
+  &__content {
+    padding: var(--space-32);
+  }
+}
+
+/* ********************************************************** */
+/* Admin pages */
+/* ********************************************************** */
+
+.admin_page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+
+  &__title {
+    font-family: var(--fontHeading);
+    font-size: clamp(2rem, 1.4rem + 1.2vw, 2.6rem);
+    font-weight: 500;
+    font-style: italic;
+    color: var(--colorText);
+    line-height: 1.05;
+  }
+
+  &__text {
+    font-family: var(--fontBody);
+    color: var(--colorText);
+    opacity: 0.9;
+    max-width: 720px;
+  }
+
+  &__cta {
+    padding-top: var(--space-8);
+  }
+
+  &__cta_link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-family: var(--fontBody);
+    color: var(--colorBackground);
+    background: var(--colorPrimary);
+  }
+}
+
+/* ********************************************************** */
+/* Responsive */
+/* ********************************************************** */
+
+@media (max-width: 900px) {
+  .admin_shell {
+    grid-template-columns: 1fr;
+
+    &__nav {
+      border-right: 0;
+      border-bottom: 1px solid var(--color-border-subtle);
+    }
+
+    &__nav_inner {
+      position: static;
+    }
+
+    &__content {
+      padding: var(--space-24);
+    }
+  }
+}

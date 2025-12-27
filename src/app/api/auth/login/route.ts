@@ -1,10 +1,15 @@
 // src/app/api/auth/login/route.ts
-
 import { NextResponse } from 'next/server';
+import { sealData } from 'iron-session';
 
 type LoginBody = {
   email?: string;
   password?: string;
+};
+
+type SessionPayload = {
+  userId: string;
+  role: 'ADMIN' | 'CLIENT';
 };
 
 export async function POST(req: Request) {
@@ -27,20 +32,23 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false }, { status: 401 });
     }
 
-    const sessionValue = crypto.randomUUID();
+    const secret = process.env.SESSION_SECRET;
+    if (!secret) {
+      return NextResponse.json({ ok: false }, { status: 500 });
+    }
+
+    const payload: SessionPayload = {
+      userId: 'admin',
+      role: 'ADMIN',
+    };
+
+    const token = await sealData(payload, { password: secret });
+
     const res = NextResponse.json({ ok: true, role: 'admin' as const });
 
-    res.cookies.set('nb_session', sessionValue, {
+    res.cookies.set('nb_session', token, {
       path: '/',
-      httpOnly: false,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24 * 7,
-    });
-
-    res.cookies.set('nb_role', 'admin', {
-      path: '/',
-      httpOnly: false,
+      httpOnly: true,
       sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24 * 7,

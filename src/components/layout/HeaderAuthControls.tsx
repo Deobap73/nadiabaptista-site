@@ -34,11 +34,19 @@ export default function HeaderAuthControls() {
 
   useEffect(() => {
     void loadMe();
+
+    function onAuthChanged() {
+      void loadMe();
+    }
+
+    window.addEventListener('nb_auth_changed', onAuthChanged as EventListener);
+    return () => window.removeEventListener('nb_auth_changed', onAuthChanged as EventListener);
   }, []);
 
   async function handleLogout() {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
+      window.dispatchEvent(new CustomEvent('nb_auth_changed'));
     } finally {
       setMe({ isAuthenticated: false, role: null });
       router.refresh();
@@ -47,6 +55,7 @@ export default function HeaderAuthControls() {
 
   function handleLoggedIn(role: 'admin' | 'user') {
     setMe({ isAuthenticated: true, role });
+    window.dispatchEvent(new CustomEvent('nb_auth_changed'));
     router.refresh();
   }
 

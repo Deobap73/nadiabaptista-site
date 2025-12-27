@@ -1,0 +1,70 @@
+/* src/styles/components/_forms.scss */
+
+/* ********************************************************** */
+/* File upload */
+/* ********************************************************** */
+
+.file_upload {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+
+  &__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-12);
+  }
+
+  &__label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--colorText);
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+  }
+
+  &__remove {
+    border: 1px solid var(--color-border-subtle);
+    background: var(--colorBackground);
+    color: var(--colorText);
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+  }
+
+  &__hint {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+  }
+
+  &__input {
+    width: 100%;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 12px;
+    padding: 12px;
+    background: var(--colorBackground);
+    color: var(--colorText);
+  }
+
+  &__status {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+  }
+
+  &__error {
+    font-size: 0.9rem;
+    color: #b42318;
+  }
+
+  &__preview {
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--colorBackground);
+  }
+}

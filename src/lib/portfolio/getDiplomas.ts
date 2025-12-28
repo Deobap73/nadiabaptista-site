@@ -1,35 +1,28 @@
 // src/lib/portfolio/getDiplomas.ts
 
-import { prisma } from '@/lib/prisma';
-
 export type PublicDiploma = {
   id: string;
   title: string;
-  description: string;
+  description: string | null;
   imageUrl: string | null;
-  sortOrder: number;
 };
 
 export async function getDiplomas(): Promise<PublicDiploma[]> {
   try {
-    const rows = await prisma.diploma.findMany({
-      orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }],
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        imageUrl: true,
-        sortOrder: true,
-      },
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/diplomas`, {
+      cache: 'no-store',
     });
 
-    return rows.map((d) => ({
-      id: d.id,
-      title: d.title,
-      description: d.description ?? '',
-      imageUrl: d.imageUrl ?? null,
-      sortOrder: d.sortOrder,
-    }));
+    const data = (await res.json()) as {
+      ok: boolean;
+      items?: PublicDiploma[];
+    };
+
+    if (!res.ok || !data.ok || !data.items) {
+      return [];
+    }
+
+    return data.items;
   } catch {
     return [];
   }

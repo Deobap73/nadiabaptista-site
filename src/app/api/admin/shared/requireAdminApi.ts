@@ -2,8 +2,8 @@
 
 import { cookies } from 'next/headers';
 
-export async function isAdminRequest() {
-  const cookieStore = await cookies();
-  const role = cookieStore.get('nb_role')?.value || '';
+export async function isAdminRequest(): Promise<boolean> {
+  const store = await cookies();
+  const role = store.get('nb_role')?.value ?? '';
   return role === 'admin';
 }

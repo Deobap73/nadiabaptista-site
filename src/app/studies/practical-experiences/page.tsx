@@ -1,11 +1,11 @@
-// src/app/studies/projects/page.tsx
+// src/app/studies/practical-experiences/page.tsx
 
 import Link from 'next/link';
 import BackButton from '@/components/ui/BackButton';
-import { getAcademicProjects } from '@/lib/studies/getAcademicProjects';
+import { getPracticalExperiences } from '@/lib/studies/getPracticalExperiences';
 
-export default async function StudiesProjectsPage() {
-  const items = await getAcademicProjects();
+export default async function PracticalExperiencesPage() {
+  const items = await getPracticalExperiences();
 
   return (
     <main className='site-main'>
@@ -14,9 +14,9 @@ export default async function StudiesProjectsPage() {
           <BackButton />
 
           <header className='studies_projects_page__header'>
-            <h1 className='studies_projects_page__title'>Projetos</h1>
+            <h1 className='studies_projects_page__title'>Experiência prática</h1>
             <p className='studies_projects_page__subtitle'>
-              Lista completa de projetos de investigação e trabalhos académicos.
+              Estágios, voluntariado e experiências aplicadas em contexto real.
             </p>
           </header>
 
@@ -27,11 +27,13 @@ export default async function StudiesProjectsPage() {
               {items.map((p) => (
                 <Link
                   key={p.id}
-                  href={`/studies/projects/${p.slug}`}
+                  href={`/studies/practical-experiences/${p.slug}`}
                   className='studies_projects_page__card'>
                   <div className='studies_projects_page__card_inner'>
                     <p className='studies_projects_page__card_title'>{p.title}</p>
-                    <p className='studies_projects_page__card_meta'>sortOrder: {p.sortOrder}</p>
+                    <p className='studies_projects_page__card_meta'>
+                      {p.summary ? p.summary : 'Sem subtitle por agora.'}
+                    </p>
                   </div>
                 </Link>
               ))}

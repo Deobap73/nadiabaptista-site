@@ -1,52 +1,49 @@
 // src/app/studies/conferences/[slug]/page.tsx
+
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import {
-  STUDIES_CONFERENCES,
-  getStudiesConferenceBySlug,
-} from '@/lib/studies/conferencesAndSeminars';
+import { getConferenceBySlug, getConferences } from '@/lib/studies/getConferences';
 
 type PageProps = {
-  params: Promise<{
-    slug: string;
-  }>;
+  params: Promise<{ slug: string }>;
 };
 
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  return STUDIES_CONFERENCES.map((item) => ({
-    slug: item.slug,
-  }));
+  const items = await getConferences();
+  return items.map((it) => ({ slug: it.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const item = getStudiesConferenceBySlug(slug);
+  const item = await getConferenceBySlug(slug);
 
   if (!item) {
     return {
-      title: 'Conferencias e Seminarios',
-      description: 'Conferencias e seminarios na area de psicologia.',
+      title: 'Conferências e Seminários',
+      description: 'Conferências e seminários na área de psicologia.',
     };
   }
 
+  const metaBits = [
+    item.dateLabel ? item.dateLabel : '',
+    item.location ? item.location : '',
+  ].filter(Boolean);
+
   return {
-    title: `${item.label} | Conferencias e Seminarios`,
-    description: `${item.subtitle}. ${item.dateText}. ${item.cityText}.`,
+    title: `${item.title} | Conferências e Seminários`,
+    description: metaBits.join('. '),
   };
 }
 
 export default async function StudiesConferencePage({ params }: PageProps) {
   const { slug } = await params;
+  const item = await getConferenceBySlug(slug);
 
-  const item = getStudiesConferenceBySlug(slug);
-
-  if (!item) {
-    notFound();
-  }
+  if (!item) notFound();
 
   return (
     <section className='studies_conference_page'>
@@ -57,27 +54,31 @@ export default async function StudiesConferencePage({ params }: PageProps) {
 
         <div className='studies_conference_page__grid'>
           <header className='studies_conference_page__header'>
-            <p className='studies_conference_page__kicker'>{item.subtitle}</p>
+            <p className='studies_conference_page__kicker'>
+              {item.dateLabel ? item.dateLabel : 'Evento'}
+            </p>
 
-            <h1 className='studies_conference_page__title'>{item.label}</h1>
+            <h1 className='studies_conference_page__title'>{item.title}</h1>
 
             <p className='studies_conference_page__meta'>
-              {item.dateText}
-              <br />
-              {item.cityText}
+              {item.location ? item.location : 'Sem localização por agora.'}
             </p>
+
+            {item.content ? <p className='studies_conference_page__meta'>{item.content}</p> : null}
           </header>
 
-          <div className='studies_conference_page__media'>
-            <Image
-              src={item.imageSrc}
-              alt={item.imageAlt}
-              fill
-              sizes='(min-width: 1024px) 560px, 92vw'
-              className='studies_conference_page__image'
-              priority
-            />
-          </div>
+          {item.imageUrl ? (
+            <div className='studies_conference_page__media'>
+              <Image
+                src={item.imageUrl}
+                alt=''
+                fill
+                sizes='(min-width: 1024px) 560px, 92vw'
+                className='studies_conference_page__image'
+                priority
+              />
+            </div>
+          ) : null}
         </div>
       </div>
     </section>

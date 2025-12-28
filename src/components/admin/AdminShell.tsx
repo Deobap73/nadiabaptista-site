@@ -9,10 +9,11 @@ type AdminNavItem = {
 
 const NAV_ITEMS: AdminNavItem[] = [
   { label: 'Blog', href: '/admin/blog' },
-  { label: 'Studies, Projects', href: '/admin/studies-projects' },
-  { label: 'Conferences', href: '/admin/conferences' },
   { label: 'Diplomas', href: '/admin/diplomas' },
   { label: 'Achievements', href: '/admin/achievements' },
+  { label: 'Academic Projects', href: '/admin/academic-projects' },
+  { label: 'Practical Experience', href: '/admin/practical-experiences' },
+  { label: 'Conferences, Seminars', href: '/admin/conferences' },
   { label: 'Messages', href: '/admin/messages' },
 ];
 

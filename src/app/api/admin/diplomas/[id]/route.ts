@@ -1,0 +1,68 @@
+// src/app/api/admin/diplomas/[id]/route.ts
+
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { isAdminRequest } from '../../shared/requireAdminApi';
+
+type Params = { params: { id: string } };
+
+export async function GET(_: Request, { params }: Params) {
+  if (!(await isAdminRequest())) {
+    return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const item = await prisma.diploma.findUnique({
+    where: { id: params.id },
+  });
+
+  if (!item) {
+    return NextResponse.json({ ok: false, error: 'Not found.' }, { status: 404 });
+  }
+
+  return NextResponse.json({ ok: true, item });
+}
+
+export async function PUT(req: Request, { params }: Params) {
+  if (!(await isAdminRequest())) {
+    return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const body = (await req.json()) as {
+    title?: string;
+    issuer?: string;
+    dateLabel?: string;
+    description?: string;
+    sortOrder?: number;
+    imageUrl?: string | null;
+    imagePublicId?: string | null;
+  };
+
+  const title = (body.title || '').trim();
+  if (!title) {
+    return NextResponse.json({ ok: false, error: 'Title is required.' }, { status: 400 });
+  }
+
+  await prisma.diploma.update({
+    where: { id: params.id },
+    data: {
+      title,
+      issuer: body.issuer?.trim() || null,
+      dateLabel: body.dateLabel?.trim() || null,
+      description: body.description?.trim() || null,
+      sortOrder: Number.isFinite(body.sortOrder as number) ? (body.sortOrder as number) : 0,
+      imageUrl: body.imageUrl || null,
+      imagePublicId: body.imagePublicId || null,
+    },
+  });
+
+  return NextResponse.json({ ok: true });
+}
+
+export async function DELETE(_: Request, { params }: Params) {
+  if (!(await isAdminRequest())) {
+    return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+  }
+
+  await prisma.diploma.delete({ where: { id: params.id } });
+  return NextResponse.json({ ok: true });
+}

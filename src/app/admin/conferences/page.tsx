@@ -1,10 +1,14 @@
 // src/app/admin/conferences/page.tsx
 
+import AdminEntityList from '@/components/admin/content/AdminEntityList';
+
 export default function AdminConferencesPage() {
   return (
-    <div className='admin_page'>
-      <h1 className='admin_page__title'>Conferences</h1>
-      <p className='admin_page__text'>Admin section placeholder.</p>
-    </div>
+    <AdminEntityList
+      heading='Conferences, Seminars'
+      apiBase='/api/admin/conferences'
+      createHref='/admin/conferences/new'
+      editHrefBase='/admin/conferences'
+    />
   );
 }

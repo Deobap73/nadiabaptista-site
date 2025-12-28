@@ -1,10 +1,14 @@
 // src/app/admin/diplomas/page.tsx
 
+import AdminEntityList from '@/components/admin/content/AdminEntityList';
+
 export default function AdminDiplomasPage() {
   return (
-    <div className='admin_page'>
-      <h1 className='admin_page__title'>Diplomas</h1>
-      <p className='admin_page__text'>Admin section placeholder.</p>
-    </div>
+    <AdminEntityList
+      heading='Diplomas'
+      apiBase='/api/admin/diplomas'
+      createHref='/admin/diplomas/new'
+      editHrefBase='/admin/diplomas'
+    />
   );
 }

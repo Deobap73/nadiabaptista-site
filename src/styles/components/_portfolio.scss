@@ -363,7 +363,7 @@
       border-radius: 16px;
     }
 
-    /* --- LÓGICA DE ZIGUEZAGUE (O que corrige o teu problema) --- */
+    /* --- LÓGICA DE ZIGUEZAGUE  --- */
 
     /* 1. ITEM NORMAL (Imagem à esquerda, Cartão à direita) */
     &__item {
@@ -534,6 +534,28 @@
     color: var(--colorText);
     padding: 0 2px;
     line-height: 1;
+  }
+
+  &__empty {
+    font-family: var(--fontBody);
+    color: var(--colorText);
+    opacity: 0.8;
+    text-align: center;
+    margin-top: var(--space-24);
+  }
+
+  &__card_media {
+    width: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: var(--space-16);
+  }
+
+  &__card_image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
   }
 }
 

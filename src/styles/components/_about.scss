@@ -85,6 +85,7 @@
 .about_hero__text {
   max-width: 340px;
   font-size: var(--fontSizeBodySm);
+  text-align: justify;
   line-height: 1.6;
   color: var(--color-text-muted);
 }
@@ -219,6 +220,7 @@
 .about_mystorie__text {
   line-height: 1.75;
   color: var(--color-text-muted);
+  text-align: justify;
 }
 
 .about_mystorie__image_top {

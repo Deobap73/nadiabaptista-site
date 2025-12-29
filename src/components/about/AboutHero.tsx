@@ -45,8 +45,11 @@ export default function AboutHero() {
             <div className='about_hero__divider' aria-hidden='true' />
 
             <p className='about_hero__text'>
-              Encontre o espaço seguro para se ouvir. Juntos, criaremos o caminho para a sua maior
-              clareza mental.
+              Olá, sou a Nádia e estudo Psicologia. Tenho 18 anos e iniciei este ano a minha
+              formação académica na Universidade Fernando Pessoa, onde estou a realizar a
+              licenciatura em Psicologia.
+              <br /> Criei este blog para partilhar o meu percurso, as aprendizagens que vou
+              desenvolvendo ao longo da licenciatura e, no futuro, divulgar parte do meu trabalho.
             </p>
 
             <Link className='about_hero__cta' href='/contact'>

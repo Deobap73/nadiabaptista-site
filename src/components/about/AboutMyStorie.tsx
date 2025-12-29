@@ -16,11 +16,12 @@ export default function AboutMyStorie() {
         </header>
         <div className='about_mystorie__top'>
           <p className='about_mystorie__text'>
-            Acredito em conduzir o acompanhamento ao ritmo que precisa que flua. Para mim, um
-            processo terapêutico não é só resolver dificuldades ou encontrar respostas rápidas, é
-            escolher formar um olhar honesto e ter coragem para mudar a narrativa. Faço questão de
-            acompanhar o seu percurso com presença e sensibilidade, sem pressa e sem receitas
-            prontas. Se sente que é esse o caminho, estou aqui do seu lado.
+            Alguns dos meus hobbies incluem jogar voleibol, uma atividade que ocupa uma parte
+            importante da minha rotina e que me acompanha há vários anos. <br />
+            Gosto de ouvir música e de descobrir sítios novos, tanto na minha cidade como fora dela.
+            <br />
+            Tenho também gosto por viajar e conhecer diferentes locais, apreciar as suas histórias,
+            culturas e gastronomias e observar como cada lugar tem a sua identidade própria.
           </p>
 
           <div className='about_mystorie__image_top'>
@@ -49,11 +50,14 @@ export default function AboutMyStorie() {
 
           <div className='about_mystorie__panel'>
             <p className='about_mystorie__panel_text'>
-              Acredito em conduzir o acompanhamento ao ritmo que precisa que flua. Para mim, um
-              processo terapêutico não é só resolver dificuldades ou encontrar respostas rápidas, é
-              escolher formar um olhar honesto e ter coragem para mudar a narrativa. Faço questão de
-              acompanhar o seu percurso com presença e sensibilidade, sem pressa e sem receitas
-              prontas. Se sente que é esse o caminho, estou aqui do seu lado.
+              Quando concluir a licenciatura, pretendo ingressar num mestrado em Psicologia do
+              Desporto ou em Neuropsicologia, duas áreas que continuo a ponderar. <br />A Psicologia
+              do Desporto atrai-me de forma particular, porque o desporto sempre fez parte da minha
+              vida. <br />
+              Como atleta, reconheço as dificuldades que podem surgir no dia a dia, sobretudo a
+              gestão da pressão, das lesões e de outras exigências que nem sempre recebem o
+              acompanhamento adequado. Gostaria de contribuir para esta área, oferecendo apoio
+              especializado a quem vive estes desafios.
             </p>
           </div>
         </div>

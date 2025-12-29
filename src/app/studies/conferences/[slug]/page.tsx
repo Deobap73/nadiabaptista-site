@@ -4,18 +4,14 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getConferenceBySlug, getConferences } from '@/lib/studies/getConferences';
+import { getConferenceBySlug } from '@/lib/studies/getConferences';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export const dynamicParams = false;
-
-export async function generateStaticParams() {
-  const items = await getConferences();
-  return items.map((it) => ({ slug: it.slug }));
-}
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;

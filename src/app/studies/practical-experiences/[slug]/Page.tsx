@@ -3,21 +3,14 @@
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import BackButton from '@/components/ui/BackButton';
-import {
-  getPracticalExperienceBySlug,
-  getPracticalExperiences,
-} from '@/lib/studies/getPracticalExperiences';
+import { getPracticalExperienceBySlug } from '@/lib/studies/getPracticalExperiences';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export const dynamicParams = false;
-
-export async function generateStaticParams() {
-  const items = await getPracticalExperiences();
-  return items.map((it) => ({ slug: it.slug }));
-}
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function PracticalExperienceDetailPage({ params }: PageProps) {
   const { slug } = await params;
@@ -56,6 +49,8 @@ export default async function PracticalExperienceDetailPage({ params }: PageProp
               </div>
             ) : null}
           </div>
+
+          <BackButton />
         </div>
       </section>
     </main>

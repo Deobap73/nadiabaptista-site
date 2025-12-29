@@ -2,7 +2,7 @@
 
 import { notFound } from 'next/navigation';
 import BackButton from '@/components/ui/BackButton';
-import { getAcademicProjectBySlug, getAcademicProjects } from '@/lib/studies/getAcademicProjects';
+import { getAcademicProjectBySlug } from '@/lib/studies/getAcademicProjects';
 
 type PageProps = {
   params: Promise<{
@@ -10,12 +10,8 @@ type PageProps = {
   }>;
 };
 
-export const dynamicParams = false;
-
-export async function generateStaticParams() {
-  const items = await getAcademicProjects();
-  return items.map((item) => ({ slug: item.slug }));
-}
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function StudyProjectPage({ params }: PageProps) {
   const { slug } = await params;

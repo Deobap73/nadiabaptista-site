@@ -16,41 +16,49 @@ export type PublicConference = {
 };
 
 export async function getConferences(): Promise<PublicConference[]> {
-  const items = await prisma.conferenceSeminar.findMany({
-    orderBy: [{ sortOrder: 'asc' }, { updatedAt: 'desc' }],
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      dateLabel: true,
-      location: true,
-      content: true,
-      imageUrl: true,
-      imagePublicId: true,
-      sortOrder: true,
-      updatedAt: true,
-    },
-  });
+  try {
+    const items = await prisma.conferenceSeminar.findMany({
+      orderBy: [{ sortOrder: 'asc' }, { updatedAt: 'desc' }],
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        dateLabel: true,
+        location: true,
+        content: true,
+        imageUrl: true,
+        imagePublicId: true,
+        sortOrder: true,
+        updatedAt: true,
+      },
+    });
 
-  return items;
+    return items;
+  } catch {
+    return [];
+  }
 }
 
 export async function getConferenceBySlug(slug: string): Promise<PublicConference | null> {
-  const item = await prisma.conferenceSeminar.findUnique({
-    where: { slug },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      dateLabel: true,
-      location: true,
-      content: true,
-      imageUrl: true,
-      imagePublicId: true,
-      sortOrder: true,
-      updatedAt: true,
-    },
-  });
+  try {
+    const item = await prisma.conferenceSeminar.findUnique({
+      where: { slug },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        dateLabel: true,
+        location: true,
+        content: true,
+        imageUrl: true,
+        imagePublicId: true,
+        sortOrder: true,
+        updatedAt: true,
+      },
+    });
 
-  return item ?? null;
+    return item ?? null;
+  } catch {
+    return null;
+  }
 }

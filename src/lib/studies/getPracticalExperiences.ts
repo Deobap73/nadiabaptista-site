@@ -15,41 +15,49 @@ export type PublicPracticalExperience = {
 };
 
 export async function getPracticalExperiences(): Promise<PublicPracticalExperience[]> {
-  const items = await prisma.practicalExperience.findMany({
-    orderBy: [{ sortOrder: 'asc' }, { updatedAt: 'desc' }],
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      summary: true,
-      content: true,
-      imageUrl: true,
-      imagePublicId: true,
-      sortOrder: true,
-      updatedAt: true,
-    },
-  });
+  try {
+    const items = await prisma.practicalExperience.findMany({
+      orderBy: [{ sortOrder: 'asc' }, { updatedAt: 'desc' }],
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        summary: true,
+        content: true,
+        imageUrl: true,
+        imagePublicId: true,
+        sortOrder: true,
+        updatedAt: true,
+      },
+    });
 
-  return items;
+    return items;
+  } catch {
+    return [];
+  }
 }
 
 export async function getPracticalExperienceBySlug(
   slug: string
 ): Promise<PublicPracticalExperience | null> {
-  const item = await prisma.practicalExperience.findUnique({
-    where: { slug },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      summary: true,
-      content: true,
-      imageUrl: true,
-      imagePublicId: true,
-      sortOrder: true,
-      updatedAt: true,
-    },
-  });
+  try {
+    const item = await prisma.practicalExperience.findUnique({
+      where: { slug },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        summary: true,
+        content: true,
+        imageUrl: true,
+        imagePublicId: true,
+        sortOrder: true,
+        updatedAt: true,
+      },
+    });
 
-  return item ?? null;
+    return item ?? null;
+  } catch {
+    return null;
+  }
 }

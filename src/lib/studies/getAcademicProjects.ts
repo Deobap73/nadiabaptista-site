@@ -14,39 +14,47 @@ export type PublicAcademicProject = {
 };
 
 export async function getAcademicProjects(): Promise<PublicAcademicProject[]> {
-  const items = await prisma.academicProject.findMany({
-    orderBy: [{ sortOrder: 'asc' }, { updatedAt: 'desc' }],
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      summary: true,
-      content: true,
-      sortOrder: true,
-      imageUrl: true,
-      updatedAt: true,
-    },
-  });
+  try {
+    const items = await prisma.academicProject.findMany({
+      orderBy: [{ sortOrder: 'asc' }, { updatedAt: 'desc' }],
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        summary: true,
+        content: true,
+        sortOrder: true,
+        imageUrl: true,
+        updatedAt: true,
+      },
+    });
 
-  return items;
+    return items;
+  } catch {
+    return [];
+  }
 }
 
 export async function getAcademicProjectBySlug(
   slug: string
 ): Promise<PublicAcademicProject | null> {
-  const item = await prisma.academicProject.findUnique({
-    where: { slug },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      summary: true,
-      content: true,
-      sortOrder: true,
-      imageUrl: true,
-      updatedAt: true,
-    },
-  });
+  try {
+    const item = await prisma.academicProject.findUnique({
+      where: { slug },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        summary: true,
+        content: true,
+        sortOrder: true,
+        imageUrl: true,
+        updatedAt: true,
+      },
+    });
 
-  return item;
+    return item ?? null;
+  } catch {
+    return null;
+  }
 }

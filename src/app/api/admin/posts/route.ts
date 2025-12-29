@@ -31,7 +31,7 @@ export async function GET() {
       orderBy: [{ updatedAt: 'desc' }],
     });
 
-    const data = posts.map((p: PostWithCategory) =>
+    const data = posts.map((p) =>
       mapPostToPublic({
         id: p.id,
         title: p.title,

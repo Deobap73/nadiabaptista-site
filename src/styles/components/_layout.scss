@@ -16,7 +16,16 @@
 /* Only affects header and main                               */
 /* ---------------------------------------------------------- */
 
-.site-shell--main-bg,
+.site-shell--main-bg {
+  .site-header {
+    background-color: var(--colorMainBackground);
+  }
+
+  .site-main {
+    background-color: var(--colorMainBackground);
+  }
+}
+
 .site-shell--default-bg {
   .site-header {
     background-color: var(--colorBackground);

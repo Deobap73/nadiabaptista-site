@@ -4,6 +4,9 @@ import Link from 'next/link';
 import BackButton from '@/components/ui/BackButton';
 import { getPracticalExperiences } from '@/lib/studies/getPracticalExperiences';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function PracticalExperiencesPage() {
   const items = await getPracticalExperiences();
 

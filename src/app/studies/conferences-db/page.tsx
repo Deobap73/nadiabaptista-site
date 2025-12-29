@@ -4,6 +4,9 @@ import Link from 'next/link';
 import BackButton from '@/components/ui/BackButton';
 import { getConferences } from '@/lib/studies/getConferences';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function ConferencesDbPage() {
   const items = await getConferences();
 

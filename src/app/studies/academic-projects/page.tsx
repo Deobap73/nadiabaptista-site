@@ -1,8 +1,11 @@
-// src\app\studies\academic-projects\page.tsx
+// src/app/studies/academic-projects/page.tsx
 
 import Link from 'next/link';
 import { getAcademicProjects } from '@/lib/studies/getAcademicProjects';
 import BackButton from '@/components/ui/BackButton';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function AcademicProjectsPage() {
   const items = await getAcademicProjects();
@@ -37,6 +40,8 @@ export default async function AcademicProjectsPage() {
               ))}
             </div>
           )}
+
+          <BackButton />
         </div>
       </section>
     </main>

@@ -1,8 +1,8 @@
 // src/lib/blog/mockPosts.ts
 
-import type { BlogPost } from '../../types/blog';
+import type { BlogPostMock } from '@/types/blog';
 
-export const mockPosts: BlogPost[] = [
+export const mockPosts: BlogPostMock[] = [
   {
     id: '1',
     slug: 'studying-psychology-with-care-for-mental-health',

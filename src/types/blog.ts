@@ -23,6 +23,26 @@ export type BlogPostPublic = {
 
   coverImageUrl: string | null;
   readingTimeMinutes: number;
+
+  // Optional, used by some UI and legacy mock data
+  tags?: string[];
+  featured?: boolean;
+  heroImageUrl?: string | null;
 };
 
 export type BlogPostAdmin = BlogPostPublic;
+export type BlogPost = BlogPostPublic;
+
+export type BlogPostMock = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  publishedAt: string;
+  readingTimeMinutes: number;
+
+  tags?: string[];
+  featured?: boolean;
+  heroImageUrl?: string;
+};

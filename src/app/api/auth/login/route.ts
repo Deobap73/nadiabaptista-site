@@ -1,4 +1,5 @@
 // src/app/api/auth/login/route.ts
+
 import { NextResponse } from 'next/server';
 import { sealData } from 'iron-session';
 
@@ -32,7 +33,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false }, { status: 401 });
     }
 
-    const secret = process.env.SESSION_SECRET;
+    const secret = (process.env.AUTH_SECRET || '').trim();
     if (!secret) {
       return NextResponse.json({ ok: false }, { status: 500 });
     }

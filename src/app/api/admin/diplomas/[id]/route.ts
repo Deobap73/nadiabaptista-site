@@ -4,15 +4,19 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { isAdminRequest } from '../../shared/requireAdminApi';
 
-type Params = { params: { id: string } };
+type RouteContext = {
+  params: Promise<{ id: string }>;
+};
 
-export async function GET(_: Request, { params }: Params) {
+export async function GET(_: Request, context: RouteContext) {
   if (!(await isAdminRequest())) {
     return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
   }
 
+  const { id } = await context.params;
+
   const item = await prisma.diploma.findUnique({
-    where: { id: params.id },
+    where: { id },
   });
 
   if (!item) {
@@ -22,10 +26,12 @@ export async function GET(_: Request, { params }: Params) {
   return NextResponse.json({ ok: true, item });
 }
 
-export async function PUT(req: Request, { params }: Params) {
+export async function PUT(req: Request, context: RouteContext) {
   if (!(await isAdminRequest())) {
     return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
   }
+
+  const { id } = await context.params;
 
   const body = (await req.json()) as {
     title?: string;
@@ -43,7 +49,7 @@ export async function PUT(req: Request, { params }: Params) {
   }
 
   await prisma.diploma.update({
-    where: { id: params.id },
+    where: { id },
     data: {
       title,
       issuer: body.issuer?.trim() || null,
@@ -58,11 +64,13 @@ export async function PUT(req: Request, { params }: Params) {
   return NextResponse.json({ ok: true });
 }
 
-export async function DELETE(_: Request, { params }: Params) {
+export async function DELETE(_: Request, context: RouteContext) {
   if (!(await isAdminRequest())) {
     return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
   }
 
-  await prisma.diploma.delete({ where: { id: params.id } });
+  const { id } = await context.params;
+
+  await prisma.diploma.delete({ where: { id } });
   return NextResponse.json({ ok: true });
 }

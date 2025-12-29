@@ -1,16 +1,25 @@
-// src\lib\auth\session.ts
+// src/lib/auth/session.ts
 
-import { SessionOptions } from 'iron-session';
+import type { SessionOptions } from 'iron-session';
 
 export type SessionData = {
   userId?: string;
   role?: 'ADMIN' | 'CLIENT';
 };
 
+function requireEnv(name: string): string {
+  const value = (process.env[name] || '').trim();
+  if (!value) throw new Error(`Missing ${name} in environment variables.`);
+  return value;
+}
+
 export const sessionOptions: SessionOptions = {
-  password: process.env.SESSION_SECRET as string,
+  password: requireEnv('AUTH_SECRET'),
   cookieName: 'nb_session',
   cookieOptions: {
     secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'lax',
+    path: '/',
   },
 };

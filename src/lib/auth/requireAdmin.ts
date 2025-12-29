@@ -1,4 +1,5 @@
 // src/lib/auth/requireAdmin.ts
+
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { unsealData } from 'iron-session';
@@ -14,7 +15,7 @@ export async function requireAdmin() {
 
   if (!token) return null;
 
-  const secret = process.env.SESSION_SECRET;
+  const secret = (process.env.AUTH_SECRET || '').trim();
   if (!secret) return null;
 
   try {

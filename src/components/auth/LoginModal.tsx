@@ -2,7 +2,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ChangeEvent, MouseEvent } from 'react';
 import { homeImages } from '../../lib/images';
 
@@ -12,65 +12,81 @@ type Props = {
   onLoggedIn: (role: 'admin' | 'user') => void;
 };
 
-function getPrefill() {
-  const email = (process.env.NEXT_PUBLIC_LOGIN_EMAIL || '').trim();
-  const password = process.env.NEXT_PUBLIC_LOGIN_PASSWORD || '';
-  return { email, password };
-}
+type Status = 'idle' | 'loading' | 'error';
+
+type FormState = {
+  email: string;
+  password: string;
+  status: Status;
+  errorMessage: string | null;
+};
+
+const INITIAL: FormState = {
+  email: '',
+  password: '',
+  status: 'idle',
+  errorMessage: null,
+};
 
 export default function LoginModal({ isOpen, onClose, onLoggedIn }: Props) {
-  const prefill = useMemo(() => getPrefill(), []);
+  const [form, setForm] = useState<FormState>(INITIAL);
 
-  const [email, setEmail] = useState(prefill.email);
-  const [password, setPassword] = useState(prefill.password);
-
-  const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const closeAndReset = useCallback(() => {
+    setForm(INITIAL);
+    onClose();
+  }, [onClose]);
 
   const canSubmit = useMemo(() => {
-    return email.trim().length > 3 && password.trim().length > 3 && status !== 'loading';
-  }, [email, password, status]);
+    return (
+      form.email.trim().length > 3 && form.password.trim().length > 3 && form.status !== 'loading'
+    );
+  }, [form.email, form.password, form.status]);
 
   useEffect(() => {
+    if (!isOpen) return;
+
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') closeAndReset();
     }
 
-    if (isOpen) window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen, closeAndReset]);
 
   async function handleSubmit() {
     if (!canSubmit) return;
 
-    setStatus('loading');
-    setErrorMessage(null);
+    setForm((prev) => ({ ...prev, status: 'loading', errorMessage: null }));
 
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: form.email, password: form.password }),
       });
 
-      if (!res.ok) {
-        setStatus('error');
-        setErrorMessage('Login inválido. Confirma email e password.');
+      const data = (await res.json()) as { ok?: boolean; role?: 'admin' | 'user' };
+
+      if (!res.ok || !data.ok) {
+        setForm((prev) => ({
+          ...prev,
+          status: 'error',
+          errorMessage: 'Login inválido. Confirma email e password.',
+        }));
         return;
       }
 
-      const data = (await res.json()) as { ok?: boolean; role?: 'admin' | 'user' };
-      const role = data.role ?? 'user';
-
-      onLoggedIn(role);
+      onLoggedIn(data.role ?? 'user');
       window.dispatchEvent(new CustomEvent('nb_auth_changed'));
-      onClose();
 
-      setStatus('idle');
+      closeAndReset();
     } catch {
-      setStatus('error');
-      setErrorMessage('Erro inesperado. Tenta novamente.');
+      setForm((prev) => ({
+        ...prev,
+        status: 'error',
+        errorMessage: 'Erro inesperado. Tenta novamente.',
+      }));
     }
   }
 
@@ -82,7 +98,7 @@ export default function LoginModal({ isOpen, onClose, onLoggedIn }: Props) {
         className='auth_modal__backdrop'
         type='button'
         aria-label='Fechar'
-        onClick={onClose}
+        onClick={closeAndReset}
       />
 
       <div
@@ -138,8 +154,10 @@ export default function LoginModal({ isOpen, onClose, onLoggedIn }: Props) {
                   className='auth_modal__input'
                   type='email'
                   placeholder='Email'
-                  value={email}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                  value={form.email}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setForm((prev) => ({ ...prev, email: e.target.value }))
+                  }
                   autoComplete='email'
                 />
               </label>
@@ -150,13 +168,15 @@ export default function LoginModal({ isOpen, onClose, onLoggedIn }: Props) {
                   className='auth_modal__input'
                   type='password'
                   placeholder='Password'
-                  value={password}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                  value={form.password}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setForm((prev) => ({ ...prev, password: e.target.value }))
+                  }
                   autoComplete='current-password'
                 />
               </label>
 
-              {errorMessage ? <p className='auth_modal__error'>{errorMessage}</p> : null}
+              {form.errorMessage ? <p className='auth_modal__error'>{form.errorMessage}</p> : null}
 
               <div className='auth_modal__actions'>
                 <div className='auth_modal__go'>
@@ -170,7 +190,7 @@ export default function LoginModal({ isOpen, onClose, onLoggedIn }: Props) {
                   type='button'
                   onClick={handleSubmit}
                   disabled={!canSubmit}>
-                  {status === 'loading' ? 'A entrar...' : 'LOG IN'}
+                  {form.status === 'loading' ? 'A entrar...' : 'LOG IN'}
                 </button>
 
                 <div className='auth_modal__circle'></div>

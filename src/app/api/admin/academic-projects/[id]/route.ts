@@ -4,7 +4,9 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { isAdminRequest } from '../../shared/requireAdminApi';
 
-type Params = { params: { id: string } };
+type RouteContext = {
+  params: Promise<{ id: string }>;
+};
 
 function isUniqueConstraintError(err: unknown) {
   return (
@@ -15,13 +17,15 @@ function isUniqueConstraintError(err: unknown) {
   );
 }
 
-export async function GET(_: Request, { params }: Params) {
+export async function GET(_: Request, context: RouteContext) {
   if (!(await isAdminRequest())) {
     return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
   }
 
+  const { id } = await context.params;
+
   const item = await prisma.academicProject.findUnique({
-    where: { id: params.id },
+    where: { id },
   });
 
   if (!item) {
@@ -31,10 +35,12 @@ export async function GET(_: Request, { params }: Params) {
   return NextResponse.json({ ok: true, item });
 }
 
-export async function PUT(req: Request, { params }: Params) {
+export async function PUT(req: Request, context: RouteContext) {
   if (!(await isAdminRequest())) {
     return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
   }
+
+  const { id } = await context.params;
 
   const body = (await req.json()) as {
     title?: string;
@@ -54,7 +60,7 @@ export async function PUT(req: Request, { params }: Params) {
 
   try {
     await prisma.academicProject.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         title,
         slug,
@@ -76,13 +82,15 @@ export async function PUT(req: Request, { params }: Params) {
   }
 }
 
-export async function DELETE(_: Request, { params }: Params) {
+export async function DELETE(_: Request, context: RouteContext) {
   if (!(await isAdminRequest())) {
     return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
   }
 
+  const { id } = await context.params;
+
   try {
-    await prisma.academicProject.delete({ where: { id: params.id } });
+    await prisma.academicProject.delete({ where: { id } });
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ ok: false, error: 'Failed to delete item.' }, { status: 500 });

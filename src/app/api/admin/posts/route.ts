@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth/requireAdmin';
 import { mapPostToPublic, normalizeSlug } from '@/lib/blog/postMapper';
-import type { Category, Post } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 
 type CreateBody = {
   title?: string;
@@ -17,19 +17,19 @@ type CreateBody = {
   coverImagePublicId?: string | null;
 };
 
-type PostWithCategory = Post & {
-  category: Pick<Category, 'id' | 'name' | 'slug'> | null;
-};
+type PostWithCategory = Prisma.PostGetPayload<{
+  include: { category: { select: { id: true; name: true; slug: true } } };
+}>;
 
 export async function GET() {
   try {
     const session = await requireAdmin();
     if (!session) return NextResponse.json({ ok: false }, { status: 401 });
 
-    const posts = (await prisma.post.findMany({
+    const posts: PostWithCategory[] = await prisma.post.findMany({
       include: { category: { select: { id: true, name: true, slug: true } } },
       orderBy: [{ updatedAt: 'desc' }],
-    })) as PostWithCategory[];
+    });
 
     const data = posts.map((p: PostWithCategory) =>
       mapPostToPublic({
@@ -76,7 +76,7 @@ export async function POST(req: Request) {
     const status = body.status === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT';
     const publishedAt = status === 'PUBLISHED' ? new Date() : null;
 
-    const created = (await prisma.post.create({
+    const created: PostWithCategory = await prisma.post.create({
       data: {
         title,
         slug,
@@ -90,7 +90,7 @@ export async function POST(req: Request) {
         authorId: session.userId === 'admin' ? null : session.userId,
       },
       include: { category: { select: { id: true, name: true, slug: true } } },
-    })) as PostWithCategory;
+    });
 
     const data = mapPostToPublic({
       id: created.id,

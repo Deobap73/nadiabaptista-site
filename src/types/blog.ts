@@ -35,3 +35,16 @@ export type BlogPostPublic = {
 
 export type BlogPostAdmin = BlogPostPublic;
 export type BlogPost = BlogPostPublic;
+
+export type BlogPostMock = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  content: RichTextDoc;
+  publishedAt: string;
+  readingTimeMinutes: number;
+  tags?: string[];
+  featured?: boolean;
+  heroImageUrl?: string | null;
+};

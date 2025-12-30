@@ -21,7 +21,17 @@ function createPrismaClient() {
 
   const pool = new Pool({
     connectionString: databaseUrl,
+
+    // Important for Supabase pooler. Accept the cert chain even if Node dislikes it.
     ssl: { rejectUnauthorized: false },
+
+    // Helps with serverless spikes and pooler behaviour.
+    max: 5,
+    idleTimeoutMillis: 10_000,
+    connectionTimeoutMillis: 10_000,
+
+    // Optional but can reduce issues with poolers.
+    keepAlive: true,
   });
 
   const adapter = new PrismaPg(pool);
@@ -32,8 +42,8 @@ function createPrismaClient() {
   });
 }
 
-export const prisma = global.prisma ?? createPrismaClient();
+export const prisma = globalThis.prisma ?? createPrismaClient();
 
 if (process.env.NODE_ENV !== 'production') {
-  global.prisma = prisma;
+  globalThis.prisma = prisma;
 }

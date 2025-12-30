@@ -1,9 +1,8 @@
 // src/app/api/admin/shared/requireAdminApi.ts
 
-import { cookies } from 'next/headers';
+import { requireAdmin } from '@/lib/auth/requireAdmin';
 
-export async function isAdminRequest(): Promise<boolean> {
-  const store = await cookies();
-  const role = store.get('nb_role')?.value ?? '';
-  return role === 'admin';
+export async function isAdminRequest() {
+  const session = await requireAdmin();
+  return Boolean(session);
 }

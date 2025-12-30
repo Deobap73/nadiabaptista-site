@@ -2,7 +2,13 @@
 
 import { NextResponse } from 'next/server';
 import { sealData } from 'iron-session';
-import { SESSION_COOKIE_NAME, SESSION_MAX_AGE_SECONDS, sessionOptions } from '@/lib/auth/session';
+import {
+  getSessionOptions,
+  SESSION_COOKIE_NAME,
+  SESSION_MAX_AGE_SECONDS,
+} from '@/lib/auth/session';
+
+export const runtime = 'nodejs';
 
 type LoginBody = {
   email?: string;
@@ -35,7 +41,7 @@ export async function POST(req: Request) {
     }
 
     const secret = (process.env.AUTH_SECRET || '').trim();
-    if (!secret) {
+    if (!secret || secret.length < 32) {
       return NextResponse.json({ ok: false }, { status: 500 });
     }
 
@@ -48,14 +54,17 @@ export async function POST(req: Request) {
 
     const res = NextResponse.json({ ok: true, role: 'admin' as const });
 
+    const opts = getSessionOptions();
+
     res.cookies.set(SESSION_COOKIE_NAME, token, {
-      ...sessionOptions.cookieOptions,
+      ...opts.cookieOptions,
       maxAge: SESSION_MAX_AGE_SECONDS,
       expires: new Date(Date.now() + SESSION_MAX_AGE_SECONDS * 1000),
     });
 
     return res;
-  } catch {
+  } catch (err) {
+    console.error('api auth login error', err);
     return NextResponse.json({ ok: false }, { status: 500 });
   }
 }

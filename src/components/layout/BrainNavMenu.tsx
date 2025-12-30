@@ -83,7 +83,7 @@ const BASE_MENU_ITEMS: MenuItem[] = [
     id: 'contact',
     label: 'CONTACTO',
     href: '/contact',
-    icon: '/nav/Studies.svg',
+    icon: '/nav/Contact.svg',
     x: 312,
     y: 126,
     delayMs: 240,

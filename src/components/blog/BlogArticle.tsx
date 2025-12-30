@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { BlogPostPublic } from '@/types/blog';
+import RichTextRenderer from '@/components/editor/RichTextRenderer';
 
 type Props = {
   slug: string;
@@ -23,18 +24,6 @@ function formatDate(value: string | null): string {
   return d.toLocaleDateString('pt-PT', { year: 'numeric', month: 'long', day: '2-digit' });
 }
 
-function renderParagraphs(content: string) {
-  const blocks = content.trim().split(/\n\s*\n/g);
-
-  return (
-    <div className='blog_article__rich'>
-      {blocks.map((b, i) => (
-        <p key={i}>{b}</p>
-      ))}
-    </div>
-  );
-}
-
 export default function BlogArticle({ slug }: Props) {
   const [status, setStatus] = useState<'loading' | 'ready' | 'error' | 'not_found'>('loading');
   const [post, setPost] = useState<BlogPostPublic | null>(null);
@@ -46,7 +35,7 @@ export default function BlogArticle({ slug }: Props) {
       setStatus('loading');
 
       try {
-        const res = await fetch(`/api/posts/${slug}`, { cache: 'no-store' });
+        const res = await fetch(`/api/post/${slug}`, { cache: 'no-store' });
 
         if (res.status === 404) {
           if (!cancelled) setStatus('not_found');
@@ -153,7 +142,9 @@ export default function BlogArticle({ slug }: Props) {
           </div>
         ) : null}
 
-        <div className='blog_article__content'>{renderParagraphs(post.content)}</div>
+        <div className='blog_article__content'>
+          <RichTextRenderer content={post.content} />
+        </div>
 
         <footer className='blog_article__footer'>
           <Link href='/blog' className='blog_article__back'>

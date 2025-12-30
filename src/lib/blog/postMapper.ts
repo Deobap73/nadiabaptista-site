@@ -1,9 +1,52 @@
 // src/lib/blog/postMapper.ts
 
-import type { BlogPostPublic } from '@/types/blog';
+import type { BlogPostPublic, RichTextDoc } from '@/types/blog';
 
-function estimateReadingTimeMinutes(content: string): number {
-  const words = content.trim().split(/\s+/).filter(Boolean).length;
+type JsonLike = string | number | boolean | null | { [k: string]: unknown } | unknown[];
+
+function isRecord(value: unknown): value is { [k: string]: unknown } {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isArray(value: unknown): value is unknown[] {
+  return Array.isArray(value);
+}
+
+function extractTextFromRichDoc(doc: RichTextDoc): string {
+  const parts: string[] = [];
+
+  function walk(node: unknown) {
+    if (node === null) return;
+
+    if (typeof node === 'string') {
+      parts.push(node);
+      return;
+    }
+
+    if (isArray(node)) {
+      for (const item of node) walk(item);
+      return;
+    }
+
+    if (isRecord(node)) {
+      const maybeText = node.text;
+      if (typeof maybeText === 'string') parts.push(maybeText);
+
+      const content = node.content;
+      if (content !== undefined) walk(content);
+
+      return;
+    }
+  }
+
+  walk(doc as JsonLike);
+
+  return parts.join(' ');
+}
+
+function estimateReadingTimeMinutes(doc: RichTextDoc): number {
+  const text = extractTextFromRichDoc(doc);
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
   const minutes = Math.ceil(words / 200);
   return Math.max(1, minutes);
 }
@@ -13,7 +56,7 @@ export function mapPostToPublic(input: {
   title: string;
   slug: string;
   excerpt: string | null;
-  content: string;
+  content: RichTextDoc;
   status: 'DRAFT' | 'PUBLISHED';
   publishedAt: Date | null;
   createdAt: Date;

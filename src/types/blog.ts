@@ -1,5 +1,7 @@
 // src/types/blog.ts
 
+import type { JSONContent } from '@tiptap/core';
+
 export type PostStatus = 'DRAFT' | 'PUBLISHED';
 
 export type BlogCategory = {
@@ -8,12 +10,14 @@ export type BlogCategory = {
   slug: string;
 };
 
+export type RichTextDoc = JSONContent;
+
 export type BlogPostPublic = {
   id: string;
   title: string;
   slug: string;
   excerpt: string | null;
-  content: string;
+  content: RichTextDoc;
   status: PostStatus;
   publishedAt: string | null;
   createdAt: string;
@@ -24,7 +28,6 @@ export type BlogPostPublic = {
   coverImageUrl: string | null;
   readingTimeMinutes: number;
 
-  // Optional, used by some UI and legacy mock data
   tags?: string[];
   featured?: boolean;
   heroImageUrl?: string | null;
@@ -32,17 +35,3 @@ export type BlogPostPublic = {
 
 export type BlogPostAdmin = BlogPostPublic;
 export type BlogPost = BlogPostPublic;
-
-export type BlogPostMock = {
-  id: string;
-  slug: string;
-  title: string;
-  excerpt: string;
-  content: string;
-  publishedAt: string;
-  readingTimeMinutes: number;
-
-  tags?: string[];
-  featured?: boolean;
-  heroImageUrl?: string;
-};

@@ -8,7 +8,6 @@ import { Pool } from 'pg';
 dns.setDefaultResultOrder('ipv4first');
 
 declare global {
-  // eslint-disable-next-line no-var
   var prisma: PrismaClient | undefined;
 }
 

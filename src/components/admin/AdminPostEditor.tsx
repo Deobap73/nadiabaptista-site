@@ -4,8 +4,10 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import type { BlogCategory, BlogPostAdmin, PostStatus } from '@/types/blog';
+import type { BlogCategory, BlogPostAdmin, PostStatus, RichTextDoc } from '@/types/blog';
 import FileUpload from '@/components/form/FileUpload';
+import RichTextEditor from '@/components/editor/RichTextEditor';
+import RichTextRenderer from '@/components/editor/RichTextRenderer';
 
 type Mode = 'create' | 'edit';
 
@@ -31,18 +33,23 @@ type FormState = {
   title: string;
   slug: string;
   excerpt: string;
-  content: string;
+  content: RichTextDoc | null;
   status: PostStatus;
   categoryId: string;
   coverImageUrl: string;
   coverImagePublicId: string;
 };
 
+const EMPTY_DOC: RichTextDoc = {
+  type: 'doc',
+  content: [{ type: 'paragraph' }],
+};
+
 const INITIAL_FORM: FormState = {
   title: '',
   slug: '',
   excerpt: '',
-  content: '',
+  content: null,
   status: 'DRAFT',
   categoryId: '',
   coverImageUrl: '',
@@ -61,6 +68,38 @@ function normalizeSlug(value: string): string {
 
 function safeStatus(value: string): PostStatus {
   return value === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT';
+}
+
+function isDocLike(value: unknown): value is RichTextDoc {
+  if (!value) return false;
+  if (typeof value !== 'object') return false;
+
+  try {
+    const raw = JSON.stringify(value);
+    return raw.includes('"type"') && raw.includes('"doc"');
+  } catch {
+    return false;
+  }
+}
+
+function docHasAnyText(doc: RichTextDoc | null): boolean {
+  if (!doc) return false;
+
+  try {
+    const raw = JSON.stringify(doc);
+    if (!raw.includes('"text"')) return false;
+
+    const textMatches = raw.match(/"text"\s*:\s*"(.*?)"/g) || [];
+    const joined = textMatches
+      .join(' ')
+      .replace(/"text"\s*:\s*"/g, '')
+      .replace(/"/g, '')
+      .trim();
+
+    return joined.length > 0;
+  } catch {
+    return false;
+  }
 }
 
 export default function AdminPostEditor(props: Props) {
@@ -88,7 +127,10 @@ export default function AdminPostEditor(props: Props) {
         if (!cancelled && catsJson.ok) setCategories(catsJson.categories);
 
         if (!isEdit) {
-          if (!cancelled) setUi('ready');
+          if (!cancelled) {
+            setForm((prev) => ({ ...prev, content: prev.content || EMPTY_DOC }));
+            setUi('ready');
+          }
           return;
         }
 
@@ -103,7 +145,7 @@ export default function AdminPostEditor(props: Props) {
             title: target.title,
             slug: target.slug,
             excerpt: target.excerpt || '',
-            content: target.content,
+            content: isDocLike(target.content) ? target.content : EMPTY_DOC,
             status: target.status,
             categoryId: target.category ? target.category.id : '',
             coverImageUrl: target.coverImageUrl || '',
@@ -162,9 +204,15 @@ export default function AdminPostEditor(props: Props) {
         coverImagePublicId: form.coverImagePublicId || null,
       };
 
-      if (!payload.title || !payload.slug || !payload.content.trim()) {
+      if (!payload.title || !payload.slug) {
         setUi('ready');
-        setMessage('Preenche title, slug e content.');
+        setMessage('Preenche title e slug.');
+        return;
+      }
+
+      if (!payload.content || !docHasAnyText(payload.content)) {
+        setUi('ready');
+        setMessage('Escreve conteúdo no editor.');
         return;
       }
 
@@ -354,15 +402,15 @@ export default function AdminPostEditor(props: Props) {
             }}
           />
 
-          <label className='admin_post__field'>
+          <div className='admin_post__field'>
             <span className='admin_post__label'>Content</span>
-            <textarea
-              className='admin_post__textarea'
-              rows={14}
-              value={form.content}
-              onChange={(e) => updateField('content', e.target.value)}
+
+            <RichTextEditor
+              value={form.content || EMPTY_DOC}
+              disabled={ui === 'saving'}
+              onChange={(next) => updateField('content', next)}
             />
-          </label>
+          </div>
         </div>
 
         <div className='admin_post__preview'>
@@ -379,13 +427,7 @@ export default function AdminPostEditor(props: Props) {
             <p className='admin_post__preview_excerpt'>{form.excerpt || 'Sem excerpt'}</p>
 
             <div className='admin_post__preview_body'>
-              {form.content
-                .trim()
-                .split(/\n\s*\n/g)
-                .slice(0, 4)
-                .map((b, i) => (
-                  <p key={i}>{b}</p>
-                ))}
+              <RichTextRenderer content={form.content || EMPTY_DOC} />
             </div>
           </div>
         </div>

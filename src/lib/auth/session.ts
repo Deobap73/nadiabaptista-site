@@ -13,13 +13,17 @@ function requireEnv(name: string): string {
   return value;
 }
 
+export const SESSION_COOKIE_NAME = 'nb_session';
+export const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
+
 export const sessionOptions: SessionOptions = {
   password: requireEnv('AUTH_SECRET'),
-  cookieName: 'nb_session',
+  cookieName: SESSION_COOKIE_NAME,
   cookieOptions: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     sameSite: 'lax',
     path: '/',
+    maxAge: SESSION_MAX_AGE_SECONDS,
   },
 };

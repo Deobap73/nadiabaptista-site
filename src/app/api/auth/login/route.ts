@@ -2,6 +2,7 @@
 
 import { NextResponse } from 'next/server';
 import { sealData } from 'iron-session';
+import { SESSION_COOKIE_NAME, SESSION_MAX_AGE_SECONDS, sessionOptions } from '@/lib/auth/session';
 
 type LoginBody = {
   email?: string;
@@ -47,12 +48,10 @@ export async function POST(req: Request) {
 
     const res = NextResponse.json({ ok: true, role: 'admin' as const });
 
-    res.cookies.set('nb_session', token, {
-      path: '/',
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24 * 7,
+    res.cookies.set(SESSION_COOKIE_NAME, token, {
+      ...sessionOptions.cookieOptions,
+      maxAge: SESSION_MAX_AGE_SECONDS,
+      expires: new Date(Date.now() + SESSION_MAX_AGE_SECONDS * 1000),
     });
 
     return res;

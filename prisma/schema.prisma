@@ -1,200 +1,26 @@
-// prisma/schema.prisma
+import { PrismaClient } from '@prisma/client';
 
-generator client {
-  provider = "prisma-client-js"
+declare global {
+  var prismaGlobal: PrismaClient | undefined;
 }
 
-datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+function logDbHostOnce() {
+  try {
+    if (process.env.NODE_ENV !== 'production') return;
+
+    const raw = process.env.DATABASE_URL || '';
+    const safe = raw.replace(/\/\/([^:]+):([^@]+)@/, '//$1:xxx@');
+
+    console.log('db runtime url', safe);
+  } catch {
+    return;
+  }
 }
 
-enum UserRole {
-  ADMIN
-  CLIENT
-}
+logDbHostOnce();
 
-enum PostStatus {
-  DRAFT
-  PUBLISHED
-}
+export const prisma = globalThis.prismaGlobal ?? new PrismaClient();
 
-model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  name         String?
-  role         UserRole @default(CLIENT)
-  passwordHash String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  posts          Post[]
-  conversationsA Conversation[] @relation("ConversationUserA")
-  conversationsB Conversation[] @relation("ConversationUserB")
-  messages       Message[]
-}
-
-model Category {
-  id   String @id @default(cuid())
-
-  name String
-  slug String @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  posts Post[]
-}
-
-model Post {
-  id      String     @id @default(cuid())
-  title   String
-  slug    String     @unique
-  excerpt String?
-  content String
-  status  PostStatus @default(DRAFT)
-
-  coverImageUrl      String?
-  coverImagePublicId String?
-
-  publishedAt DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  categoryId String?
-  category   Category? @relation(fields: [categoryId], references: [id])
-
-  authorId String?
-  author   User? @relation(fields: [authorId], references: [id])
-
-  @@index([status, publishedAt])
-  @@index([categoryId])
-}
-
-model Diploma {
-  id          String @id @default(cuid())
-  title       String
-  issuer      String?
-  dateLabel   String?
-  description String?
-
-  imageUrl      String?
-  imagePublicId String?
-
-  sortOrder Int @default(0)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([sortOrder])
-}
-
-model Achievement {
-  id          String @id @default(cuid())
-  title       String
-  dateLabel   String?
-  description String?
-
-  imageUrl      String?
-  imagePublicId String?
-
-  sortOrder Int @default(0)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([sortOrder])
-}
-
-model AcademicProject {
-  id      String @id @default(cuid())
-  title   String
-  slug    String @unique
-  summary String?
-  content String?
-
-  imageUrl      String?
-  imagePublicId String?
-
-  sortOrder Int @default(0)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([sortOrder])
-}
-
-model PracticalExperience {
-  id      String @id @default(cuid())
-  title   String
-  slug    String @unique
-  summary String?
-  content String?
-
-  imageUrl      String?
-  imagePublicId String?
-
-  sortOrder Int @default(0)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([sortOrder])
-}
-
-model ConferenceSeminar {
-  id        String @id @default(cuid())
-  title     String
-  slug      String @unique
-  dateLabel String?
-  location  String?
-  content   String?
-
-  imageUrl      String?
-  imagePublicId String?
-
-  sortOrder Int @default(0)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([sortOrder])
-}
-
-model Conversation {
-  id String @id @default(cuid())
-
-  userAId String
-  userBId String
-
-  userA User @relation("ConversationUserA", fields: [userAId], references: [id])
-  userB User @relation("ConversationUserB", fields: [userBId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  messages Message[]
-
-  @@unique([userAId, userBId])
-  @@index([updatedAt])
-}
-
-model Message {
-  id String @id @default(cuid())
-
-  conversationId String
-  conversation   Conversation @relation(fields: [conversationId], references: [id])
-
-  senderId String
-  sender   User @relation(fields: [senderId], references: [id])
-
-  body String
-
-  readAt    DateTime?
-  createdAt DateTime @default(now())
-
-  @@index([conversationId, createdAt])
-  @@index([senderId])
+if (process.env.NODE_ENV !== 'production') {
+  globalThis.prismaGlobal = prisma;
 }

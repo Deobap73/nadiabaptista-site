@@ -30,6 +30,8 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
+  height: -webkit-fill-available;
+  height: 100dvh;
 }
 
 body {
@@ -38,10 +40,25 @@ body {
   font-family: var(--fontBody);
   background-color: var(--colorBackground);
   color: var(--colorText);
+  height: -webkit-fill-available;
+  height: 100dvh;
 }
 
 main {
   min-height: 100vh;
+  min-height: 100dvh;
+}
+/* media query for mobile */
+@media (max-width: 767px) {
+  body {
+    height: 100dvh;
+    height: -webkit-fill-available; /* for Safari */
+  }
+
+  main {
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
+  }
 }
 
 img {

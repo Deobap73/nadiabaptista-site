@@ -1,70 +1,54 @@
 // src/app/api/auth/login/route.ts
 
 import { NextResponse } from 'next/server';
-import { sealData } from 'iron-session';
-import {
-  getSessionOptions,
-  SESSION_COOKIE_NAME,
-  SESSION_MAX_AGE_SECONDS,
-} from '@/lib/auth/session';
+import { prisma } from '@/lib/prisma';
+import { createSession } from '@/lib/auth/session';
+import { compare } from 'bcryptjs';
 
 export const runtime = 'nodejs';
 
-type LoginBody = {
+type Body = {
   email?: string;
   password?: string;
 };
 
-type SessionPayload = {
-  userId: string;
-  role: 'ADMIN' | 'CLIENT';
-};
-
 export async function POST(req: Request) {
   try {
-    const body = (await req.json()) as LoginBody;
+    const body = (await req.json()) as Body;
 
     const email = (body.email || '').trim().toLowerCase();
     const password = body.password || '';
 
     if (!email || !password) {
-      return NextResponse.json({ ok: false }, { status: 400 });
+      return NextResponse.json({ ok: false, error: 'Missing credentials' }, { status: 400 });
     }
 
-    const adminEmail = (process.env.ADMIN_EMAIL || '').trim().toLowerCase();
-    const adminPassword = process.env.ADMIN_PASSWORD || '';
-
-    const isAdmin = email === adminEmail && password === adminPassword;
-
-    if (!isAdmin) {
-      return NextResponse.json({ ok: false }, { status: 401 });
-    }
-
-    const secret = (process.env.AUTH_SECRET || '').trim();
-    if (!secret || secret.length < 32) {
-      return NextResponse.json({ ok: false }, { status: 500 });
-    }
-
-    const payload: SessionPayload = {
-      userId: 'admin',
-      role: 'ADMIN',
-    };
-
-    const token = await sealData(payload, { password: secret });
-
-    const res = NextResponse.json({ ok: true, role: 'admin' as const });
-
-    const opts = getSessionOptions();
-
-    res.cookies.set(SESSION_COOKIE_NAME, token, {
-      ...opts.cookieOptions,
-      maxAge: SESSION_MAX_AGE_SECONDS,
-      expires: new Date(Date.now() + SESSION_MAX_AGE_SECONDS * 1000),
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true, role: true, passwordHash: true },
     });
 
-    return res;
-  } catch (err) {
-    console.error('api auth login error', err);
-    return NextResponse.json({ ok: false }, { status: 500 });
+    if (!user || !user.passwordHash) {
+      return NextResponse.json({ ok: false, error: 'Invalid credentials' }, { status: 401 });
+    }
+
+    const isValid = await compare(password, user.passwordHash);
+    if (!isValid) {
+      return NextResponse.json({ ok: false, error: 'Invalid credentials' }, { status: 401 });
+    }
+
+    const role = user.role === 'ADMIN' ? 'ADMIN' : 'USER';
+
+    await createSession({
+      userId: user.id,
+      role,
+    });
+
+    return NextResponse.json({
+      ok: true,
+      role: role === 'ADMIN' ? 'admin' : 'user',
+    });
+  } catch {
+    return NextResponse.json({ ok: false, error: 'Server error' }, { status: 500 });
   }
 }

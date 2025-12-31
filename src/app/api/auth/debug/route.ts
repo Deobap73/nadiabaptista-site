@@ -1,37 +1,27 @@
 // src/app/api/auth/debug/route.ts
+
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { unsealData } from 'iron-session';
+import { verifySession } from '@/lib/auth/session';
 
-type SessionPayload = {
-  userId?: string;
-  role?: 'ADMIN' | 'CLIENT';
-};
+export const runtime = 'nodejs';
 
 export async function GET() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('nb_session')?.value || null;
-
-  const secret = process.env.SESSION_SECRET || null;
-
-  if (!token) {
-    return NextResponse.json(
-      { hasCookie: false, canUnseal: false, payload: null },
-      { status: 200 }
-    );
-  }
-
-  if (!secret) {
-    return NextResponse.json(
-      { hasCookie: true, canUnseal: false, payload: null, error: 'Missing SESSION_SECRET' },
-      { status: 200 }
-    );
-  }
-
   try {
-    const payload = await unsealData<SessionPayload>(token, { password: secret });
-    return NextResponse.json({ hasCookie: true, canUnseal: true, payload }, { status: 200 });
+    const jar = await cookies();
+    const hasCookie = Boolean(jar.get('nb_session')?.value);
+
+    const session = await verifySession();
+
+    return NextResponse.json(
+      {
+        hasCookie,
+        isValid: Boolean(session),
+        session: session ? { userId: session.userId, role: session.role } : null,
+      },
+      { status: 200 }
+    );
   } catch {
-    return NextResponse.json({ hasCookie: true, canUnseal: false, payload: null }, { status: 200 });
+    return NextResponse.json({ hasCookie: false, isValid: false, session: null }, { status: 200 });
   }
 }

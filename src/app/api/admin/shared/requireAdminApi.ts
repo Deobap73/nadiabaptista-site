@@ -1,8 +1,9 @@
 // src/app/api/admin/shared/requireAdminApi.ts
 
-import { requireAdmin } from '@/lib/auth/requireAdmin';
+import { verifySession } from '@/lib/auth/session';
 
-export async function isAdminRequest() {
-  const session = await requireAdmin();
-  return Boolean(session);
+export async function isAdminRequest(): Promise<boolean> {
+  const session = await verifySession();
+  if (!session) return false;
+  return session.role === 'ADMIN';
 }

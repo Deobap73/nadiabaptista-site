@@ -1,11 +1,12 @@
 // src/lib/auth/useMe.ts
+
 'use client';
 
 import { useEffect, useState } from 'react';
 
 export type MeState = {
   isAuthenticated: boolean;
-  role: 'admin' | null;
+  role: 'admin' | 'user' | null;
 };
 
 const INITIAL: MeState = { isAuthenticated: false, role: null };
@@ -16,7 +17,7 @@ export function useMe() {
 
   async function load() {
     try {
-      const res = await fetch('/api/auth/me', { method: 'GET', credentials: 'include' });
+      const res = await fetch('/api/auth/me', { method: 'GET' });
       const data = (await res.json()) as MeState;
       setMe(data);
     } catch {

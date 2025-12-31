@@ -44,10 +44,7 @@ export async function POST(req: Request) {
       role,
     });
 
-    return NextResponse.json({
-      ok: true,
-      role: role === 'ADMIN' ? 'admin' : 'user',
-    });
+    return NextResponse.json({ ok: true, role: role === 'ADMIN' ? 'admin' : 'user' });
   } catch {
     return NextResponse.json({ ok: false, error: 'Server error' }, { status: 500 });
   }

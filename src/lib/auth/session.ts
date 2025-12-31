@@ -21,9 +21,7 @@ type TokenPayload = {
 
 function getSecret(): string {
   const secret = (process.env.SESSION_SECRET || '').trim();
-  if (!secret) {
-    throw new Error('Missing SESSION_SECRET');
-  }
+  if (!secret) throw new Error('Missing SESSION_SECRET');
   return secret;
 }
 
@@ -34,16 +32,26 @@ function getMaxAgeSeconds(): number {
   return safeDays * 24 * 60 * 60;
 }
 
+/**
+ * Important:
+ * We keep "." exclusively as the token separator.
+ * So we must never output "." inside base64url parts.
+ *
+ * We map:
+ * "+" -> "~"
+ * "/" -> "_"
+ * and strip "=" padding.
+ */
 function base64UrlEncode(input: string): string {
   return Buffer.from(input, 'utf8')
     .toString('base64')
-    .replace(/\+/g, '_')
-    .replace(/\//g, '.')
+    .replace(/\+/g, '~')
+    .replace(/\//g, '_')
     .replace(/=+$/g, '');
 }
 
 function base64UrlDecode(input: string): string {
-  const normalized = input.replace(/_/g, '+').replace(/\./g, '/');
+  const normalized = input.replace(/~/g, '+').replace(/_/g, '/');
   const padLen = (4 - (normalized.length % 4)) % 4;
   const padded = normalized + '='.repeat(padLen);
   return Buffer.from(padded, 'base64').toString('utf8');
@@ -51,7 +59,7 @@ function base64UrlDecode(input: string): string {
 
 function sign(input: string, secret: string): string {
   const digest = createHmac('sha256', secret).update(input).digest('base64');
-  return digest.replace(/\+/g, '_').replace(/\//g, '.').replace(/=+$/g, '');
+  return digest.replace(/\+/g, '~').replace(/\//g, '_').replace(/=+$/g, '');
 }
 
 function safeEqual(a: string, b: string): boolean {
@@ -122,7 +130,6 @@ export async function createSession(data: SessionData): Promise<void> {
     maxAge,
   });
 
-  // Compat opcional: apaga o cookie antigo se existir
   jar.set('nb_role', '', { path: '/', maxAge: 0 });
 }
 

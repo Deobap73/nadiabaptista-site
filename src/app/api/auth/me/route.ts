@@ -10,17 +10,15 @@ export async function GET() {
     const session = await verifySession();
 
     if (!session) {
-      return NextResponse.json({ isAuthenticated: false, role: null }, { status: 200 });
+      return NextResponse.json({ ok: true, isAuthenticated: false, role: null });
     }
 
-    return NextResponse.json(
-      {
-        isAuthenticated: true,
-        role: session.role === 'ADMIN' ? 'admin' : 'user',
-      },
-      { status: 200 }
-    );
+    return NextResponse.json({
+      ok: true,
+      isAuthenticated: true,
+      role: session.role === 'ADMIN' ? 'admin' : 'user',
+    });
   } catch {
-    return NextResponse.json({ isAuthenticated: false, role: null }, { status: 200 });
+    return NextResponse.json({ ok: false, error: 'Server error' }, { status: 500 });
   }
 }

@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react';
 
 export type MeState = {
+  ok?: boolean;
   isAuthenticated: boolean;
   role: 'admin' | 'user' | null;
 };
@@ -17,7 +18,7 @@ export function useMe() {
 
   async function load() {
     try {
-      const res = await fetch('/api/auth/me', { method: 'GET' });
+      const res = await fetch('/api/auth/me', { method: 'GET', credentials: 'include' });
       const data = (await res.json()) as MeState;
       setMe(data);
     } catch {

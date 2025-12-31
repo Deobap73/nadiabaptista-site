@@ -1,15 +1,15 @@
 // src/app/api/admin/posts/[id]/route.ts
 
-import { NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { mapPostToPublic, normalizeSlug } from '@/lib/blog/postMapper';
 import type { Prisma } from '@prisma/client';
-import { requireAdminApi } from '@/app/api/admin/shared/requireAdminApi';
+import { isAdminRequest } from '../../shared/requireAdminApi';
 
 export const runtime = 'nodejs';
 
-type RouteProps = {
-  params: { id: string };
+type RouteContext = {
+  params: Promise<{ id: string }>;
 };
 
 type UpdateBody = {
@@ -71,17 +71,22 @@ async function getCategoryLite(categoryId: string | null): Promise<CategoryLite 
   return cat ? { id: cat.id, name: cat.name, slug: cat.slug } : null;
 }
 
-export async function PUT(req: Request, { params }: RouteProps) {
+export async function PUT(req: NextRequest, context: RouteContext) {
   try {
-    const auth = await requireAdminApi();
-    if (auth instanceof NextResponse) return auth;
+    if (!(await isAdminRequest())) {
+      return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+    }
 
-    const { id } = params;
+    const { id } = await context.params;
     const body = (await req.json()) as UpdateBody;
 
     const existing = await prisma.post.findUnique({
       where: { id },
-      select: { id: true, slug: true, publishedAt: true },
+      select: {
+        id: true,
+        slug: true,
+        publishedAt: true,
+      },
     });
 
     if (!existing) return NextResponse.json({ ok: false, error: 'Not found' }, { status: 404 });
@@ -106,7 +111,9 @@ export async function PUT(req: Request, { params }: RouteProps) {
 
     if (body.content !== undefined) {
       const doc = parseRichDoc(body.content);
-      if (!doc) return NextResponse.json({ ok: false, error: 'Invalid content' }, { status: 400 });
+      if (!doc) {
+        return NextResponse.json({ ok: false, error: 'Invalid content' }, { status: 400 });
+      }
       nextContentForDb = serializeForDbUpdate(doc);
     }
 
@@ -166,12 +173,13 @@ export async function PUT(req: Request, { params }: RouteProps) {
   }
 }
 
-export async function DELETE(_: Request, { params }: RouteProps) {
+export async function DELETE(_: NextRequest, context: RouteContext) {
   try {
-    const auth = await requireAdminApi();
-    if (auth instanceof NextResponse) return auth;
+    if (!(await isAdminRequest())) {
+      return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+    }
 
-    const { id } = params;
+    const { id } = await context.params;
 
     const existing = await prisma.post.findUnique({ where: { id }, select: { id: true } });
     if (!existing) return NextResponse.json({ ok: false, error: 'Not found' }, { status: 404 });

@@ -1,13 +1,13 @@
 // src/app/api/admin/practical-experiences/[id]/route.ts
 
-import { NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAdminApi } from '../../shared/requireAdminApi';
 
 export const runtime = 'nodejs';
 
 type RouteContext = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 function isUniqueConstraintError(err: unknown) {
@@ -19,11 +19,11 @@ function isUniqueConstraintError(err: unknown) {
   );
 }
 
-export async function GET(_: Request, context: RouteContext) {
+export async function GET(_: NextRequest, context: RouteContext) {
   const auth = await requireAdminApi();
   if (auth instanceof NextResponse) return auth;
 
-  const { id } = context.params;
+  const { id } = await context.params;
 
   const item = await prisma.practicalExperience.findUnique({ where: { id } });
   if (!item) {
@@ -33,11 +33,11 @@ export async function GET(_: Request, context: RouteContext) {
   return NextResponse.json({ ok: true, item });
 }
 
-export async function PUT(req: Request, context: RouteContext) {
+export async function PUT(req: NextRequest, context: RouteContext) {
   const auth = await requireAdminApi();
   if (auth instanceof NextResponse) return auth;
 
-  const { id } = context.params;
+  const { id } = await context.params;
 
   const body = (await req.json()) as {
     title?: string;
@@ -80,11 +80,11 @@ export async function PUT(req: Request, context: RouteContext) {
   }
 }
 
-export async function DELETE(_: Request, context: RouteContext) {
+export async function DELETE(_: NextRequest, context: RouteContext) {
   const auth = await requireAdminApi();
   if (auth instanceof NextResponse) return auth;
 
-  const { id } = context.params;
+  const { id } = await context.params;
 
   try {
     await prisma.practicalExperience.delete({ where: { id } });

@@ -1,9 +1,9 @@
 // src/lib/auth/requireAdmin.ts
 
 import { redirect } from 'next/navigation';
-import { verifySession } from './session';
+import { verifySession, type SessionData } from './session';
 
-export async function requireAdmin(): Promise<void> {
+export async function requireAdmin(): Promise<SessionData> {
   const session = await verifySession();
 
   if (!session) {
@@ -13,4 +13,6 @@ export async function requireAdmin(): Promise<void> {
   if (session.role !== 'ADMIN') {
     redirect('/login');
   }
+
+  return session;
 }

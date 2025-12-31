@@ -2,20 +2,21 @@
 
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { isAdminRequest } from '../../shared/requireAdminApi';
+import { requireAdminApi } from '../../shared/requireAdminApi';
+
+export const runtime = 'nodejs';
 
 type RouteContext = {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 };
 
 export async function GET(_: Request, context: RouteContext) {
-  if (!(await isAdminRequest())) {
-    return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
-  }
+  const auth = await requireAdminApi();
+  if (auth instanceof NextResponse) return auth;
 
-  const { id } = await context.params;
+  const { id } = context.params;
+
   const item = await prisma.diploma.findUnique({ where: { id } });
-
   if (!item) {
     return NextResponse.json({ ok: false, error: 'Not found.' }, { status: 404 });
   }
@@ -24,11 +25,11 @@ export async function GET(_: Request, context: RouteContext) {
 }
 
 export async function PUT(req: Request, context: RouteContext) {
-  if (!(await isAdminRequest())) {
-    return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
-  }
+  const auth = await requireAdminApi();
+  if (auth instanceof NextResponse) return auth;
 
-  const { id } = await context.params;
+  const { id } = context.params;
+
   const body = (await req.json()) as {
     title?: string;
     issuer?: string;
@@ -39,18 +40,19 @@ export async function PUT(req: Request, context: RouteContext) {
     imagePublicId?: string | null;
   };
 
-  if (!body.title?.trim()) {
+  const title = (body.title || '').trim();
+  if (!title) {
     return NextResponse.json({ ok: false, error: 'Title is required.' }, { status: 400 });
   }
 
   await prisma.diploma.update({
     where: { id },
     data: {
-      title: body.title.trim(),
+      title,
       issuer: body.issuer?.trim() || null,
       dateLabel: body.dateLabel?.trim() || null,
       description: body.description?.trim() || null,
-      sortOrder: Number(body.sortOrder) || 0,
+      sortOrder: Number.isFinite(body.sortOrder as number) ? (body.sortOrder as number) : 0,
       imageUrl: body.imageUrl || null,
       imagePublicId: body.imagePublicId || null,
     },
@@ -60,12 +62,11 @@ export async function PUT(req: Request, context: RouteContext) {
 }
 
 export async function DELETE(_: Request, context: RouteContext) {
-  if (!(await isAdminRequest())) {
-    return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
-  }
+  const auth = await requireAdminApi();
+  if (auth instanceof NextResponse) return auth;
 
-  const { id } = await context.params;
+  const { id } = context.params;
+
   await prisma.diploma.delete({ where: { id } });
-
   return NextResponse.json({ ok: true });
 }

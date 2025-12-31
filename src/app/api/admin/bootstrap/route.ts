@@ -3,6 +3,9 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { prisma } from '@/lib/prisma';
+import { requireAdminApi } from '../shared/requireAdminApi';
+
+export const runtime = 'nodejs';
 
 function requireEnv(name: string): string {
   const value = process.env[name];
@@ -13,6 +16,9 @@ function requireEnv(name: string): string {
 }
 
 export async function POST() {
+  const auth = await requireAdminApi();
+  if (auth instanceof NextResponse) return auth;
+
   try {
     const adminEmail = requireEnv('ADMIN_EMAIL').toLowerCase();
     const adminPassword = requireEnv('ADMIN_PASSWORD');

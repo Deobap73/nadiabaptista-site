@@ -2,7 +2,9 @@
 
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { isAdminRequest } from '../shared/requireAdminApi';
+import { requireAdminApi } from '../shared/requireAdminApi';
+
+export const runtime = 'nodejs';
 
 function isUniqueConstraintError(err: unknown) {
   return (
@@ -14,9 +16,8 @@ function isUniqueConstraintError(err: unknown) {
 }
 
 export async function GET() {
-  if (!(await isAdminRequest())) {
-    return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
-  }
+  const auth = await requireAdminApi();
+  if (auth instanceof NextResponse) return auth;
 
   const items = await prisma.practicalExperience.findMany({
     orderBy: [{ sortOrder: 'asc' }, { updatedAt: 'desc' }],
@@ -27,9 +28,8 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  if (!(await isAdminRequest())) {
-    return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
-  }
+  const auth = await requireAdminApi();
+  if (auth instanceof NextResponse) return auth;
 
   const body = (await req.json()) as {
     title?: string;

@@ -2,9 +2,9 @@
 
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireAdmin } from '@/lib/auth/requireAdmin';
 import { mapPostToPublic, normalizeSlug } from '@/lib/blog/postMapper';
 import type { Prisma } from '@prisma/client';
+import { requireAdminApiSession } from '@/app/api/admin/shared/requireAdminApi';
 
 type CreateBody = {
   title?: string;
@@ -67,8 +67,10 @@ async function getCategoryLite(categoryId: string | null): Promise<CategoryLite 
 
 export async function GET() {
   try {
-    const session = await requireAdmin();
-    if (!session) return NextResponse.json({ ok: false }, { status: 401 });
+    const session = await requireAdminApiSession();
+    if (!session) {
+      return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+    }
 
     const posts = await prisma.post.findMany({
       orderBy: [{ updatedAt: 'desc' }],
@@ -128,8 +130,10 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const session = await requireAdmin();
-    if (!session) return NextResponse.json({ ok: false }, { status: 401 });
+    const session = await requireAdminApiSession();
+    if (!session) {
+      return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+    }
 
     const body = (await req.json()) as CreateBody;
 
@@ -161,7 +165,7 @@ export async function POST(req: Request) {
         categoryId: body.categoryId ?? null,
         coverImageUrl: body.coverImageUrl ?? null,
         coverImagePublicId: body.coverImagePublicId ?? null,
-        authorId: session.userId === 'admin' ? null : session.userId,
+        authorId: session.role === 'ADMIN' ? null : session.userId,
       },
       select: {
         id: true,

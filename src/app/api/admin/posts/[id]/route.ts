@@ -2,12 +2,12 @@
 
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireAdmin } from '@/lib/auth/requireAdmin';
 import { mapPostToPublic, normalizeSlug } from '@/lib/blog/postMapper';
 import type { Prisma } from '@prisma/client';
+import { isAdminRequest } from '@/app/api/admin/shared/requireAdminApi';
 
 type RouteProps = {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 };
 
 type UpdateBody = {
@@ -71,10 +71,11 @@ async function getCategoryLite(categoryId: string | null): Promise<CategoryLite 
 
 export async function PUT(req: Request, { params }: RouteProps) {
   try {
-    const session = await requireAdmin();
-    if (!session) return NextResponse.json({ ok: false }, { status: 401 });
+    if (!(await isAdminRequest())) {
+      return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+    }
 
-    const { id } = await params;
+    const { id } = params;
     const body = (await req.json()) as UpdateBody;
 
     const existing = await prisma.post.findUnique({
@@ -172,10 +173,11 @@ export async function PUT(req: Request, { params }: RouteProps) {
 
 export async function DELETE(_: Request, { params }: RouteProps) {
   try {
-    const session = await requireAdmin();
-    if (!session) return NextResponse.json({ ok: false }, { status: 401 });
+    if (!(await isAdminRequest())) {
+      return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+    }
 
-    const { id } = await params;
+    const { id } = params;
 
     const existing = await prisma.post.findUnique({ where: { id }, select: { id: true } });
     if (!existing) return NextResponse.json({ ok: false, error: 'Not found' }, { status: 404 });

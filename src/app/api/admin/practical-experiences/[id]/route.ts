@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { isAdminRequest } from '../../shared/requireAdminApi';
 
 type RouteContext = {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 };
 
 function isUniqueConstraintError(err: unknown) {
@@ -22,7 +22,7 @@ export async function GET(_: Request, context: RouteContext) {
     return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { id } = await context.params;
+  const { id } = context.params;
 
   const item = await prisma.practicalExperience.findUnique({
     where: { id },
@@ -40,7 +40,7 @@ export async function PUT(req: Request, context: RouteContext) {
     return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { id } = await context.params;
+  const { id } = context.params;
 
   const body = (await req.json()) as {
     title?: string;
@@ -87,7 +87,7 @@ export async function DELETE(_: Request, context: RouteContext) {
     return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { id } = await context.params;
+  const { id } = context.params;
 
   try {
     await prisma.practicalExperience.delete({ where: { id } });

@@ -18,18 +18,19 @@ function createPrismaClient() {
     throw new Error('Missing DATABASE_URL in environment variables.');
   }
 
+  const isDev = process.env.NODE_ENV !== 'production';
+
+  // Dev only. Prevent TLS chain errors with some Postgres poolers.
+  if (isDev) {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+  }
+
   const pool = new Pool({
     connectionString: databaseUrl,
-
-    // Important for Supabase pooler. Accept the cert chain even if Node dislikes it.
-    ssl: { rejectUnauthorized: false },
-
-    // Helps with serverless spikes and pooler behaviour.
+    ssl: isDev ? { rejectUnauthorized: false } : { rejectUnauthorized: true },
     max: 5,
     idleTimeoutMillis: 10_000,
     connectionTimeoutMillis: 10_000,
-
-    // Optional but can reduce issues with poolers.
     keepAlive: true,
   });
 

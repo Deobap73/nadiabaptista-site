@@ -9,9 +9,9 @@ export const runtime = 'nodejs';
 
 const BodySchema = z.object({
   name: z.string().trim().min(2).max(120),
-  phone: z.string().trim().max(40).optional().or(z.literal('')),
-  email: z.string().trim().email().max(160),
-  message: z.string().trim().min(10).max(5000),
+  phone: z.string().trim().max(40).optional(),
+  email: z.string().trim().max(160),
+  message: z.string().trim().min(2).max(5000),
 });
 
 export async function POST(req: Request) {
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     const created = await prisma.contactMessage.create({
       data: {
         name,
-        phone: phone || null,
+        phone: phone && phone.length > 0 ? phone : null,
         email,
         message,
         status: 'PENDING',
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     try {
       await sendContactEmail({
         name,
-        phone: phone || undefined,
+        phone: phone && phone.length > 0 ? phone : undefined,
         email,
         message,
         createdAtIso: created.createdAt.toISOString(),
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
         },
       });
 
-      return NextResponse.json({ ok: true }, { status: 200 });
+      return NextResponse.json({ ok: true });
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Email error';
 

@@ -127,6 +127,7 @@ export default function ContactFormSection() {
                   value={form.name}
                   onChange={(e) => handleChange('name', e.target.value)}
                   required
+                  minLength={2}
                 />
               </div>
 
@@ -163,6 +164,7 @@ export default function ContactFormSection() {
                   value={form.message}
                   onChange={(e) => handleChange('message', e.target.value)}
                   required
+                  minLength={2}
                 />
               </div>
 

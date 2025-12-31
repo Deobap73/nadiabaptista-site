@@ -37,13 +37,18 @@ export async function POST(req: Request) {
     });
 
     try {
-      await sendContactEmail({
+      const result = await sendContactEmail({
         name,
         phone: phone && phone.length > 0 ? phone : undefined,
         email,
         message,
         createdAtIso: created.createdAt.toISOString(),
         messageId: created.id,
+      });
+
+      console.log('Contact email sent via Resend', {
+        contactMessageId: created.id,
+        resendResult: result,
       });
 
       await prisma.contactMessage.update({
@@ -55,11 +60,17 @@ export async function POST(req: Request) {
         },
       });
 
-      return NextResponse.json({ ok: true });
+      return NextResponse.json({
+        ok: true,
+        resend: result,
+      });
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Email error';
 
-      console.error('Contact email failed:', msg);
+      console.error('Contact email failed', {
+        contactMessageId: created.id,
+        error: msg,
+      });
 
       await prisma.contactMessage.update({
         where: { id: created.id },
@@ -80,7 +91,7 @@ export async function POST(req: Request) {
     }
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'Server error';
-    console.error('Contact route failed:', msg);
+    console.error('Contact route failed', msg);
     return NextResponse.json({ ok: false, error: 'Server error' }, { status: 500 });
   }
 }

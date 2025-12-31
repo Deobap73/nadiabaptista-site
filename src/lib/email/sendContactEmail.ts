@@ -11,6 +11,11 @@ type SendContactEmailInput = {
   messageId: string;
 };
 
+type ResendSendResult = {
+  id?: string;
+  error?: unknown;
+};
+
 function requireEnv(name: string): string {
   const v = (process.env[name] || '').trim();
   if (!v) throw new Error(`Missing env: ${name}`);
@@ -30,9 +35,12 @@ function getProvider(): string {
   return (process.env.EMAIL_PROVIDER || '').trim().toLowerCase();
 }
 
-export async function sendContactEmail(input: SendContactEmailInput) {
+export async function sendContactEmail(input: SendContactEmailInput): Promise<ResendSendResult> {
   const provider = getProvider();
-  if (provider && provider !== 'resend') {
+
+  const normalized = provider === 'resende' ? 'resend' : provider;
+
+  if (normalized && normalized !== 'resend') {
     throw new Error(`Unsupported EMAIL_PROVIDER: ${provider}`);
   }
 
@@ -85,5 +93,5 @@ export async function sendContactEmail(input: SendContactEmailInput) {
     replyTo: input.email,
   });
 
-  return result;
+  return result as unknown as ResendSendResult;
 }

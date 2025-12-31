@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { isAdminRequest } from '../../shared/requireAdminApi';
 
 type RouteContext = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export async function GET(_: Request, context: RouteContext) {
@@ -13,11 +13,8 @@ export async function GET(_: Request, context: RouteContext) {
     return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { id } = context.params;
-
-  const item = await prisma.diploma.findUnique({
-    where: { id },
-  });
+  const { id } = await context.params;
+  const item = await prisma.diploma.findUnique({ where: { id } });
 
   if (!item) {
     return NextResponse.json({ ok: false, error: 'Not found.' }, { status: 404 });
@@ -31,8 +28,7 @@ export async function PUT(req: Request, context: RouteContext) {
     return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { id } = context.params;
-
+  const { id } = await context.params;
   const body = (await req.json()) as {
     title?: string;
     issuer?: string;
@@ -43,19 +39,18 @@ export async function PUT(req: Request, context: RouteContext) {
     imagePublicId?: string | null;
   };
 
-  const title = (body.title || '').trim();
-  if (!title) {
+  if (!body.title?.trim()) {
     return NextResponse.json({ ok: false, error: 'Title is required.' }, { status: 400 });
   }
 
   await prisma.diploma.update({
     where: { id },
     data: {
-      title,
+      title: body.title.trim(),
       issuer: body.issuer?.trim() || null,
       dateLabel: body.dateLabel?.trim() || null,
       description: body.description?.trim() || null,
-      sortOrder: Number.isFinite(body.sortOrder as number) ? (body.sortOrder as number) : 0,
+      sortOrder: Number(body.sortOrder) || 0,
       imageUrl: body.imageUrl || null,
       imagePublicId: body.imagePublicId || null,
     },
@@ -69,8 +64,8 @@ export async function DELETE(_: Request, context: RouteContext) {
     return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { id } = context.params;
-
+  const { id } = await context.params;
   await prisma.diploma.delete({ where: { id } });
+
   return NextResponse.json({ ok: true });
 }

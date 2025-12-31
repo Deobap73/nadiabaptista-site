@@ -37,10 +37,10 @@ export default function ContactFormSection() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: form.name,
-          phone: form.phone,
-          email: form.email,
-          message: form.message,
+          name: form.name.trim(),
+          phone: form.phone.trim(),
+          email: form.email.trim(),
+          message: form.message.trim(),
         }),
       });
 
@@ -164,7 +164,7 @@ export default function ContactFormSection() {
                   value={form.message}
                   onChange={(e) => handleChange('message', e.target.value)}
                   required
-                  minLength={2}
+                  minLength={10}
                 />
               </div>
 

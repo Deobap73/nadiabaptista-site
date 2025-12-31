@@ -10,8 +10,8 @@ export const runtime = 'nodejs';
 const BodySchema = z.object({
   name: z.string().trim().min(2).max(120),
   phone: z.string().trim().max(40).optional(),
-  email: z.string().trim().max(160),
-  message: z.string().trim().min(2).max(5000),
+  email: z.string().trim().max(160).pipe(z.string().email()),
+  message: z.string().trim().min(10).max(5000),
 });
 
 export async function POST(req: Request) {
@@ -59,6 +59,8 @@ export async function POST(req: Request) {
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Email error';
 
+      console.error('Contact email failed:', msg);
+
       await prisma.contactMessage.update({
         where: { id: created.id },
         data: {
@@ -67,9 +69,18 @@ export async function POST(req: Request) {
         },
       });
 
-      return NextResponse.json({ ok: false, error: 'Failed to send email' }, { status: 502 });
+      return NextResponse.json(
+        {
+          ok: false,
+          error: 'Failed to send email',
+          details: process.env.NODE_ENV !== 'production' ? msg : undefined,
+        },
+        { status: 502 }
+      );
     }
-  } catch {
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : 'Server error';
+    console.error('Contact route failed:', msg);
     return NextResponse.json({ ok: false, error: 'Server error' }, { status: 500 });
   }
 }

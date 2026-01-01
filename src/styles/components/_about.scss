@@ -62,8 +62,22 @@
   gap: var(--space-16);
 }
 @media (max-width: 860px) {
-  .about_hero__content {
-    display: none;
+  .about_hero__media {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+  }
+
+  .about_hero__image_wrap {
+    width: 100%;
+    max-width: none;
+    border-radius: 0;
+  }
+
+  .about_hero__image {
+    width: 100%;
+    height: auto;
+    display: block;
   }
 }
 

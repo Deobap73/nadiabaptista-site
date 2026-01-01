@@ -40,8 +40,6 @@
 
 .contact_hero__media_mobile {
   display: none;
-  border-radius: var(--radius-xl);
-  overflow: hidden;
 }
 
 .contact_hero__image {
@@ -56,15 +54,7 @@
   min-height: 690px;
 }
 
-/* Let the section background show through on desktop */
-.contact_hero__panel_top {
-  background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-48);
-}
-
+.contact_hero__panel_top,
 .contact_hero__panel_bottom {
   background: transparent;
   display: flex;
@@ -90,6 +80,10 @@
   max-width: 34ch;
 }
 
+/* ========================= */
+/* Mobile */
+/* ========================= */
+
 @media (max-width: 1023px) {
   .contact_hero {
     background: var(--colorMainBackgroundMobile);
@@ -104,7 +98,6 @@
     padding-bottom: var(--space-32);
   }
 
-  /* Force the order to match the mock: image first, then text */
   .contact_hero__grid {
     grid-template-columns: 1fr;
     grid-template-areas:
@@ -120,6 +113,13 @@
   .contact_hero__media_mobile {
     display: block;
     grid-area: media;
+
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+
+    border-radius: 0;
+    overflow: hidden;
   }
 
   .contact_hero__panel {
@@ -129,14 +129,11 @@
     flex-direction: column;
   }
 
-  /* Mobile wants all white, so paint these blocks white */
   .contact_hero__panel_top {
-    background: var(--colorBackground);
     padding: var(--space-32) var(--space-24) var(--space-16);
   }
 
   .contact_hero__panel_bottom {
-    background: var(--colorBackground);
     padding: var(--space-16) var(--space-24) var(--space-32);
   }
 

@@ -1,7 +1,6 @@
 // src/lib/newsletter/newsletterService.ts
 
 import { prisma } from '@/lib/prisma';
-
 import { getPublicSiteUrl, joinUrl } from './siteUrl';
 import { sendNewsletterEventEmail } from '@/lib/email/sendNewsletterEventEmail';
 
@@ -40,7 +39,9 @@ export async function createNewsletterEventIfMissing(input: CreateEventInput) {
       select: { id: true },
     });
 
-    if (existing) return { ok: true as const, eventId: existing.id, created: false as const };
+    if (existing) {
+      return { ok: true as const, eventId: existing.id, created: false as const };
+    }
 
     const created = await prisma.newsletterEvent.create({
       data: {
@@ -86,10 +87,10 @@ export async function deliverNewsletterEvent(eventId: string) {
 
       if (already) continue;
 
-      const unsubHash = sub.unsubTokenHash || '';
+      const unsubToken = (sub.unsubTokenHash || '').trim();
       const unsubscribeUrl = joinUrl(
         base,
-        `/api/newsletter/unsubscribe?token=${encodeURIComponent(unsubHash)}`
+        `/api/newsletter/unsubscribe?token=${encodeURIComponent(unsubToken)}`
       );
 
       try {

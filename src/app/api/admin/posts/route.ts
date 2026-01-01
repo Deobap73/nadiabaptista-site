@@ -10,6 +10,8 @@ import {
   deliverNewsletterEvent,
 } from '@/lib/newsletter/newsletterService';
 
+export const runtime = 'nodejs';
+
 type CreateBody = {
   title?: string;
   slug?: string;

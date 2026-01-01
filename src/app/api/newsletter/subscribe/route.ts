@@ -32,7 +32,6 @@ export async function POST(req: Request) {
 
     const confirmRaw = randomToken();
     const confirmHash = sha256Hex(confirmRaw);
-
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
     const unsubRaw = randomToken();
@@ -72,12 +71,13 @@ export async function POST(req: Request) {
     }
 
     const base = getPublicSiteUrl();
+
     const confirmUrl = joinUrl(
       base,
       `/api/newsletter/confirm?token=${encodeURIComponent(confirmRaw)}`
     );
 
-    const unsubToken = subscriber.unsubTokenHash || '';
+    const unsubToken = (subscriber.unsubTokenHash || '').trim();
     const unsubscribeUrl = joinUrl(
       base,
       `/api/newsletter/unsubscribe?token=${encodeURIComponent(unsubToken)}`

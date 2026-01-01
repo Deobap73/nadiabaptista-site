@@ -8,6 +8,8 @@ import {
   deliverNewsletterEvent,
 } from '@/lib/newsletter/newsletterService';
 
+export const runtime = 'nodejs';
+
 export async function GET() {
   if (!(await isAdminRequest())) {
     return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });

@@ -40,13 +40,21 @@ export default function NewsletterBanner({
   fields,
   buttonLabel,
 }: NewsletterBannerProps) {
-  const nameFieldId = useMemo(() => fields.find((f) => f.type === 'text')?.id || 'name', [fields]);
   const emailFieldId = useMemo(
     () => fields.find((f) => f.type === 'email')?.id || 'email',
     [fields]
   );
 
-  const [name, setName] = useState('');
+  const textFieldIds = useMemo(
+    () => fields.filter((f) => f.type === 'text').map((f) => f.id),
+    [fields]
+  );
+
+  const firstNameFieldId = useMemo(() => textFieldIds[0] || 'firstName', [textFieldIds]);
+  const lastNameFieldId = useMemo(() => textFieldIds[1] || 'lastName', [textFieldIds]);
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,11 +67,17 @@ export default function NewsletterBanner({
     setToastOpen(true);
   }
 
+  function buildFullName(fn: string, ln: string): string {
+    const a = fn.trim();
+    const b = ln.trim();
+    return [a, b].filter(Boolean).join(' ').trim();
+  }
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     const safeEmail = email.trim().toLowerCase();
-    const safeName = name.trim();
+    const safeFullName = buildFullName(firstName, lastName);
 
     if (!isValidEmail(safeEmail)) {
       openToast('Escreve um email válido.');
@@ -78,7 +92,10 @@ export default function NewsletterBanner({
       const res = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ email: safeEmail, name: safeName || undefined }),
+        body: JSON.stringify({
+          email: safeEmail,
+          name: safeFullName || undefined,
+        }),
       });
 
       const data = (await res.json()) as ApiResponse;
@@ -97,7 +114,8 @@ export default function NewsletterBanner({
 
       openToast('Enviámos um email de confirmação. Verifica a tua caixa de entrada.');
       setEmail('');
-      setName('');
+      setFirstName('');
+      setLastName('');
       setIsSubmitting(false);
       return;
     } catch {
@@ -155,6 +173,10 @@ export default function NewsletterBanner({
               }
 
               const isEmail = field.type === 'email';
+              const isFirstName = field.type === 'text' && field.id === firstNameFieldId;
+              const isLastName = field.type === 'text' && field.id === lastNameFieldId;
+
+              const value = isEmail ? email : isFirstName ? firstName : lastName;
 
               return (
                 <div key={field.id} className={groupClass}>
@@ -164,14 +186,21 @@ export default function NewsletterBanner({
                     className='home-newsletter__input'
                     autoComplete={field.autoComplete}
                     placeholder={field.placeholder}
-                    value={isEmail ? email : name}
-                    onChange={(e) => (isEmail ? setEmail(e.target.value) : setName(e.target.value))}
+                    value={value}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      if (isEmail) setEmail(v);
+                      else if (isFirstName) setFirstName(v);
+                      else setLastName(v);
+                    }}
                     required={isEmail}
                     name={
                       field.id === emailFieldId
                         ? 'email'
-                        : field.id === nameFieldId
-                        ? 'name'
+                        : field.id === firstNameFieldId
+                        ? 'firstName'
+                        : field.id === lastNameFieldId
+                        ? 'lastName'
                         : field.id
                     }
                   />

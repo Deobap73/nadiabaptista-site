@@ -173,6 +173,73 @@ model ContactMessage {
   @@index([status])
 }
 
+enum NewsletterSubscriberStatus {
+  PENDING
+  ACTIVE
+  UNSUBSCRIBED
+}
+
+enum NewsletterEventKind {
+  POST
+  ACADEMIC_PROJECT
+  ACHIEVEMENT
+  CONFERENCE
+  PRACTICAL_EXPERIENCE
+}
+
+model Subscriber {
+  id                String                     @id @default(cuid())
+  email             String                     @unique
+  name              String?
+  status            NewsletterSubscriberStatus  @default(PENDING)
+
+  confirmTokenHash  String?
+  confirmExpiresAt  DateTime?
+
+  unsubTokenHash    String?
+
+  confirmedAt       DateTime?
+  unsubscribedAt    DateTime?
+
+  createdAt         DateTime                   @default(now())
+  updatedAt         DateTime                   @updatedAt
+
+  deliveries        NewsletterDelivery[]
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model NewsletterEvent {
+  id        String              @id @default(cuid())
+  kind      NewsletterEventKind
+  entityId  String
+  title     String
+  url       String
+  createdAt DateTime            @default(now())
+
+  deliveries NewsletterDelivery[]
+
+  @@unique([kind, entityId])
+  @@index([createdAt])
+}
+
+model NewsletterDelivery {
+  id           String          @id @default(cuid())
+  eventId      String
+  subscriberId String
+  sentAt       DateTime?
+  providerId   String?
+  error        String?
+  createdAt    DateTime        @default(now())
+
+  event        NewsletterEvent @relation(fields: [eventId], references: [id])
+  subscriber   Subscriber      @relation(fields: [subscriberId], references: [id])
+
+  @@unique([eventId, subscriberId])
+  @@index([createdAt])
+}
+
 
 enum UserRole {
   ADMIN

@@ -5,6 +5,10 @@ import { prisma } from '@/lib/prisma';
 import { mapPostToPublic, normalizeSlug } from '@/lib/blog/postMapper';
 import type { Prisma } from '@prisma/client';
 import { isAdminRequest } from '../shared/requireAdminApi';
+import {
+  createNewsletterEventIfMissing,
+  deliverNewsletterEvent,
+} from '@/lib/newsletter/newsletterService';
 
 type CreateBody = {
   title?: string;
@@ -196,6 +200,19 @@ export async function POST(req: Request) {
       coverImageUrl: created.coverImageUrl,
       category,
     });
+
+    if (created.status === 'PUBLISHED') {
+      const ev = await createNewsletterEventIfMissing({
+        kind: 'POST',
+        entityId: created.id,
+        title: created.title,
+        urlPath: `/blog/${created.slug}`,
+      });
+
+      if (ev.ok) {
+        await deliverNewsletterEvent(ev.eventId);
+      }
+    }
 
     return NextResponse.json({ ok: true, post: data });
   } catch {

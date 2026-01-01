@@ -5,6 +5,10 @@ import { prisma } from '@/lib/prisma';
 import { mapPostToPublic, normalizeSlug } from '@/lib/blog/postMapper';
 import type { Prisma } from '@prisma/client';
 import { isAdminRequest } from '../../shared/requireAdminApi';
+import {
+  createNewsletterEventIfMissing,
+  deliverNewsletterEvent,
+} from '@/lib/newsletter/newsletterService';
 
 export const runtime = 'nodejs';
 
@@ -86,6 +90,7 @@ export async function PUT(req: NextRequest, context: RouteContext) {
         id: true,
         slug: true,
         publishedAt: true,
+        status: true,
       },
     });
 
@@ -166,6 +171,21 @@ export async function PUT(req: NextRequest, context: RouteContext) {
       coverImageUrl: updated.coverImageUrl,
       category,
     });
+
+    const becamePublished = existing.status === 'DRAFT' && nextStatus === 'PUBLISHED';
+
+    if (becamePublished) {
+      const ev = await createNewsletterEventIfMissing({
+        kind: 'POST',
+        entityId: updated.id,
+        title: updated.title,
+        urlPath: `/blog/${updated.slug}`,
+      });
+
+      if (ev.ok) {
+        await deliverNewsletterEvent(ev.eventId);
+      }
+    }
 
     return NextResponse.json({ ok: true, post: data });
   } catch {

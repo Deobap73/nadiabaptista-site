@@ -3,6 +3,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { requireAdminApi } from '../shared/requireAdminApi';
+import {
+  createNewsletterEventIfMissing,
+  deliverNewsletterEvent,
+} from '@/lib/newsletter/newsletterService';
 
 export const runtime = 'nodejs';
 
@@ -60,6 +64,17 @@ export async function POST(req: Request) {
       },
       select: { id: true },
     });
+
+    const ev = await createNewsletterEventIfMissing({
+      kind: 'ACADEMIC_PROJECT',
+      entityId: created.id,
+      title,
+      urlPath: `/studies/academic-projects/${slug}`,
+    });
+
+    if (ev.ok) {
+      await deliverNewsletterEvent(ev.eventId);
+    }
 
     return NextResponse.json({ ok: true, id: created.id });
   } catch (err) {

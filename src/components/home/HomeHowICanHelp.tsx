@@ -1,7 +1,7 @@
 // src\components\home\HomeHowICanHelp.tsx
 
 import React from 'react';
-import { howICanHelpCards, type HelpCard } from '@/content/home/howICanHelpCards';
+import { howICanHelpCards, type HelpCard } from './howICanHelpCards';
 
 const HomeHowICanHelp: React.FC = () => {
   return (
@@ -9,13 +9,13 @@ const HomeHowICanHelp: React.FC = () => {
       <div className='home-how-help__container site-container'>
         <header className='home-how-help__header'>
           <h2 id='home-how-help-title' className='home-how-help__title'>
-            COMO POSSO AJUDAR
+            MENTE, CÉREBRO E PERFORMANCE
           </h2>
           <p className='home-how-help__intro'>
-            Sentir se confiante, tanto a nível psicológico como emocional, é o componente chave para
-            a felicidade. Para isso, ajudo os meus clientes a desenvolver competências para ter um
-            sono de qualidade, reduzir o stress e ter a confiança em si mesmos, o que constitui a
-            base da autoconfiança.
+            O equilíbrio entre o rendimento desportivo e a saúde cognitiva é a chave para o sucesso.
+            Enquanto finalizo o meu percurso na Universidade Fernando Pessoa, exploro como a
+            Neuropsicologia e a Psicologia do Desporto se cruzam para otimizar o foco, a gestão do
+            stress e a resiliência emocional. Descubra a ciência por trás de uma mente de elite.
           </p>
         </header>
 

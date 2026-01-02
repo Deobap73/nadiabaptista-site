@@ -33,12 +33,11 @@ export default function HomeAboutHighlight() {
           </header>
 
           <p className='home-about-highlight__text'>
-            Acredito em conduzir o aconselhamento da maneira que gostaria que fosse feito para mim.
-            As sessões são uma série de conversas onde discutimos situações difíceis da vida e
-            encontramos opções, soluções e formas de lidar com elas. Eu ofereço ferramentas para
-            abordar a vida de maneira diferente, reduzindo a necessidade de aconselhamento a longo
-            prazo. Se experiências anteriores estiverem a ser um obstáculo, nós exploramo las no
-            contexto de avançar em vez de viver no passado.
+            Defendo uma abordagem à Psicologia que alia o rigor científico da Neuropsicologia à
+            dinâmica do Desporto. O meu foco enquanto estudante é compreender como podemos otimizar
+            processos cognitivos para encontrar soluções práticas e eficazes. Acredito na partilha
+            de ferramentas que capacitem o indivíduo a lidar com desafios de forma autónoma, olhando
+            para as experiências passadas como aprendizagem para potenciar o rendimento futuro.
           </p>
 
           <Link href='/about' className='home-about-highlight__button btn btn--primary'>

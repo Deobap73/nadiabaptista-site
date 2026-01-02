@@ -7,26 +7,25 @@ export type HelpCard = {
 
 export const howICanHelpCards: HelpCard[] = [
   {
-    title: 'Terapia Individual',
+    title: 'Processos e Emoções',
     text:
-      'Apoio emocional e acompanhamento psicológico num espaço seguro e confidencial. ' +
-      'As sessões destinam se a adultos e focam se na compreensão do bem estar emocional, ' +
-      'padrões de comportamento e estratégias práticas para lidar com os desafios do dia a dia.',
+      'Estudo e exploração dos mecanismos do bem-estar emocional e dos padrões de comportamento. ' +
+      'Uma análise académica sobre estratégias práticas para enfrentar os desafios ' +
+      'do dia a dia e promover o equilíbrio mental em adultos.',
   },
   {
-    title: 'Consultas no Local de Trabalho',
+    title: 'Desporto e Performance',
     text:
-      'Apoio especializado para profissionais e equipas que enfrentam desgaste emocional, ' +
-      'dificuldades de comunicação ou impacto psicológico relacionado com o ambiente laboral. ' +
-      'Estas consultas ajudam a melhorar a saúde mental no trabalho, prevenir burnout ' +
+      'Investigação sobre o impacto do stress e da comunicação no rendimento de equipas e atletas. ' +
+      'Foco no estudo da saúde mental em contextos de alta performance, ' +
+      'prevenindo o desgaste e otimizando o sucesso coletivo. ' +
       'e promover relações mais saudáveis.',
   },
   {
-    title: 'Cursos de Autoajuda',
+    title: 'Cérebro e Literacia',
     text:
-      'Programas orientados para quem procura desenvolver competências pessoais, gerir stress, ' +
-      'fortalecer autoestima e promover equilíbrio emocional. ' +
-      'Os cursos combinam exercícios práticos, reflexões guiadas e ferramentas simples ' +
-      'para aplicar no quotidiano.',
+      'Divulgação de conhecimento científico sobre o funcionamento cerebral. ' +
+      'Recursos educativos sobre regulação do sono, gestão do stress e desenvolvimento ' +
+      'de competências cognitivas fundamentais para a autoconfiança.',
   },
 ];

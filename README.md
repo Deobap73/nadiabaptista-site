@@ -1,21 +1,10 @@
-
 # Nadia Baptista Psychology Website
 
-This repository contains the website for **Nadia Baptista**, a psychology student based in Porto.  
+This repository contains the website for **Nadia Baptista**, a psychology student based in Porto, Portugal.
+
 The project follows a phased approach. It supports her academic phase now and is designed to grow into a full clinical website when she starts professional practice.
 
-The focus of the implementation is clarity, trust and calm visual communication. Development is done step by step, keeping the codebase readable, scalable and easy to evolve.
-
----
-
-## Badges
-
-![Next.js](https://img.shields.io/badge/Next.js-white-nextdotjs?style=flat&logo=next.js&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-Strict-blueviolet)
-![React](https://img.shields.io/badge/React-18-blue)
-![SCSS](https://img.shields.io/badge/SCSS-BEM-green)
-![Cloudinary](https://img.shields.io/badge/Cloudinary-blue?logo=cloudinary)
-![Vercel](https://img.shields.io/badge/Vercel-white-vercel)
+The focus is clarity, trust and calm visual communication. Development is done step by step, keeping the codebase readable, scalable and easy to evolve.
 
 ---
 
@@ -47,7 +36,7 @@ Footer layout with logo, navigation links and supporting information aligned to 
 
 ## Mobile Experience
 
-The mobile experience follows a two step flow.  
+The mobile experience follows a two step flow.
 First, a landing screen introduces Nadia and her role. After interaction, the full HomePage is displayed.
 
 All logic is handled with in memory state. No cookies or local storage are used.
@@ -77,78 +66,103 @@ Footer stacks vertically with clear separation between elements.
 ## Tech Stack
 
 ### Application
-- Next.js with App Router
-- React Server and Client Components
-- TypeScript
-- SCSS following BEM with a maximum of three nesting levels
+* Next.js with App Router
+* React Server and Client Components
+* TypeScript
+* SCSS using BEM with a maximum of three nesting levels
 
 ### Hosting
-- Deployed on Vercel
-- Domain and DNS managed via Hostinger
+* Deployed on Vercel
+* Domain and DNS managed via Hostinger
 
 ### Media Management
-- All images hosted on Cloudinary
-- No images stored locally or in the database
+* All images hosted on Cloudinary
+* No images stored locally or in the database
 
 ### Content
-- Blog uses mock data in phase one
-- Architecture prepared for Prisma and PostgreSQL
+* Blog uses mock data in the current phase
+* Architecture prepared for Prisma and PostgreSQL
 
 ### Email
-- Contact form handled via Route Handler
-- Server side email delivery using environment variables
+* Contact form handled via Route Handler
+* Server side email delivery using environment variables
 
 ### SEO
-- Metadata handled with generateMetadata
-- Blog slugs implemented
-- Mobile SEO considered from the start
-- Sitemap and robots planned for later phase
+* Metadata handled with Next.js metadata API
+* Blog slugs implemented
+* Mobile SEO considered from the start
+* Sitemap and robots planned for later phase
+
+---
+
+## Implemented Features
+
+### Public Site
+* Home page with modular sections
+* About page
+* Studies page
+* Portfolio page
+* Blog list page and blog post page with slug routing
+* Contact page with API route and email sending
+
+### Cloudinary
+* Server side Cloudinary configuration
+* Upload API route that accepts FormData and returns url and publicId
+* Public pages and blog content use Cloudinary URLs for images
+
+### Admin and Auth Foundations
+These items exist as a foundation, not as a finished admin panel.
+
+* Prisma schema and Prisma client setup
+* Login API route with password hash verification
+* Session creation using secure cookies
+* Basic admin gating helper used by admin API routes
+* Initial admin routes for content management, aligned with a consistent JSON response shape
 
 ---
 
 ## Project Roadmap
 
-### Phase 1 – Student Website
-- Full HomePage
-- Mobile landing flow
-- Studies page
-- Portfolio page
-- Blog with mock posts
-- Contact page
-- Cloudinary integration
-- Defined design system
+### Phase 1: Student Website
+* Full HomePage
+* Mobile landing flow
+* Studies page
+* Portfolio page
+* Blog with mock posts
+* Contact page
+* Cloudinary integration
+* Design system
 
-### Phase 2 – Pre Clinical Presence
-- Expanded About page
-- Base Services structure
-- FAQ structure
+### Phase 2: Pre Clinical Presence
+* Expanded About page content
+* Activate Services structure
+* Activate FAQ structure
 
-### Phase 3 – Clinical Practice
-- Activate Services and FAQ
-- Appointment booking system
-- Database powered blog
-- Local SEO for Porto
-- Admin panel
+### Phase 3: Clinical Practice
+* Appointment booking system
+* Database powered blog
+* Local SEO for Porto
+* Full admin panel
 
 ---
 
 ## Design System
 
 ### Typography
-- Headings use Cormorant Garamond
-- Body text uses Inter
-- Defined in tokens.scss
+* Headings use Cormorant Garamond
+* Body text and UI use Inter
+* Defined in tokens.scss
 
 ### Colors
-- Primary blue: #6986A7
-- Light blue: #C5D3D6
-- Secondary blue: #8FBAEA
-- White background
-- Near black text color
+* Primary blue: #6986A7
+* Light blue: #C5D3D6
+* Secondary blue: #8FBAEA
+* White background
+* Near black text color
 
 ### Grid
-- Desktop: 12 column centered grid
-- Mobile: 4 column layout
+* Desktop: 12 column centered grid
+* Mobile: 4 column layout
 
 ### Spacing
 Consistent spacing tokens defined globally and reused across components.
@@ -175,12 +189,16 @@ src/
     api/
       contact/
       upload/
+      auth/
+      admin/
 
   components/
     layout/
     home/
     blog/
     form/
+    auth/
+    admin/
 
   styles/
     globals.scss
@@ -191,19 +209,11 @@ src/
     email/
     cloudinary/
     blog/
+    auth/
+    prisma/
 
   types/
 ```
-
----
-
-## Development Principles
-
-- Incremental development
-- One feature per commit
-- Clear file structure
-- No premature complexity
-- Prepared for long term growth
 
 ---
 
@@ -226,31 +236,32 @@ CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
 ```
 
----
+If Prisma is enabled locally or on deploy, you will also need:
 
-## Future Work
+```env
+DATABASE_URL=
+```
 
-- Content enrichment
-- Multilingual support
-- Appointment system
-- Admin panel
-- SEO expansion focused on Porto
+Email sending also requires provider settings, stored only on the server:
+
+```env
+EMAIL_PROVIDER=
+RESEND_API_KEY=
+EMAIL_FROM=
+EMAIL_TO=
+```
 
 ---
 
 ## About the Creator
 
-This project is part of my professional frontend portfolio.  
+This project is part of my professional frontend portfolio.
 It reflects a strong focus on structure, design systems and long term maintainability.
 
 ---
 
 ## Contact
 
-Email: contact@deolindobaptista.com  
-LinkedIn: https://www.linkedin.com/in/deolindobaptista/  
+Email: contact@deolindobaptista.com
+LinkedIn: https://www.linkedin.com/in/deolindobaptista/
 GitHub: https://github.com/Deobap73
-
----
-
-If this project is useful, feel free to star the repository.

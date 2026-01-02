@@ -1,8 +1,11 @@
 // src\app\sitemap.ts
 
 import type { MetadataRoute } from 'next';
+import { prisma } from '@/lib/prisma';
 
 const site = 'https://nadiabaptista.pt';
+
+export const runtime = 'nodejs';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -17,23 +20,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let blogRoutes: MetadataRoute.Sitemap = [];
 
   try {
-    const res = await fetch(`${site}/api/posts`, { cache: 'no-store' });
+    const posts = await prisma.post.findMany({
+      where: { status: 'PUBLISHED' },
+      select: { slug: true, updatedAt: true, publishedAt: true },
+      orderBy: [{ publishedAt: 'desc' }, { updatedAt: 'desc' }],
+    });
 
-    if (res.ok) {
-      const json = (await res.json()) as {
-        ok: boolean;
-        posts?: Array<{ slug: string; updatedAt?: string | null; publishedAt?: string | null }>;
-      };
-
-      if (json.ok && json.posts) {
-        blogRoutes = json.posts.map((p) => ({
-          url: `${site}/blog/${p.slug}`,
-          lastModified: p.updatedAt || p.publishedAt || undefined,
-          changeFrequency: 'monthly',
-          priority: 0.7,
-        }));
-      }
-    }
+    blogRoutes = posts.map((p) => ({
+      url: `${site}/blog/${p.slug}`,
+      lastModified: p.updatedAt || p.publishedAt || undefined,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    }));
   } catch {
     blogRoutes = [];
   }

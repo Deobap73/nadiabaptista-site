@@ -2,6 +2,8 @@
 
 import type { Metadata } from 'next';
 import HomeEntry from '@/components/home/HomeEntry';
+import Script from 'next/script';
+import { toJsonLd, websiteJsonLd, personJsonLd } from '@/lib/seo/jsonLd';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -12,5 +14,19 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function HomePage() {
-  return <HomeEntry />;
+  return (
+    <>
+      <Script
+        id='jsonld-website'
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{ __html: toJsonLd(websiteJsonLd()) }}
+      />
+      <Script
+        id='jsonld-person'
+        type='application/ld+json'
+        dangerouslySetInnerHTML={{ __html: toJsonLd(personJsonLd()) }}
+      />
+      <HomeEntry />
+    </>
+  );
 }

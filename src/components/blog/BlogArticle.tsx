@@ -1,8 +1,5 @@
 // src/components/blog/BlogArticle.tsx
 
-'use client';
-
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { BlogPostPublic } from '@/types/blog';
@@ -17,6 +14,14 @@ type ApiPostResponse = {
   post?: BlogPostPublic;
 };
 
+type FetchState = 'ok' | 'not_found' | 'error';
+
+function getBaseUrl(): string {
+  const fromEnv = (process.env.NEXT_PUBLIC_SITE_URL || '').trim();
+  if (fromEnv) return fromEnv;
+  return process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+}
+
 function formatDate(value: string | null): string {
   if (!value) return '';
   const d = new Date(value);
@@ -24,59 +29,33 @@ function formatDate(value: string | null): string {
   return d.toLocaleDateString('pt-PT', { year: 'numeric', month: 'long', day: '2-digit' });
 }
 
-export default function BlogArticle({ slug }: Props) {
-  const [status, setStatus] = useState<'loading' | 'ready' | 'error' | 'not_found'>('loading');
-  const [post, setPost] = useState<BlogPostPublic | null>(null);
+export default async function BlogArticle({ slug }: Props) {
+  const baseUrl = getBaseUrl();
 
-  useEffect(() => {
-    let cancelled = false;
+  let state: FetchState = 'error';
+  let post: BlogPostPublic | null = null;
 
-    async function load() {
-      setStatus('loading');
+  try {
+    const res = await fetch(`${baseUrl}/api/post/${slug}`, { cache: 'no-store' });
 
-      try {
-        const res = await fetch(`/api/post/${slug}`, { cache: 'no-store' });
-
-        if (res.status === 404) {
-          if (!cancelled) setStatus('not_found');
-          return;
-        }
-
-        const json = (await res.json()) as ApiPostResponse;
-
-        if (!cancelled && json.ok && json.post) {
-          setPost(json.post);
-          setStatus('ready');
-          return;
-        }
-
-        if (!cancelled) setStatus('error');
-      } catch {
-        if (!cancelled) setStatus('error');
+    if (res.status === 404) {
+      state = 'not_found';
+    } else if (res.ok) {
+      const json = (await res.json()) as ApiPostResponse;
+      if (json.ok && json.post) {
+        post = json.post;
+        state = 'ok';
+      } else {
+        state = 'error';
       }
+    } else {
+      state = 'error';
     }
-
-    load();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [slug]);
-
-  if (status === 'loading') {
-    return (
-      <article className='blog_article' aria-label='Artigo'>
-        <div className='blog_article__container site-container'>
-          <div className='blog_article__loading'>
-            <p className='blog_article__loading_title'>A carregar artigo</p>
-            <p className='blog_article__loading_text'>Só um momento.</p>
-          </div>
-        </div>
-      </article>
-    );
+  } catch {
+    state = 'error';
   }
 
-  if (status === 'not_found') {
+  if (state === 'not_found') {
     return (
       <article className='blog_article' aria-label='Artigo não encontrado'>
         <div className='blog_article__container site-container'>
@@ -91,7 +70,7 @@ export default function BlogArticle({ slug }: Props) {
     );
   }
 
-  if (status === 'error' || !post) {
+  if (state === 'error' || !post) {
     return (
       <article className='blog_article' aria-label='Erro ao carregar artigo'>
         <div className='blog_article__container site-container'>

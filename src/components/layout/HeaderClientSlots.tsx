@@ -20,8 +20,14 @@ function getBrainMenuAlign(pathname: string): 'left' | 'right' {
   return matchLeft ? 'left' : 'right';
 }
 
+function hasLandingMobileBodyClass(): boolean {
+  if (typeof document === 'undefined') return false;
+  return document.body.classList.contains('is-landing-mobile');
+}
+
 export default function HeaderClientSlots() {
   const pathname = usePathname() || '/';
+
   const align = useMemo(() => getBrainMenuAlign(pathname), [pathname]);
   const opposite = align === 'left' ? 'right' : 'left';
 
@@ -30,6 +36,29 @@ export default function HeaderClientSlots() {
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [loginModalKey, setLoginModalKey] = useState(0);
+
+  const [hideMenus, setHideMenus] = useState(false);
+
+  useEffect(() => {
+    setHideMenus(hasLandingMobileBodyClass());
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    const body = document.body;
+
+    function sync() {
+      setHideMenus(body.classList.contains('is-landing-mobile'));
+    }
+
+    sync();
+
+    const observer = new MutationObserver(() => sync());
+    observer.observe(body, { attributes: true, attributeFilter: ['class'] });
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     function openLogin() {
@@ -43,6 +72,17 @@ export default function HeaderClientSlots() {
 
   function handleLoggedIn() {
     setIsLoginOpen(false);
+  }
+
+  if (hideMenus) {
+    return (
+      <LoginModal
+        key={loginModalKey}
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+        onLoggedIn={handleLoggedIn}
+      />
+    );
   }
 
   return (

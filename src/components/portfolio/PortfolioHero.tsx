@@ -34,7 +34,7 @@ export default function PortfolioHero() {
           <div className='portfolio_hero__media'>
             <Image
               src={portfolioImages.portfolioHeroDesktop}
-              alt='Retrato da psicóloga Nadia Baptista'
+              alt='Retrato da psicóloga Nádia Baptista'
               width={520}
               height={680}
               className='portfolio_hero__image portfolio_hero__image_desktop'
@@ -44,7 +44,7 @@ export default function PortfolioHero() {
 
             <Image
               src={portfolioImages.portfolioHeroMobile}
-              alt='Retrato da psicóloga Nadia Baptista'
+              alt='Retrato da psicóloga Nádia Baptista'
               width={900}
               height={1100}
               className='portfolio_hero__image portfolio_hero__image_mobile'

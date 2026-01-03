@@ -27,7 +27,7 @@ export default function AboutMyStorie() {
           <div className='about_mystorie__image_top'>
             <Image
               src={aboutImages.aboutMyStorie1}
-              alt='Nadia sentada no chão num ambiente calmo e acolhedor'
+              alt='Nádia sentada no chão num ambiente calmo e acolhedor'
               width={980}
               height={640}
               className='about_mystorie__img'
@@ -40,7 +40,7 @@ export default function AboutMyStorie() {
           <div className='about_mystorie__image_bottom'>
             <Image
               src={aboutImages.aboutMyStorie2}
-              alt='Nadia encostada a uma pilha de livros com expressão serena'
+              alt='Nádia encostada a uma pilha de livros com expressão serena'
               width={980}
               height={640}
               className='about_mystorie__img'

@@ -14,7 +14,7 @@ export default function Header() {
         <Link href='/' aria-label='Go to homepage' className='site-header__logo-link'>
           <Image
             src={homeImages.logoNadia}
-            alt='Assinatura da psicóloga Nadia Baptista'
+            alt='Assinatura da psicóloga Nádia Baptista'
             width={260}
             height={90}
             priority

@@ -6,17 +6,17 @@ export default function NotFoundPage() {
   return (
     <main className='pageContainer notFoundPage'>
       <section className='notFoundSection'>
-        <p className='notFoundKicker'>Page not found</p>
+        <p className='notFoundKicker'>Página não encontrada</p>
 
-        <h1 className='notFoundTitle'>This page does not exist</h1>
+        <h1 className='notFoundTitle'>Esta página não existe.</h1>
 
         <p className='notFoundText'>
-          Sometimes a link changes or a page is not ready yet. You can go back to the homepage and
-          continue exploring the path that Nadia is building as a psychology student.
+          Por vezes, um link muda ou uma página ainda não está pronta. Pode voltar à página inicial
+          e continuar a explorar o caminho que a Nádia está a seguir como estudante de psicologia.
         </p>
 
         <Link href='/' className='notFoundButton'>
-          Go back home
+          Voltar à página inicial
         </Link>
       </section>
     </main>

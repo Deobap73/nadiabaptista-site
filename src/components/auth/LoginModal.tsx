@@ -128,7 +128,7 @@ export default function LoginModal({ isOpen, onClose, onLoggedIn }: Props) {
             <div className='auth_modal__brand_logo'>
               <Image
                 src={homeImages.logoNadia}
-                alt='Assinatura da psicóloga Nadia Baptista'
+                alt='Assinatura da psicóloga Nádia Baptista'
                 width={260}
                 height={90}
                 priority

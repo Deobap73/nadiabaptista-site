@@ -8,7 +8,7 @@ export function websiteJsonLd() {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Nadia Baptista',
+    name: 'Nádia Baptista',
     url: 'https://nadiabaptista.pt',
     inLanguage: 'pt-PT',
   };
@@ -18,7 +18,7 @@ export function personJsonLd() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: 'Nadia Baptista',
+    name: 'Nádia Baptista',
     jobTitle: 'Estudante de Psicologia',
     description:
       'Futura psicóloga. Estudante de Psicologia no Porto com foco em neuropsicologia e psicologia do desporto.',
@@ -45,12 +45,12 @@ export function blogPostJsonLd(input: {
     dateModified: input.dateModified || undefined,
     author: {
       '@type': 'Person',
-      name: 'Nadia Baptista',
+      name: 'Nádia Baptista',
       jobTitle: 'Estudante de Psicologia',
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Nadia Baptista',
+      name: 'Nádia Baptista',
     },
     inLanguage: 'pt-PT',
   };

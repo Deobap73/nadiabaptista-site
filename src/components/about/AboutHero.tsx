@@ -16,7 +16,7 @@ export default function AboutHero() {
               <div className='about_hero__image_desktop'>
                 <Image
                   src={aboutImages.aboutHeroDesktop}
-                  alt='Retrato profissional da Nadia Baptista sentada num sofa, num ambiente calmo e iluminado'
+                  alt='Retrato profissional da Nádia Baptista sentada num sofa, num ambiente calmo e iluminado'
                   width={920}
                   height={1100}
                   priority
@@ -27,7 +27,7 @@ export default function AboutHero() {
               <div className='about_hero__image_mobile'>
                 <Image
                   src={aboutImages.aboutHeroMobile}
-                  alt='Retrato profissional da Nadia Baptista sentada num sofa, num ambiente calmo e iluminado'
+                  alt='Retrato profissional da Nádia Baptista sentada num sofa, num ambiente calmo e iluminado'
                   width={920}
                   height={1100}
                   priority

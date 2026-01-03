@@ -21,7 +21,7 @@ type MenuItem = {
   x: number;
   y: number;
   delayMs: number;
-  action?: 'login' | 'logout';
+  action?: 'login' | 'logout' | 'lang';
 };
 
 type CSSVars = CSSProperties & {
@@ -98,6 +98,7 @@ const ICON_OFFSETS: Record<string, IconOffset> = {
   contact: { x: -5, y: 12 },
   login: { x: -2, y: 11 },
   logout: { x: -2, y: 11 },
+  lang: { x: 0, y: 6 },
 };
 
 function cssDelay(delayMs: number): CSSVars {
@@ -133,8 +134,10 @@ function buildGeometry(items: MenuItem[]): Geometry {
     const x1 = cx + ux * centerR;
     const y1 = cy + uy * centerR;
 
-    const x2 = n.x - ux * 20;
-    const y2 = n.y - uy * 20;
+    const endPad = n.id === 'lang' ? 16 : 40;
+
+    const x2 = n.x - ux * endPad;
+    const y2 = n.y - uy * endPad;
 
     return { ...n, x1, y1, x2, y2 };
   });
@@ -149,6 +152,38 @@ function isActiveRoute(pathname: string, href: string) {
   return false;
 }
 
+function readCookie(name: string): string {
+  if (typeof document === 'undefined') return '';
+  const parts = document.cookie.split(';').map((p) => p.trim());
+  const hit = parts.find((p) => p.startsWith(`${name}=`));
+  if (!hit) return '';
+  return decodeURIComponent(hit.slice(name.length + 1));
+}
+
+function writeCookie(name: string, value: string) {
+  if (typeof document === 'undefined') return;
+  const v = encodeURIComponent(value);
+  document.cookie = `${name}=${v}; path=/; max-age=31536000; samesite=lax`;
+}
+
+function normalizeLang(v: string): 'pt' | 'en' {
+  const s = (v || '').trim().toLowerCase();
+  if (s.startsWith('en')) return 'en';
+  return 'pt';
+}
+
+function getInitialLang(): 'pt' | 'en' {
+  if (typeof document === 'undefined') return 'pt';
+
+  const fromCookie = normalizeLang(readCookie('nb_lang'));
+  if (fromCookie) return fromCookie;
+
+  const fromHtml = normalizeLang(document.documentElement.lang || '');
+  if (fromHtml) return fromHtml;
+
+  return 'pt';
+}
+
 export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
   const pathname = usePathname() || '/';
 
@@ -158,12 +193,25 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
+  const [lang, setLang] = useState<'pt' | 'en'>('pt');
+
   const panelId = useId();
   const rootRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   const { me } = useMe();
   const isAuthenticated = me.isAuthenticated;
+
+  useEffect(() => {
+    setLang(getInitialLang());
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.lang = lang;
+    writeCookie('nb_lang', lang);
+    window.dispatchEvent(new CustomEvent('nb_lang_changed', { detail: { lang } }));
+  }, [lang]);
 
   const authItem: MenuItem = isAuthenticated
     ? {
@@ -185,7 +233,17 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
         action: 'login',
       };
 
-  const menuItems: MenuItem[] = [...BASE_MENU_ITEMS, authItem];
+  const langItem: MenuItem = {
+    id: 'lang',
+    label: lang === 'pt' ? '' : '',
+    icon: lang === 'pt' ? '/nav/PT.svg' : '/nav/EN.svg',
+    x: 230,
+    y: 14,
+    delayMs: 0,
+    action: 'lang',
+  };
+
+  const menuItems: MenuItem[] = [langItem, ...BASE_MENU_ITEMS, authItem];
 
   function closeMenu({ focusButton }: { focusButton: boolean }) {
     setIsOpen(false);
@@ -214,6 +272,12 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
   function handleLogin() {
     closeMenu({ focusButton: false });
     window.dispatchEvent(new CustomEvent('nb_open_login_modal'));
+  }
+
+  function handleToggleLang() {
+    setLang((prev) => (prev === 'pt' ? 'en' : 'pt'));
+    showToast(lang === 'pt' ? 'Idioma definido para EN.' : 'Idioma definido para PT.');
+    closeMenu({ focusButton: false });
   }
 
   useEffect(() => {
@@ -281,7 +345,7 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
       <>
         <button
           type='button'
-          className={`brain_menu__mobile_toggle brain_menu__mobile_toggle__${align}`}
+          className={`brain_menu__mobile_toggle brain_menu__mobile_toggle--${align}`}
           onClick={toggleMenu}
           aria-expanded={isOpen}
           aria-label='Abrir menu'>
@@ -293,11 +357,27 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
             <div className='brain_menu__mobile_overlay open' onClick={() => setIsOpen(false)} />
 
             <aside
-              className={`brain_menu__mobile_drawer brain_menu__mobile_drawer__${align}`}
+              className={`brain_menu__mobile_drawer brain_menu__mobile_drawer--${align}`}
               data-open='true'>
               <nav className='brain_menu__mobile_nav open'>
                 <ul className='brain_menu__mobile_list'>
                   {menuItems.map((item) => {
+                    if (item.action === 'lang') {
+                      return (
+                        <li key={item.id} className='brain_menu__mobile_item'>
+                          <button
+                            type='button'
+                            className='brain_menu__mobile_link'
+                            onClick={handleToggleLang}
+                            aria-label='Mudar idioma'>
+                            <span className='brain_menu__mobile_icon'>
+                              <Image src={item.icon} alt='' width={24} height={24} />
+                            </span>
+                          </button>
+                        </li>
+                      );
+                    }
+
                     if (item.action === 'login') {
                       return (
                         <li key={item.id} className='brain_menu__mobile_item'>
@@ -339,7 +419,7 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
                           href={href}
                           onClick={() => setIsOpen(false)}
                           className={`brain_menu__mobile_link${
-                            active ? ' brain_menu__mobile_link__active' : ''
+                            active ? ' brain_menu__mobile_link--active' : ''
                           }`}
                           aria-label={item.label}>
                           <span className='brain_menu__mobile_icon'>
@@ -364,7 +444,7 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
     <>
       <div
         ref={rootRef}
-        className={`brain_menu brain_menu__${align}`}
+        className={`brain_menu brain_menu--${align}`}
         data-open={isOpen ? 'true' : 'false'}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}>
@@ -401,6 +481,24 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
             </svg>
 
             {geometry.nodes.map((n) => {
+              if (n.action === 'lang') {
+                return (
+                  <button
+                    key={n.id}
+                    type='button'
+                    className='brain_menu__node'
+                    style={cssNodePosition(n.x, n.y, n.delayMs, n.id)}
+                    tabIndex={isOpen ? 0 : -1}
+                    onClick={handleToggleLang}
+                    aria-label='Mudar idioma'>
+                    <span className='brain_menu__node_icon' aria-hidden='true'>
+                      <Image src={n.icon} alt='' width={22} height={22} />
+                    </span>
+                    <span className='brain_menu__node_label'>{n.label}</span>
+                  </button>
+                );
+              }
+
               if (n.action === 'login' || n.action === 'logout') {
                 return (
                   <button

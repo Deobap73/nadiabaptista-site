@@ -4,9 +4,9 @@ import type { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Future FAQ · Nadia Baptista',
+    title: 'Future FAQ · Nádia Baptista',
     description:
-      "Placeholder page for future frequently asked questions about Nadia's clinical work, approach and practical details.",
+      "Placeholder page for future frequently asked questions about Nádia's clinical work, approach and practical details.",
     robots: {
       index: false,
       follow: false,

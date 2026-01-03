@@ -16,7 +16,7 @@ export default function HomeHero() {
               <div className='home-hero__image-wrapper'>
                 <Image
                   src={homeImages.heroDesktop}
-                  alt='Retrato da psicóloga Nadia Baptista num consultório acolhedor'
+                  alt='Retrato da psicóloga Nádia Baptista num consultório acolhedor'
                   width={480}
                   height={600}
                   className='home-hero__image'
@@ -26,7 +26,7 @@ export default function HomeHero() {
               </div>
 
               <div className='home-hero__text'>
-                <p className='home-hero__name-prefix'>Nadia</p>
+                <p className='home-hero__name-prefix'>Nádia</p>
                 <h1 id='home-hero-heading' className='home-hero__heading'>
                   Baptista
                 </h1>

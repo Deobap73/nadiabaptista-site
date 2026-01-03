@@ -32,7 +32,7 @@ export default function BlogHero() {
             <div className='blog_hero__media_bg' aria-hidden='true' />
             <Image
               src={blogImages.blogHeroDesktop}
-              alt='Retrato da Nadia Baptista em ambiente interior, sentada no chão com bola de voleibol'
+              alt='Retrato da Nádia Baptista em ambiente interior, sentada no chão com bola de voleibol'
               width={560}
               height={560}
               className='blog_hero__image'

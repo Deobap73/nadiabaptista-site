@@ -13,7 +13,7 @@ export default function HomeAboutHighlight() {
           <div className='home-about-highlight__image-wrapper'>
             <Image
               src={homeImages.aboutDesktop}
-              alt='Retrato profissional da psicóloga Nadia Baptista'
+              alt='Retrato profissional da psicóloga Nádia Baptista'
               width={480}
               height={600}
               sizes='(min-width: 1024px) 480px, 100vw'
@@ -27,7 +27,7 @@ export default function HomeAboutHighlight() {
         <div className='home-about-highlight__content'>
           <header className='home-about-highlight__header'>
             <h2 id='home-about-highlight-heading' className='home-about-highlight__title'>
-              <span className='home-about-highlight__title-line'>Nadia Baptista</span>
+              <span className='home-about-highlight__title-line'>Nádia Baptista</span>
             </h2>
             <span className='home-about-highlight__divider' aria-hidden='true' />
           </header>

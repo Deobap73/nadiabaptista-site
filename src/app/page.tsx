@@ -7,9 +7,9 @@ import { toJsonLd, websiteJsonLd, personJsonLd } from '@/lib/seo/jsonLd';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Home · Nadia Baptista · Psychology student in Porto',
+    title: 'Home · Nádia Baptista · Psychology student in Porto',
     description:
-      'Homepage of Nadia Baptista, psychology student in Porto. Learn about her studies, portfolio, blog and how to get in touch.',
+      'Homepage of Nádia Baptista, psychology student in Porto. Learn about her studies, portfolio, blog and how to get in touch.',
   };
 }
 

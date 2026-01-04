@@ -7,23 +7,24 @@ import AboutMyStory from '@/components/about/AboutMyStory';
 type Lang = 'pt' | 'en';
 
 type Props = {
-  params: {
+  params: Promise<{
     lang: Lang;
-  };
+  }>;
 };
 
 function safeLang(v: string): Lang {
   return v === 'en' ? 'en' : 'pt';
 }
 
-export default function AboutPage({ params }: Props) {
-  const lang = safeLang(params.lang);
+export default async function AboutPage({ params }: Props) {
+  const { lang } = await params;
+  const finalLang = safeLang(lang);
 
   return (
     <>
-      <AboutHero lang={lang} />
-      <AboutMotivationSentence lang={lang} />
-      <AboutMyStory lang={lang} />
+      <AboutHero lang={finalLang} />
+      <AboutMotivationSentence lang={finalLang} />
+      <AboutMyStory lang={finalLang} />
     </>
   );
 }

@@ -6,11 +6,11 @@ import HomeNewsletterBanner from '@/components/home/HomeNewsletterBanner';
 import type { Lang } from '@/lib/i18n';
 
 type Props = {
-  params: { lang: Lang };
+  params: Promise<{ lang: Lang }>;
 };
 
-export default function BlogPage({ params }: Props) {
-  const lang = params.lang;
+export default async function BlogPage({ params }: Props) {
+  const { lang } = await params;
 
   return (
     <main className='blog_page'>

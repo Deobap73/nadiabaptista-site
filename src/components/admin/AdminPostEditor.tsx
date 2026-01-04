@@ -158,14 +158,14 @@ export default function AdminPostEditor(props: Props) {
         if (!cancelled) {
           setUi('error');
           setMessage(
-            'Não foi possível carregar o artigo. (Explicação: Ocorreu um erro ao tentar carregar o artigo para edição)'
+            'Não foi possível carregar o artigo. (Ocorreu um erro ao tentar carregar o artigo para edição)'
           );
         }
       } catch {
         if (!cancelled) {
           setUi('error');
           setMessage(
-            'Erro ao carregar. (Explicação: Ocorreu uma falha de rede ou servidor ao tentar carregar os dados)'
+            'Erro ao carregar. (Ocorreu uma falha de rede ou servidor ao tentar carregar os dados)'
           );
         }
       }
@@ -211,7 +211,7 @@ export default function AdminPostEditor(props: Props) {
       if (!payload.title || !payload.slug) {
         setUi('ready');
         setMessage(
-          'Preenche o título e o slug. (Explicação: Ambos os campos são obrigatórios para criar ou editar um artigo)'
+          'Preenche o título e o slug. (Ambos os campos são obrigatórios para criar ou editar um artigo)'
         );
         return;
       }
@@ -219,7 +219,7 @@ export default function AdminPostEditor(props: Props) {
       if (!payload.content || !docHasAnyText(payload.content)) {
         setUi('ready');
         setMessage(
-          'Escreve conteúdo no editor. (Explicação: O artigo precisa de ter conteúdo textual para ser guardado)'
+          'Escreve conteúdo no editor. (O artigo precisa de ter conteúdo textual para ser guardado)'
         );
         return;
       }
@@ -236,16 +236,13 @@ export default function AdminPostEditor(props: Props) {
         if (!res.ok || !json.ok) {
           setUi('ready');
           setMessage(
-            json.error ||
-              'Erro ao criar. (Explicação: O servidor não conseguiu processar o pedido de criação)'
+            json.error || 'Erro ao criar. (O servidor não conseguiu processar o pedido de criação)'
           );
           return;
         }
 
         setUi('ready');
-        setMessage(
-          'Artigo criado com sucesso. (Explicação: O novo artigo foi guardado na base de dados)'
-        );
+        setMessage('Artigo criado com sucesso. (O novo artigo foi guardado na base de dados)');
         return;
       }
 
@@ -261,20 +258,16 @@ export default function AdminPostEditor(props: Props) {
         setUi('ready');
         setMessage(
           json.error ||
-            'Erro ao guardar. (Explicação: O servidor não conseguiu processar a atualização do artigo)'
+            'Erro ao guardar. (O servidor não conseguiu processar a atualização do artigo)'
         );
         return;
       }
 
       setUi('ready');
-      setMessage(
-        'Artigo guardado com sucesso. (Explicação: As alterações foram salvas na base de dados)'
-      );
+      setMessage('Artigo guardado com sucesso. (As alterações foram salvas na base de dados)');
     } catch {
       setUi('ready');
-      setMessage(
-        'Erro ao guardar. (Explicação: Ocorreu uma falha de rede ou servidor ao tentar guardar)'
-      );
+      setMessage('Erro ao guardar. (Ocorreu uma falha de rede ou servidor ao tentar guardar)');
     }
   }
 
@@ -290,38 +283,30 @@ export default function AdminPostEditor(props: Props) {
 
       if (!res.ok || !json.ok) {
         setUi('ready');
-        setMessage(
-          'Erro ao apagar. (Explicação: O servidor não conseguiu processar o pedido de eliminação)'
-        );
+        setMessage('Erro ao apagar. (O servidor não conseguiu processar o pedido de eliminação)');
         return;
       }
 
       setUi('ready');
-      setMessage(
-        'Artigo apagado. (Explicação: O artigo foi removido permanentemente da base de dados)'
-      );
+      setMessage('Artigo apagado. (O artigo foi removido permanentemente da base de dados)');
     } catch {
       setUi('ready');
       setMessage(
-        'Erro ao apagar. (Explicação: Ocorreu uma falha de rede ou servidor ao tentar eliminar o artigo)'
+        'Erro ao apagar. (Ocorreu uma falha de rede ou servidor ao tentar eliminar o artigo)'
       );
     }
   }
 
   if (ui === 'loading') {
     return (
-      <p className='admin_post__hint'>
-        A carregar... (Explicação: A carregar dados do artigo e categorias)
-      </p>
+      <p className='admin_post__hint'>A carregar... (A carregar dados do artigo e categorias)</p>
     );
   }
 
   if (ui === 'error') {
     return (
       <div className='admin_post'>
-        <p className='admin_post__hint'>
-          {message || 'Erro. (Explicação: Ocorreu um erro desconhecido)'}
-        </p>
+        <p className='admin_post__hint'>{message || 'Erro. (Ocorreu um erro desconhecido)'}</p>
         <Link className='admin_post__back' href='/admin/blog'>
           Voltar à lista de artigos
         </Link>
@@ -333,7 +318,7 @@ export default function AdminPostEditor(props: Props) {
     <div className='admin_post'>
       <div className='admin_post__toolbar'>
         <Link className='admin_post__back' href='/admin/blog'>
-          ← Voltar à lista de artigos (Explicação: Regressar à página de gestão de artigos)
+          ← Regressar à página de gestão de artigos
         </Link>
 
         <div className='admin_post__toolbar_actions'>
@@ -343,7 +328,7 @@ export default function AdminPostEditor(props: Props) {
               className='admin_post__danger'
               onClick={handleDelete}
               disabled={ui === 'saving'}>
-              Apagar artigo (Explicação: Eliminar permanentemente este artigo)
+              Apagar artigo (Eliminar permanentemente este artigo)
             </button>
           ) : null}
 
@@ -353,8 +338,8 @@ export default function AdminPostEditor(props: Props) {
             onClick={handleSave}
             disabled={ui === 'saving'}>
             {ui === 'saving'
-              ? 'A guardar... (Explicação: A processar e guardar as alterações)'
-              : 'Guardar artigo (Explicação: Salvar todas as alterações feitas)'}
+              ? 'A guardar... (A processar e guardar as alterações)'
+              : 'Guardar artigo (Salvar todas as alterações feitas)'}
           </button>
         </div>
       </div>
@@ -365,7 +350,7 @@ export default function AdminPostEditor(props: Props) {
         <div className='admin_post__form'>
           <label className='admin_post__field'>
             <span className='admin_post__label'>
-              Título (Explicação: Título principal do artigo, visível aos leitores)
+              Título <em>(Título principal do artigo, visível aos leitores)</em>
             </span>
             <input
               className='admin_post__input'
@@ -379,8 +364,8 @@ export default function AdminPostEditor(props: Props) {
 
           <label className='admin_post__field'>
             <span className='admin_post__label'>
-              Slug (Explicação: Identificador único para URL, gerado automaticamente a partir do
-              título)
+              Slug{' '}
+              <em>(Identificador único para URL, é gerado automaticamente a partir do título)</em>
             </span>
             <input
               className='admin_post__input'
@@ -391,7 +376,7 @@ export default function AdminPostEditor(props: Props) {
 
           <label className='admin_post__field'>
             <span className='admin_post__label'>
-              Excerto (Explicação: Breve descrição do artigo, mostrada em listagens)
+              Breve descrição do artigo, vai ser mostrado na listagens
             </span>
             <textarea
               className='admin_post__textarea'
@@ -403,15 +388,13 @@ export default function AdminPostEditor(props: Props) {
 
           <label className='admin_post__field'>
             <span className='admin_post__label'>
-              Categoria (Explicação: Grupo temático ao qual pertence o artigo)
+              Categoria <em>(Grupo temático ao qual pertence o artigo)</em>
             </span>
             <select
               className='admin_post__input'
               value={form.categoryId}
               onChange={(e) => updateField('categoryId', e.target.value)}>
-              <option value=''>
-                Sem categoria (Explicação: Artigo não associado a nenhuma categoria)
-              </option>
+              <option value=''></option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -422,27 +405,25 @@ export default function AdminPostEditor(props: Props) {
 
           <label className='admin_post__field'>
             <span className='admin_post__label'>
-              Estado (Explicação: Visibilidade do artigo para os leitores)
+              Estado <em>(Visibilidade do artigo para os leitores)</em>
             </span>
             <select
               className='admin_post__input'
               value={form.status}
               onChange={(e) => updateField('status', safeStatus(e.target.value))}>
-              <option value='DRAFT'>
-                Rascunho (Explicação: Artigo visível apenas na área de administração)
-              </option>
+              <option value='DRAFT'></option>
               <option value='PUBLISHED'>
-                Publicado (Explicação: Artigo visível publicamente no blog)
+                Publicado <em>(Artigo visível publicamente no blog)</em>
               </option>
             </select>
           </label>
 
           <FileUpload
-            label='Imagem de capa (Explicação: Imagem principal que representa o artigo)'
+            label='Imagem de capa (Imagem principal que representa o artigo)'
             context='blog_article'
             valueUrl={form.coverImageUrl || ''}
             disabled={ui === 'saving'}
-            hint='Vai para a pasta blog_article no Cloudinary. (Explicação: As imagens são armazenadas no serviço Cloudinary)'
+            hint='Vai para a pasta blog_article no Cloudinary. <em>(As imagens são armazenadas no serviço Cloudinary)</em>'
             onUploaded={({ url, publicId }) => {
               updateField('coverImageUrl', url);
               updateField('coverImagePublicId', publicId);
@@ -455,7 +436,7 @@ export default function AdminPostEditor(props: Props) {
 
           <div className='admin_post__field'>
             <span className='admin_post__label'>
-              Conteúdo (Explicação: Corpo principal do artigo com formatação rica)
+              Conteúdo <em>(Corpo principal do artigo com formatação rica)</em>
             </span>
 
             <RichTextEditor
@@ -468,22 +449,22 @@ export default function AdminPostEditor(props: Props) {
 
         <div className='admin_post__preview'>
           <p className='admin_post__preview_title'>
-            Pré-visualização (Explicação: Como o artigo aparecerá aos leitores)
+            Pré-visualização <em>(Como o artigo aparecerá aos leitores)</em>
           </p>
 
           <div className='admin_post__preview_card'>
             <p className='admin_post__preview_heading'>
-              {form.title || 'Sem título (Explicação: Título ainda não definido)'}
+              {form.title || '(Título ainda não definido)'}
             </p>
 
             <p className='admin_post__preview_meta'>
               {form.status === 'DRAFT' ? 'Rascunho' : 'Publicado'}
               {selectedCategory ? `, ${selectedCategory.name}` : ''}
-              (Explicação: Estado e categoria do artigo)
+              (Estado e categoria do artigo)
             </p>
 
             <p className='admin_post__preview_excerpt'>
-              {form.excerpt || 'Sem excerto (Explicação: Descrição curta não definida)'}
+              {form.excerpt || '(Descrição curta não definida)'}
             </p>
 
             <div className='admin_post__preview_body'>

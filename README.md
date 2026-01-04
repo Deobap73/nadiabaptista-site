@@ -103,9 +103,28 @@ Footer stacks vertically with clear separation between elements.
 ### SEO
 
 - Metadata handled with Next.js metadata API
+- Language specific metadata and alternates
 - Blog slugs implemented
 - Mobile SEO considered from the start
 - Sitemap and robots planned for later phase
+
+### Internationalization
+
+The website is fully internationalized using language based routing.
+
+- Language routes are handled via the `/[lang]` segment
+- Currently supported languages:
+  - Portuguese `pt`
+  - English `en`
+- Each language has:
+  - Its own layout
+  - Language specific metadata
+  - Correct canonical and alternate links
+- SEO friendly language alternates are defined using Next.js metadata API
+- Text content is progressively externalized per language
+- Navigation, pages and UI components are language aware
+
+This structure allows the site to scale naturally to additional languages without refactoring core architecture.
 
 ---
 
@@ -119,6 +138,7 @@ Footer stacks vertically with clear separation between elements.
 - Portfolio page
 - Blog list page and blog post page with slug routing
 - Contact page with API route and email sending
+- Fully internationalized navigation and pages
 
 ### Cloudinary
 
@@ -150,12 +170,14 @@ These items exist as a foundation, not as a finished admin panel.
 - Contact page
 - Cloudinary integration
 - Design system
+- Internationalization foundation
 
 ### Phase 2: Pre Clinical Presence
 
 - Expanded About page content
 - Activate Services structure
 - Activate FAQ structure
+- Extended multilingual content
 
 ### Phase 3: Clinical Practice
 
@@ -199,22 +221,20 @@ Consistent spacing tokens defined globally and reused across components.
 src/
   app/
     layout.tsx
-    page.tsx
-    about/
-    studies/
-    portfolio/
-    services/
-    faq/
-    contact/
-    blog/
+    [lang]/
+      layout.tsx
       page.tsx
-      [slug]/page.tsx
-    admin/
-    api/
+      about/
+      studies/
+      portfolio/
+      services/
+      faq/
       contact/
-      upload/
-      auth/
+      blog/
+        page.tsx
+        [slug]/page.tsx
       admin/
+    api/
 
   components/
     layout/
@@ -264,6 +284,7 @@ If Prisma is enabled locally or on deploy, you will also need:
 
 ```env
 DATABASE_URL=
+DIRECT_URL=
 ```
 
 Email sending also requires provider settings, stored only on the server:
@@ -286,6 +307,6 @@ It reflects a strong focus on structure, design systems and long term maintainab
 
 ## Contact
 
-Email: contact@deolindobaptista.com
-LinkedIn: https://www.linkedin.com/in/deolindobaptista/
+Email: contact@deolindobaptista.com  
+LinkedIn: https://www.linkedin.com/in/deolindobaptista/  
 GitHub: https://github.com/Deobap73

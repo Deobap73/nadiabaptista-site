@@ -14,35 +14,48 @@ type Props = {
   items: PublicConference[];
 };
 
-function pickSafe(items: PublicConference[]) {
+/**
+ * Ensures items is always a valid array
+ */
+function pickSafe(items: PublicConference[]): PublicConference[] {
   return Array.isArray(items) ? items : [];
+}
+
+/**
+ * Separate component declared outside to avoid re-creation during render
+ * This follows React best practices for performance and state consistency
+ */
+function ConferenceTitle({ title, idPrefix }: { title: string; idPrefix: string }) {
+  return (
+    <h2 id='studies_conferences_heading' className='studies_conferences__title'>
+      {title.split('\n').map((line, i) => (
+        <span key={`${idPrefix}_${i}`}>
+          {line}
+          <br />
+        </span>
+      ))}
+    </h2>
+  );
 }
 
 export default function StudiesConferencesAndSeminarsClient({ lang, items }: Props) {
   const dict = getStudiesDict(lang);
   const base = `/${lang}`;
+
+  // Memoize the safe array to prevent unnecessary re-renders
   const safe = useMemo(() => pickSafe(items), [items]);
 
-  const recent = safe[0];
-  const image2 = safe[1];
-  const image4 = safe[2];
-  const image3 = safe[3];
+  // Destructure top items for the grid
+  const [recent, image2, image4, image3] = safe;
 
+  // Empty state handler
   if (!recent) {
     return (
       <section className='studies_conferences' aria-labelledby='studies_conferences_heading'>
         <div className='studies_conferences__container site-container site-container--wide'>
           <div className='studies_conferences__grid'>
             <header className='studies_conferences__intro'>
-              <h2 id='studies_conferences_heading' className='studies_conferences__title'>
-                {dict.conferences.title.split('\n').map((line, i) => (
-                  <span key={`c_${i}`}>
-                    {line}
-                    <br />
-                  </span>
-                ))}
-              </h2>
-
+              <ConferenceTitle title={dict.conferences.title} idPrefix='empty' />
               <p className='studies_conferences__text'>{dict.conferences.empty}</p>
             </header>
 
@@ -58,87 +71,55 @@ export default function StudiesConferencesAndSeminarsClient({ lang, items }: Pro
   }
 
   return (
-    <section className='studies_conferences' aria-labelledby='studies_conferences_heading'>
+    <section
+      className='studies_conferences'
+      id='conferences'
+      aria-labelledby='studies_conferences_heading'>
       <div className='studies_conferences__container site-container site-container--wide'>
         <div className='studies_conferences__grid'>
           <header className='studies_conferences__intro'>
-            <h2 id='studies_conferences_heading' className='studies_conferences__title'>
-              {dict.conferences.title.split('\n').map((line, i) => (
-                <span key={`c2_${i}`}>
-                  {line}
-                  <br />
-                </span>
-              ))}
-            </h2>
-
+            <ConferenceTitle title={dict.conferences.title} idPrefix='active' />
             <p className='studies_conferences__text'>{dict.conferences.subtitle}</p>
           </header>
 
+          {/* Main featured conference */}
           <Link
             href={`${base}/studies/conferences/${recent.slug}`}
             className='studies_conferences__card studies_conferences__card_recent'
             aria-label={recent.title}>
-            {recent.imageUrl ? (
+            {recent.imageUrl && (
               <Image
                 src={recent.imageUrl}
-                alt=''
+                alt={recent.title}
                 fill
+                priority
                 sizes='(min-width: 1024px) 360px, 92vw'
                 className='studies_conferences__image'
               />
-            ) : null}
+            )}
           </Link>
 
-          {image2 ? (
-            <Link
-              href={`${base}/studies/conferences/${image2.slug}`}
-              className='studies_conferences__card studies_conferences__card_2'
-              aria-label={image2.title}>
-              {image2.imageUrl ? (
-                <Image
-                  src={image2.imageUrl}
-                  alt=''
-                  fill
-                  sizes='(min-width: 1024px) 360px, 92vw'
-                  className='studies_conferences__image'
-                />
-              ) : null}
-            </Link>
-          ) : null}
-
-          {image3 ? (
-            <Link
-              href={`${base}/studies/conferences/${image3.slug}`}
-              className='studies_conferences__card studies_conferences__card_3'
-              aria-label={image3.title}>
-              {image3.imageUrl ? (
-                <Image
-                  src={image3.imageUrl}
-                  alt=''
-                  fill
-                  sizes='(min-width: 1024px) 360px, 92vw'
-                  className='studies_conferences__image'
-                />
-              ) : null}
-            </Link>
-          ) : null}
-
-          {image4 ? (
-            <Link
-              href={`${base}/studies/conferences/${image4.slug}`}
-              className='studies_conferences__card studies_conferences__card_4'
-              aria-label={image4.title}>
-              {image4.imageUrl ? (
-                <Image
-                  src={image4.imageUrl}
-                  alt=''
-                  fill
-                  sizes='(min-width: 1024px) 360px, 92vw'
-                  className='studies_conferences__image'
-                />
-              ) : null}
-            </Link>
-          ) : null}
+          {/* Secondary conferences grid mapping */}
+          {[image2, image3, image4].map(
+            (item, idx) =>
+              item && (
+                <Link
+                  key={item.id}
+                  href={`${base}/studies/conferences/${item.slug}`}
+                  className={`studies_conferences__card studies_conferences__card_${idx + 2}`}
+                  aria-label={item.title}>
+                  {item.imageUrl && (
+                    <Image
+                      src={item.imageUrl}
+                      alt={item.title}
+                      fill
+                      sizes='(min-width: 1024px) 360px, 92vw'
+                      className='studies_conferences__image'
+                    />
+                  )}
+                </Link>
+              )
+          )}
 
           <div className='studies_conferences__cta'>
             <Link href={`${base}/studies/conferences`} className='studies_conferences__button'>

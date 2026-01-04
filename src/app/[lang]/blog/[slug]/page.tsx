@@ -52,39 +52,59 @@ function siteOrigin(): string {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const lang = normalizeLang(params.lang) as Lang;
-  const slug = params.slug;
+  const { lang, slug } = await params; // Idealmente aguardar params em versões recentes
+  const safeLang = normalizeLang(lang) as Lang;
 
   const json = await fetchPost(slug);
 
   if (!json || !json.ok || !json.post) {
     return {
-      title: lang === 'pt' ? 'Artigo não encontrado' : 'Post not found',
+      title: safeLang === 'pt' ? 'Artigo não encontrado' : 'Post not found',
       robots: { index: false, follow: false },
     };
   }
 
   const post = json.post;
-
   const origin = siteOrigin();
-  const url = `${origin}/${lang}/blog/${post.slug}`;
-  const canonical = `/${lang}/blog/${post.slug}`;
+
+  // Imagem de Fallback caso o post não tenha capa
+  const defaultOgImage =
+    'https://res.cloudinary.com/dleir1jqn/image/upload/v1767350948/NadiaBaptista-site/og-image.webp';
+  const postImage = post.coverImageUrl || defaultOgImage;
 
   return {
     title: post.title,
     description: post.excerpt || undefined,
     alternates: {
-      canonical,
+      canonical: `${origin}/${safeLang}/blog/${post.slug}`,
       languages: {
-        'pt-PT': `/pt/blog/${post.slug}`,
-        en: `/en/blog/${post.slug}`,
+        'pt-PT': `${origin}/pt/blog/${post.slug}`,
+        'en-US': `${origin}/en/blog/${post.slug}`,
       },
     },
     openGraph: {
       title: post.title,
       description: post.excerpt || '',
-      url,
-      images: post.coverImageUrl ? [{ url: post.coverImageUrl }] : undefined,
+      url: `${origin}/${safeLang}/blog/${post.slug}`,
+      siteName: 'Nádia Baptista',
+      type: 'article',
+      publishedTime: post.publishedAt || undefined,
+      modifiedTime: post.updatedAt,
+      authors: ['Nádia Baptista'],
+      images: [
+        {
+          url: postImage,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt || '',
+      images: [postImage],
     },
   };
 }

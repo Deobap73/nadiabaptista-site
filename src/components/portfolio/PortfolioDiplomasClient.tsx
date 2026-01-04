@@ -3,7 +3,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import type { PublicDiploma } from '@/lib/portfolio/getDiplomas';
 import type { Lang } from '@/lib/i18n';
 import { getPortfolioDict } from '@/lib/i18n/portfolio';
@@ -13,61 +13,43 @@ type Props = {
   items: PublicDiploma[];
 };
 
-type PaginationModel = {
-  currentPage: number;
-  totalPages: number;
-  pageNumbers: number[];
-  showEllipsis: boolean;
-};
-
-function buildPagination(currentPage: number, totalPages: number): PaginationModel {
-  if (totalPages <= 1) {
-    return { currentPage, totalPages, pageNumbers: [1], showEllipsis: false };
-  }
-
-  const pageNumbers: number[] = [1];
-  if (totalPages >= 2) pageNumbers.push(2);
-
-  return {
-    currentPage,
-    totalPages,
-    pageNumbers,
-    showEllipsis: totalPages > 2,
-  };
-}
-
 export default function PortfolioDiplomasClient({ lang, items }: Props) {
   const dict = useMemo(() => getPortfolioDict(lang), [lang]);
+  const sectionRef = useRef<HTMLElement>(null);
 
   const itemsPerPage = 3;
   const [page, setPage] = useState(1);
 
-  const totalPages = Math.max(1, Math.ceil(items.length / itemsPerPage));
+  // Ensure safe access to items array
+  const safeItems = useMemo(() => (Array.isArray(items) ? items : []), [items]);
+  const totalPages = Math.max(1, Math.ceil(safeItems.length / itemsPerPage));
   const safePage = Math.min(Math.max(1, page), totalPages);
 
   const visibleCards = useMemo(() => {
     const start = (safePage - 1) * itemsPerPage;
-    return items.slice(start, start + itemsPerPage);
-  }, [items, safePage]);
+    return safeItems.slice(start, start + itemsPerPage);
+  }, [safeItems, safePage]);
 
-  const pagination = useMemo(() => buildPagination(safePage, totalPages), [safePage, totalPages]);
+  /**
+   * Handles pagination navigation and ensures the user is scrolled back
+   * to the top of the section.
+   */
+  const handlePageChange = (target: number) => {
+    const destination = Math.min(Math.max(1, target), totalPages);
+    setPage(destination);
 
-  function goPrev() {
-    setPage((p) => Math.max(1, p - 1));
-  }
+    if (sectionRef.current) {
+      sectionRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
-  function goNext() {
-    setPage((p) => Math.min(totalPages, p + 1));
-  }
-
-  function goTo(target: number) {
-    setPage(Math.min(Math.max(1, target), totalPages));
-  }
-
-  const hasItems = items.length > 0;
+  const hasItems = safeItems.length > 0;
 
   return (
-    <section className='portfolio_diplomas' aria-labelledby='portfolio_diplomas_heading'>
+    <section
+      ref={sectionRef}
+      className='portfolio_diplomas'
+      aria-labelledby='portfolio_diplomas_heading'>
       <div className='portfolio_diplomas__container site-container'>
         <header className='portfolio_diplomas__header'>
           <h2 id='portfolio_diplomas_heading' className='portfolio_diplomas__title'>
@@ -89,23 +71,24 @@ export default function PortfolioDiplomasClient({ lang, items }: Props) {
             <div className='portfolio_diplomas__grid' role='list'>
               {visibleCards.map((card) => (
                 <article key={card.id} className='portfolio_diplomas__card' role='listitem'>
-                  {card.imageUrl ? (
+                  {card.imageUrl && (
                     <div className='portfolio_diplomas__card_media' aria-hidden='true'>
                       <Image
                         src={card.imageUrl}
-                        alt=''
+                        alt={card.title}
                         width={480}
                         height={320}
                         className='portfolio_diplomas__card_image'
+                        loading='lazy'
                       />
                     </div>
-                  ) : null}
+                  )}
 
                   <h3 className='portfolio_diplomas__card_title'>{card.title}</h3>
 
-                  {card.description ? (
+                  {card.description && (
                     <p className='portfolio_diplomas__card_text'>{card.description}</p>
-                  ) : null}
+                  )}
                 </article>
               ))}
             </div>
@@ -114,36 +97,31 @@ export default function PortfolioDiplomasClient({ lang, items }: Props) {
               <button
                 type='button'
                 className='portfolio_diplomas__page_btn'
-                onClick={goPrev}
+                onClick={() => handlePageChange(safePage - 1)}
                 disabled={safePage === 1}
                 aria-label={dict.diplomas.prev}>
                 ‹
               </button>
 
-              <div className='portfolio_diplomas__page_numbers'>
-                {pagination.pageNumbers.map((n) => (
+              <div className='portfolio_achievements__page_numbers'>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
                   <button
                     key={n}
                     type='button'
-                    className={[
-                      'portfolio_diplomas__page_num',
-                      n === safePage ? 'portfolio_diplomas__page_num_active' : '',
-                    ].join(' ')}
-                    onClick={() => goTo(n)}
+                    className={`portfolio_diplomas__page_num ${
+                      n === safePage ? 'portfolio_diplomas__page_num_active' : ''
+                    }`}
+                    onClick={() => handlePageChange(n)}
                     aria-current={n === safePage ? 'page' : undefined}>
                     {n}
                   </button>
                 ))}
-
-                {pagination.showEllipsis ? (
-                  <span className='portfolio_diplomas__page_ellipsis'>...</span>
-                ) : null}
               </div>
 
               <button
                 type='button'
                 className='portfolio_diplomas__page_btn'
-                onClick={goNext}
+                onClick={() => handlePageChange(safePage + 1)}
                 disabled={safePage === totalPages}
                 aria-label={dict.diplomas.next}>
                 ›

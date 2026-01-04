@@ -2,7 +2,7 @@
 
 import AboutHero from '@/components/about/AboutHero';
 import AboutMotivationSentence from '@/components/about/AboutMotivationSentence';
-import AboutMyStorie from '@/components/about/AboutMyStorie';
+import AboutMyStory from '@/components/about/AboutMyStory';
 
 type Lang = 'pt' | 'en';
 
@@ -23,7 +23,7 @@ export default function AboutPage({ params }: Props) {
     <>
       <AboutHero lang={lang} />
       <AboutMotivationSentence lang={lang} />
-      <AboutMyStorie lang={lang} />
+      <AboutMyStory lang={lang} />
     </>
   );
 }

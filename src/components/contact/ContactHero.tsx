@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { contactImages } from '@/lib/images';
 import type { Lang } from '@/lib/i18n';
-import { getContactDict } from '@/lib/i18n';
+import { getContactDict } from '@/lib/i18n/contact';
 
 type Props = {
   lang: Lang;
@@ -16,6 +16,7 @@ export default function ContactHero({ lang }: Props) {
     <section className='contact_hero'>
       <div className='contact_hero__container site-container site-container--wide'>
         <div className='contact_hero__grid'>
+          {/* Desktop media version */}
           <div className='contact_hero__media'>
             <Image
               src={contactImages.contactHeroDesktop}
@@ -44,6 +45,7 @@ export default function ContactHero({ lang }: Props) {
             </div>
           </div>
 
+          {/* Mobile media version optimized for smaller viewports */}
           <div className='contact_hero__media_mobile'>
             <Image
               src={contactImages.contactHeroMobile}

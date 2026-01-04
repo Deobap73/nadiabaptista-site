@@ -21,7 +21,7 @@ export const mockPosts: BlogPostMock[] = [
     excerpt:
       'Some first reflections about what it means to study psychology while also taking care of your own mental health.',
     content: docFromParagraphs([
-      'Studying psychology often means spending many hours reading about pain, conflict and complex life stories. At the same time, students also carry their own doubts, worries and personal history.',
+      'Studying psychology often means spending many hours reading about pain, conflict and complex life storys. At the same time, students also carry their own doubts, worries and personal history.',
       'This text is not a manual and does not try to give quick solutions. It is only a small reflection about how it can be important to look at your own limits while you learn to look at the lives of other people.',
       'Taking breaks, having good support from friends, family or professionals and keeping some spaces that are not about study can help to keep a more balanced rhythm.',
       'Later, in clinical work, this awareness can become a resource. It reminds us that those who listen also need care, and that looking after yourself is not selfish. It is part of the work.',

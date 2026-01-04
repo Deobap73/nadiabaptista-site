@@ -1,5 +1,8 @@
 // src/components/portfolio/PortfolioItemCard.tsx
 
+import React from 'react';
+
+// Define strict interface for the card props to ensure type safety
 export interface PortfolioItemCardProps {
   title: string;
   type: string;
@@ -8,6 +11,10 @@ export interface PortfolioItemCardProps {
   highlight?: string;
 }
 
+/**
+ * Reusable card component for portfolio details.
+ * Focuses on semantic structure and clean typography.
+ */
 export default function PortfolioItemCard({
   title,
   type,
@@ -19,11 +26,32 @@ export default function PortfolioItemCard({
     <article className='portfolioCard'>
       <header className='portfolioCardHeader'>
         <h3 className='portfolioCardTitle'>{title}</h3>
-        <p className='portfolioCardType'>{type}</p>
-        {period && <p className='portfolioCardPeriod'>{period}</p>}
+
+        {/* Meta information container for badge-like display */}
+        <div className='portfolioCardMeta'>
+          <p className='portfolioCardType'>{type}</p>
+          {period && (
+            <span className='portfolioCardSeparator' aria-hidden='true'>
+              {' '}
+              •{' '}
+            </span>
+          )}
+          {period && <p className='portfolioCardPeriod'>{period}</p>}
+        </div>
       </header>
-      <p className='portfolioCardDescription'>{description}</p>
-      {highlight && <p className='portfolioCardHighlight'>{highlight}</p>}
+
+      <div className='portfolioCardBody'>
+        <p className='portfolioCardDescription'>{description}</p>
+
+        {/* Optional highlight section for key achievements or specific roles */}
+        {highlight && (
+          <footer className='portfolioCardFooter'>
+            <p className='portfolioCardHighlight'>
+              <strong>Key Highlight:</strong> {highlight}
+            </p>
+          </footer>
+        )}
+      </div>
     </article>
   );
 }

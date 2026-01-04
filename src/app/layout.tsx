@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react';
 import '../styles/globals.scss';
-import GoogleTagManager from '@/components/seo/GoogleTagManager';
+import GoogleTagManager from '@/components/portfolio/seo/GoogleTagManager';
 
 type Props = { children: ReactNode };
 

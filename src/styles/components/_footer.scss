@@ -132,7 +132,8 @@ body.is-landing-mobile {
 }
 
 .site-container--wide {
-  max-width: none;
-  width: 80%;
-  padding: 0;
+  width: 100%;
+  max-width: var(--layout-max-width);
+  margin: 0 auto;
+  padding: 0 var(--layout-page-padding-x);
 }

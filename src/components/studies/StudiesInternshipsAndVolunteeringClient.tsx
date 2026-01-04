@@ -3,7 +3,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import type { Lang } from '@/lib/i18n';
 import { getStudiesDict } from '@/lib/i18n';
 import type { PublicPracticalExperience } from '@/lib/studies/getPracticalExperiences';
@@ -15,23 +15,38 @@ type Props = {
 
 const ITEMS_PER_PAGE = 3;
 
+/**
+ * Clean truncation for subtitles
+ */
 function pickSubtitle(item: PublicPracticalExperience) {
   const raw = item.summary || '';
   const text = raw.trim();
   if (!text) return '';
-  return text.length > 90 ? `${text.slice(0, 90).trim()}...` : text;
+  if (text.length <= 90) return text;
+
+  const trimmed = text.slice(0, 90);
+  return `${trimmed.slice(0, Math.max(0, trimmed.lastIndexOf(' ')))}...`;
 }
 
+/**
+ * Clean truncation for descriptions
+ */
 function pickDescription(item: PublicPracticalExperience) {
   const raw = item.content || '';
   const text = raw.trim();
   if (!text) return '';
-  return text.length > 160 ? `${text.slice(0, 160).trim()}...` : text;
+  if (text.length <= 160) return text;
+
+  const trimmed = text.slice(0, 160);
+  return `${trimmed.slice(0, Math.max(0, trimmed.lastIndexOf(' ')))}...`;
 }
 
 export default function StudiesInternshipsAndVolunteeringClient({ lang, items }: Props) {
   const dict = getStudiesDict(lang);
   const base = `/${lang}`;
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Memoize safe items array to prevent unnecessary re-computations
   const safe = useMemo(() => (Array.isArray(items) ? items : []), [items]);
 
   const [page, setPage] = useState(1);
@@ -44,22 +59,31 @@ export default function StudiesInternshipsAndVolunteeringClient({ lang, items }:
     return safe.slice(start, start + ITEMS_PER_PAGE);
   }, [safe, safePage]);
 
+  /**
+   * Handles pagination and scrolls back to section header for better UX
+   */
   function goTo(next: number) {
     const target = Math.min(Math.max(1, next), totalPages);
     setPage(target);
+
+    if (sectionRef.current) {
+      sectionRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 
   const isPrevDisabled = safePage <= 1;
   const isNextDisabled = safePage >= totalPages;
 
   return (
-    <section className='studies_internships' aria-labelledby='studies_internships_heading'>
+    <section
+      ref={sectionRef}
+      className='studies_internships'
+      aria-labelledby='studies_internships_heading'>
       <div className='studies_internships__container site-container site-container--wide'>
         <header className='studies_internships__header'>
           <h2 id='studies_internships_heading' className='studies_internships__title'>
             {dict.internships.title}
           </h2>
-
           <p className='studies_internships__subtitle'>{dict.internships.subtitle}</p>
         </header>
 
@@ -83,7 +107,8 @@ export default function StudiesInternshipsAndVolunteeringClient({ lang, items }:
                   <div className='studies_internships__card_footer'>
                     <Link
                       className='studies_internships__card_link'
-                      href={`${base}/studies/practical-experiences/${item.slug}`}>
+                      href={`${base}/studies/practical-experiences/${item.slug}`}
+                      aria-label={`${dict.internships.btnDetail}: ${item.title}`}>
                       {dict.internships.btnDetail}
                     </Link>
                   </div>
@@ -104,6 +129,7 @@ export default function StudiesInternshipsAndVolunteeringClient({ lang, items }:
                   ‹
                 </button>
 
+                {/* Pagination logic: Only shows page numbers if needed */}
                 <button
                   type='button'
                   className='studies_internships__page_btn'
@@ -112,7 +138,7 @@ export default function StudiesInternshipsAndVolunteeringClient({ lang, items }:
                   1
                 </button>
 
-                {totalPages >= 2 ? (
+                {totalPages >= 2 && (
                   <button
                     type='button'
                     className='studies_internships__page_btn'
@@ -120,13 +146,13 @@ export default function StudiesInternshipsAndVolunteeringClient({ lang, items }:
                     aria-current={safePage === 2 ? 'page' : undefined}>
                     2
                   </button>
-                ) : null}
+                )}
 
-                {totalPages > 2 ? (
+                {totalPages > 2 && (
                   <span className='studies_internships__page_ellipsis' aria-hidden='true'>
                     {dict.internships.pagination.ellipsis}
                   </span>
-                ) : null}
+                )}
 
                 <button
                   type='button'

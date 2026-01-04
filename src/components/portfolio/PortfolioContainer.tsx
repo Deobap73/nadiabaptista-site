@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 
+// English: Define the structure for each portfolio item
 export type PortfolioItem = {
   id: string;
   title: string;
@@ -15,14 +16,17 @@ type PortfolioContainerProps = {
 };
 
 export default function PortfolioContainer({ items }: PortfolioContainerProps) {
+  // English: Early return if no items are provided to avoid rendering an empty section
+  if (!items || items.length === 0) return null;
+
   return (
-    <section className='portfolio_container' aria-label='Portfolio'>
+    <section className='portfolio_container' aria-label='Portfolio List'>
       <div className='portfolio_container__container site-container'>
         <div className='portfolio_container__list'>
           {items.map((item, index) => {
+            // English: Logic to alternate the layout (Image/Text vs Text/Image)
             const isReverse = index % 2 === 1;
 
-            // Mantemos apenas as classes base e as reverse base
             const itemClass = isReverse
               ? 'portfolio_container__item portfolio_container__item__reverse'
               : 'portfolio_container__item';
@@ -31,7 +35,6 @@ export default function PortfolioContainer({ items }: PortfolioContainerProps) {
               ? 'portfolio_container__media portfolio_container__media__reverse'
               : 'portfolio_container__media';
 
-            // REMOVIDAS AS CLASSES _mobile ESPECÍFICAS
             const cardClass = isReverse
               ? 'portfolio_container__card portfolio_container__card__reverse'
               : 'portfolio_container__card';
@@ -41,11 +44,13 @@ export default function PortfolioContainer({ items }: PortfolioContainerProps) {
                 <div className={mediaClass}>
                   <Image
                     src={item.imageUrl}
-                    alt={item.imageAlt}
+                    alt={item.imageAlt || item.title}
                     width={640}
                     height={640}
                     className='portfolio_container__image'
                     sizes='(min-width: 1024px) 420px, 90vw'
+                    // English: Standard items use lazy loading by default for performance
+                    loading='lazy'
                   />
                 </div>
 

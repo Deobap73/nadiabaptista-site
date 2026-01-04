@@ -14,9 +14,10 @@ export default function AboutMotivationSentence({ lang }: Props) {
     <section
       className='about_motivation__container site_container'
       aria-labelledby='aboutMotivationHeading'>
-      <p id='aboutMotivationHeading' className='about_motivation__text'>
+      {/* Motivation quote section with semantic ID */}
+      <blockquote id='aboutMotivationHeading' className='about_motivation__text'>
         {t.motivation.text}
-      </p>
+      </blockquote>
     </section>
   );
 }

@@ -13,33 +13,25 @@ type Props = {
   lang: 'pt' | 'en';
 };
 
+// English: Helper to remove language prefix for route logic
 function stripLangPrefix(pathname: string): string {
   if (pathname.startsWith('/en')) return pathname.slice(3) || '/';
   if (pathname.startsWith('/pt')) return pathname.slice(3) || '/';
   return pathname;
 }
 
+// English: Determines menu position based on the current section
 function getBrainMenuAlign(pathname: string): 'left' | 'right' {
   const leftRoutes = ['/studies', '/portfolio', '/blog'];
-
-  const matchLeft = leftRoutes.some((route) => {
-    if (pathname === route) return true;
-    if (pathname.startsWith(`${route}/`)) return true;
-    return false;
-  });
-
+  const matchLeft = leftRoutes.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
+  );
   return matchLeft ? 'left' : 'right';
-}
-
-function hasLandingMobileBodyClass(): boolean {
-  if (typeof document === 'undefined') return false;
-  return document.body.classList.contains('is-landing-mobile');
 }
 
 export default function HeaderClientSlots({ lang }: Props) {
   const pathname = usePathname() || '/';
   const cleanPath = stripLangPrefix(pathname);
-
   const align = useMemo(() => getBrainMenuAlign(cleanPath), [cleanPath]);
   const opposite = align === 'left' ? 'right' : 'left';
 
@@ -48,38 +40,28 @@ export default function HeaderClientSlots({ lang }: Props) {
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [loginModalKey, setLoginModalKey] = useState(0);
-  const [hideMenus, setHideMenus] = useState(() => hasLandingMobileBodyClass());
+  const [hideMenus, setHideMenus] = useState(false);
 
   useEffect(() => {
-    if (typeof document === 'undefined') return;
-
-    const body = document.body;
-
-    function sync() {
-      setHideMenus(body.classList.contains('is-landing-mobile'));
-    }
-
+    // English: Sync menu visibility with body class (used for landing pages)
+    const sync = () => setHideMenus(document.body.classList.contains('is-landing-mobile'));
     sync();
 
     const observer = new MutationObserver(sync);
-    observer.observe(body, { attributes: true, attributeFilter: ['class'] });
-
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
     return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
-    function openLogin() {
+    // English: Global listener for opening the login modal from any component
+    const openLogin = () => {
       setLoginModalKey((v) => v + 1);
       setIsLoginOpen(true);
-    }
+    };
 
-    window.addEventListener('nb_open_login_modal', openLogin as EventListener);
-    return () => window.removeEventListener('nb_open_login_modal', openLogin as EventListener);
+    window.addEventListener('nb_open_login_modal', openLogin);
+    return () => window.removeEventListener('nb_open_login_modal', openLogin);
   }, []);
-
-  function handleLoggedIn() {
-    setIsLoginOpen(false);
-  }
 
   if (hideMenus) {
     return (
@@ -88,7 +70,7 @@ export default function HeaderClientSlots({ lang }: Props) {
         lang={lang}
         isOpen={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}
-        onLoggedIn={handleLoggedIn}
+        onLoggedIn={() => setIsLoginOpen(false)}
       />
     );
   }
@@ -110,7 +92,7 @@ export default function HeaderClientSlots({ lang }: Props) {
         lang={lang}
         isOpen={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}
-        onLoggedIn={handleLoggedIn}
+        onLoggedIn={() => setIsLoginOpen(false)}
       />
     </>
   );

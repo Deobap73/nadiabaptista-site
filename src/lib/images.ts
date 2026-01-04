@@ -32,15 +32,15 @@ export const homeImages: HomeImages = {
 export type AboutImages = {
   aboutHeroDesktop: string;
   aboutHeroMobile: string;
-  aboutMyStorie1: string;
-  aboutMyStorie2: string;
+  aboutMystory1: string;
+  aboutMystory2: string;
 };
 
 export const aboutImages: AboutImages = {
   aboutHeroDesktop: `${CLOUDINARY_BASE}/NadiaBaptista-site/about/aboutPage-hero-desktop.webp`,
   aboutHeroMobile: `${CLOUDINARY_BASE}/NadiaBaptista-site/about/aboutPage-hero-mobile.webp`,
-  aboutMyStorie1: `${CLOUDINARY_BASE}/NadiaBaptista-site/about/aboutPage-MyStorie-1-desktop.webp`,
-  aboutMyStorie2: `${CLOUDINARY_BASE}/NadiaBaptista-site/about/aboutPage-MyStorie-2-desktop.webp`,
+  aboutMystory1: `${CLOUDINARY_BASE}/NadiaBaptista-site/about/aboutPage-Mystorie-1-desktop.webp`,
+  aboutMystory2: `${CLOUDINARY_BASE}/NadiaBaptista-site/about/aboutPage-Mystorie-2-desktop.webp`,
 };
 
 // blog page image

@@ -12,11 +12,18 @@ type Props = {
   items: PublicAcademicProject[];
 };
 
+/**
+ * SEO Hint: Otimizamos o truncamento para não cortar palavras a meio
+ * e garantir que o resumo faça sentido para o crawler.
+ */
 function pickText(project: PublicAcademicProject) {
   const raw = project.summary || project.content || '';
   const text = raw.trim();
   if (!text) return '';
-  return text.length > 180 ? `${text.slice(0, 180).trim()}...` : text;
+  if (text.length <= 180) return text;
+
+  const trimmed = text.slice(0, 180);
+  return `${trimmed.slice(0, Math.max(0, trimmed.lastIndexOf(' ')))}...`;
 }
 
 function FeaturedCard({
@@ -34,6 +41,7 @@ function FeaturedCard({
   return (
     <article className='studies_projects__card studies_projects__card--featured'>
       <div className='studies_projects__card_body'>
+        {/* H3 é o nível correto aqui, pois o H2 é o título da secção */}
         <h3 className='studies_projects__card_title'>{project.title}</h3>
         <p className='studies_projects__card_type'>{dict.projects.cardType}</p>
         <p className='studies_projects__card_excerpt'>
@@ -42,9 +50,10 @@ function FeaturedCard({
       </div>
 
       <div className='studies_projects__card_footer'>
-        <p className='studies_projects__card_meta'>sortOrder: {project.sortOrder}</p>
-
-        <Link className='studies_projects__btn' href={`${base}/studies/projects/${project.slug}`}>
+        <Link
+          className='studies_projects__btn'
+          href={`${base}/studies/projects/${project.slug}`}
+          aria-label={`${dict.projects.btnSummary}: ${project.title}`}>
           {dict.projects.btnSummary}
         </Link>
       </div>
@@ -78,9 +87,10 @@ function CompactCard({
       </div>
 
       <div className='studies_projects__card_footer studies_projects__card_footer--compact'>
-        <p className='studies_projects__card_meta'>sortOrder: {project.sortOrder}</p>
-
-        <Link className='studies_projects__btn' href={`${base}/studies/projects/${project.slug}`}>
+        <Link
+          className='studies_projects__btn'
+          href={`${base}/studies/projects/${project.slug}`}
+          aria-label={`${dict.projects.btnSummary}: ${project.title}`}>
           {dict.projects.btnSummary}
         </Link>
       </div>
@@ -97,13 +107,11 @@ export default function StudiesProjectsInvestigationClient({ lang, items }: Prop
 
   if (!featured) {
     return (
-      <section className='studies_projects'>
+      <section className='studies_projects' id='investigation'>
         <div className='studies_projects__container site-container site-container--wide'>
           <header className='studies_projects__header'>
             <h2 className='studies_projects__title'>{dict.projects.title}</h2>
-            <p className='studies_projects__subtitle'>{dict.projects.subtitle}</p>
           </header>
-
           <p className='studies_projects__subtitle'>{dict.projects.empty}</p>
         </div>
       </section>
@@ -111,7 +119,7 @@ export default function StudiesProjectsInvestigationClient({ lang, items }: Prop
   }
 
   return (
-    <section className='studies_projects'>
+    <section className='studies_projects' id='investigation'>
       <div className='studies_projects__container site-container site-container--wide'>
         <header className='studies_projects__header'>
           <h2 className='studies_projects__title'>{dict.projects.title}</h2>

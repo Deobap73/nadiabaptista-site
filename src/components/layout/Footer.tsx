@@ -7,9 +7,8 @@ import { SiteIcons } from '@/lib/icons';
 import type { Lang } from '@/lib/i18n';
 import { withLangPrefix } from '@/lib/i18n';
 
-const Instagram = SiteIcons.instagram;
-const Facebook = SiteIcons.facebook;
-const Linkedin = SiteIcons.linkedin;
+// English: Accessing social icons from the centralized icon library
+const { instagram: Instagram, facebook: Facebook, linkedin: Linkedin } = SiteIcons;
 
 type Props = {
   lang: Lang;
@@ -17,63 +16,63 @@ type Props = {
 
 export default function Footer({ lang }: Props) {
   const year = new Date().getFullYear();
+  const isEn = lang === 'en';
 
   return (
     <footer className='site-footer'>
       <div className='site-footer__inner'>
         <div className='site-footer__col'>
-          <h3 className='site-footer__title'>Explore</h3>
+          <h3 className='site-footer__title'>{isEn ? 'Explore' : 'Explorar'}</h3>
           <ul className='site-footer__list'>
             <li>
               <Link href={withLangPrefix(lang, '/')}>Home</Link>
             </li>
             <li>
-              <Link href={withLangPrefix(lang, '/about')}>Sobre Mim</Link>
+              <Link href={withLangPrefix(lang, '/about')}>{isEn ? 'About Me' : 'Sobre Mim'}</Link>
             </li>
             <li>
-              <Link href={withLangPrefix(lang, '/blog')}>Leia o meu Blog</Link>
+              <Link href={withLangPrefix(lang, '/blog')}>{isEn ? 'Blog' : 'Blog'}</Link>
             </li>
             <li>
-              <Link href={withLangPrefix(lang, '/contact')}>Contacto</Link>
+              <Link href={withLangPrefix(lang, '/contact')}>{isEn ? 'Contact' : 'Contacto'}</Link>
             </li>
           </ul>
         </div>
 
         <div className='site-footer__col'>
-          <h3 className='site-footer__title'>Horários</h3>
+          <h3 className='site-footer__title'>{isEn ? 'Schedule' : 'Horários'}</h3>
           <ul className='site-footer__list'>
-            <li>Segunda a Sexta</li>
+            <li>{isEn ? 'Monday to Friday' : 'Segunda a Sexta'}</li>
             <li>9h - 16h</li>
           </ul>
         </div>
 
         <div className='site-footer__col'>
-          <h3 className='site-footer__title'>Contacto</h3>
+          <h3 className='site-footer__title'>{isEn ? 'Contact' : 'Contacto'}</h3>
           <ul className='site-footer__list'>
-            <li>+351 000 000 000</li>
             <li>Senhora da Hora</li>
-            <li>Senhora da Hora</li>
+            <li>Matosinhos, Portugal</li>
           </ul>
         </div>
 
         <div className='site-footer__col site-footer__col--wide'>
           <p className='site-footer__ethics'>
-            Compromisso com o rigor ético e a confidencialidade. Todos os processos são conduzidos
-            segundo o código de ética profissional da Psicologia.
+            {isEn
+              ? 'Commitment to ethical rigor and confidentiality, following the Psychology code of ethics.'
+              : 'Compromisso com o rigor ético e a confidencialidade segundo o código de ética profissional.'}
           </p>
-
           <div className='site-footer__social'>
-            <Link href='https://instagram.com' aria-label='Instagram'>
+            <Link href='#' aria-label='Instagram'>
               <span className='site-footer__icon'>
                 <Instagram />
               </span>
             </Link>
-            <Link href='https://facebook.com' aria-label='Facebook'>
+            <Link href='#' aria-label='Facebook'>
               <span className='site-footer__icon'>
                 <Facebook />
               </span>
             </Link>
-            <Link href='https://linkedin.com' aria-label='LinkedIn'>
+            <Link href='#' aria-label='LinkedIn'>
               <span className='site-footer__icon'>
                 <Linkedin />
               </span>
@@ -83,13 +82,10 @@ export default function Footer({ lang }: Props) {
       </div>
 
       <div className='site-footer__bottom'>
-        <p>© {year} Todos os direitos reservados. Desenvolvido por </p>
-
-        <a
-          className='footer__link--legal'
-          href='https://thehumantechblog.com/about'
-          target='_blank'
-          rel='noopener noreferrer'>
+        <p>
+          © {year} {isEn ? 'All rights reserved.' : 'Todos os direitos reservados.'} Developed by{' '}
+        </p>
+        <a href='https://thehumantechblog.com' target='_blank' rel='noopener noreferrer'>
           <Image
             src={homeImages.logo_theHumanTechDigitals}
             alt='The Human Tech Digitals'

@@ -2,6 +2,7 @@
 
 import type { Lang } from '@/lib/i18n';
 import { getConferences } from '@/lib/studies/getConferences';
+import type { PublicConference } from '@/lib/studies/getConferences';
 import StudiesConferencesAndSeminarsClient from './StudiesConferencesAndSeminarsClient';
 
 type Props = {
@@ -9,6 +10,19 @@ type Props = {
 };
 
 export default async function StudiesConferencesAndSeminars({ lang }: Props) {
-  const items = await getConferences();
+  // Strict typing for conference items
+  let items: PublicConference[] = [];
+
+  try {
+    const fetchedItems = await getConferences();
+    if (fetchedItems) {
+      items = fetchedItems;
+    }
+  } catch (error) {
+    // Server-side error logging
+    console.error('Error fetching conferences:', error);
+  }
+
+  // Consistent return outside try/catch block
   return <StudiesConferencesAndSeminarsClient lang={lang} items={items} />;
 }

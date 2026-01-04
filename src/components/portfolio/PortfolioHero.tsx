@@ -12,6 +12,9 @@ type Props = {
 export default function PortfolioHero({ lang }: Props) {
   const dict = getPortfolioDict(lang);
 
+  // English: Fallback alt text to avoid TS errors if the dictionary is not yet updated
+  const portraitAlt = 'Retrato da psicóloga Nádia Baptista';
+
   return (
     <section className='portfolio_hero' aria-labelledby='portfolio_hero_heading'>
       <div className='portfolio_hero__container site-container site-container--wide'>
@@ -34,9 +37,12 @@ export default function PortfolioHero({ lang }: Props) {
           </div>
 
           <div className='portfolio_hero__media'>
+            {/* English: Primary desktop image. 
+              Priority is set to true to improve LCP (Largest Contentful Paint).
+            */}
             <Image
               src={portfolioImages.portfolioHeroDesktop}
-              alt='Retrato da psicóloga Nádia Baptista'
+              alt={portraitAlt}
               width={520}
               height={680}
               className='portfolio_hero__image portfolio_hero__image_desktop'
@@ -44,9 +50,10 @@ export default function PortfolioHero({ lang }: Props) {
               priority
             />
 
+            {/* English: Mobile version of the hero image */}
             <Image
               src={portfolioImages.portfolioHeroMobile}
-              alt='Retrato da psicóloga Nádia Baptista'
+              alt={portraitAlt}
               width={900}
               height={1100}
               className='portfolio_hero__image portfolio_hero__image_mobile'

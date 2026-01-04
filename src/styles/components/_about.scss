@@ -197,31 +197,31 @@
 }
 
 /* ********************************************************** */
-/* AboutMyStorie */
+/* AboutMystory */
 /* ********************************************************** */
 
-.about_mystorie {
+.about_mystory {
   background: var(--colorBackground);
 }
 
-.about_mystorie__container {
+.about_mystory__container {
   max-width: var(--layout-max-width);
   margin: 5% auto;
   padding: var(--space-64) var(--layout-page-padding-x);
 }
 
-.about_mystorie__top {
+.about_mystory__top {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-24);
   align-items: start;
 }
 
-.about_mystorie__intro {
+.about_mystory__intro {
   max-width: 56ch;
 }
 
-.about_mystorie__title {
+.about_mystory__title {
   font-family: var(--font-heading);
   font-size: 1.8rem;
   font-weight: 500;
@@ -231,18 +231,23 @@
   color: var(--colorText);
 }
 
-.about_mystorie__text {
+.about_mystory__text {
   line-height: 1.75;
   color: var(--color-text-muted);
   text-align: justify;
+  min-height: 580px;
+  padding: var(--space-48);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.about_mystorie__image_top {
+.about_mystory__image_top {
   width: 100%;
   max-width: 640px;
 }
 
-.about_mystorie__bottom {
+.about_mystory__bottom {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-24);
@@ -250,7 +255,7 @@
   position: relative;
 }
 
-.about_mystorie__panel {
+.about_mystory__panel {
   background: var(--colorPrimary);
   color: #ffffff;
   padding: var(--space-32);
@@ -259,18 +264,18 @@
   border-radius: 4px;
 }
 
-.about_mystorie__panel_text {
+.about_mystory__panel_text {
   line-height: 1.75;
   max-width: 46ch;
 }
 
-.about_mystorie__image_bottom {
+.about_mystory__image_bottom {
   position: relative;
   z-index: 2;
   width: 100%;
 }
 
-.about_mystorie__img {
+.about_mystory__img {
   max-width: 640px;
   width: 100%;
   height: auto;
@@ -279,24 +284,24 @@
 }
 
 @media (min-width: 1024px) {
-  .about_mystorie__top {
-    grid-template-columns: 360px 1fr;
+  .about_mystory__top {
+    grid-template-columns: 410px 1fr;
     gap: var(--space-48);
   }
 
-  .about_mystorie__image_top {
+  .about_mystory__image_top {
     justify-self: end;
     max-width: 560px;
   }
 
-  .about_mystorie__bottom {
+  .about_mystory__bottom {
     grid-template-columns: 1fr 1fr;
     gap: 0;
     margin-top: calc(var(--space-64) * -0.01);
     align-items: end;
   }
 
-  .about_mystorie__panel {
+  .about_mystory__panel {
     grid-column: 2;
     grid-row: 1;
     width: 140%;
@@ -315,7 +320,7 @@
     }
   }
 
-  .about_mystorie__image_bottom {
+  .about_mystory__image_bottom {
     grid-column: 1;
     grid-row: 1;
     max-width: 620px;
@@ -325,49 +330,49 @@
 }
 
 @media (max-width: 1023px) {
-  .about_mystorie__container {
+  .about_mystory__container {
     margin: 0 auto;
   }
 
-  .about_mystorie__intro {
+  .about_mystory__intro {
     margin: 0 auto;
     text-align: center;
   }
 
-  .about_mystorie__top {
+  .about_mystory__top {
     justify-items: center;
     grid-template-areas:
       'image'
       'text';
   }
 
-  .about_mystorie__image_top {
+  .about_mystory__image_top {
     grid-area: image;
     margin: 0 auto;
   }
 
-  .about_mystorie__text {
+  .about_mystory__text {
     grid-area: text;
     margin: 0 auto;
     max-width: 56ch;
     text-align: center;
   }
 
-  .about_mystorie__bottom {
+  .about_mystory__bottom {
     justify-items: center;
   }
 
-  .about_mystorie__image_bottom {
+  .about_mystory__image_bottom {
     margin: 0 auto;
     max-width: 640px;
   }
 
-  .about_mystorie__panel {
+  .about_mystory__panel {
     margin: 0 auto;
     max-width: 640px;
   }
 
-  .about_mystorie__panel_text {
+  .about_mystory__panel_text {
     margin: 0 auto;
     max-width: 56ch;
     text-align: center;

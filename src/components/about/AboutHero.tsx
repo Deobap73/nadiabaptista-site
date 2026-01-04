@@ -18,9 +18,11 @@ export default function AboutHero({ lang }: Props) {
       <div className='site-container site-container--wide'>
         <div className='about_hero__grid'>
           <div className='about_hero__media'>
+            {/*  Decorative background element */}
             <div className='about_hero__bg' aria-hidden='true' />
 
             <div className='about_hero__image_wrap'>
+              {/* Desktop version - priority enabled for LCP */}
               <div className='about_hero__image_desktop'>
                 <Image
                   src={aboutImages.aboutHeroDesktop}
@@ -29,9 +31,11 @@ export default function AboutHero({ lang }: Props) {
                   height={1100}
                   priority
                   className='about_hero__image'
+                  sizes='(min-width: 1024px) 50vw, 100vw'
                 />
               </div>
 
+              {/* Mobile version */}
               <div className='about_hero__image_mobile'>
                 <Image
                   src={aboutImages.aboutHeroMobile}
@@ -40,6 +44,7 @@ export default function AboutHero({ lang }: Props) {
                   height={1100}
                   priority
                   className='about_hero__image'
+                  sizes='100vw'
                 />
               </div>
             </div>
@@ -52,14 +57,12 @@ export default function AboutHero({ lang }: Props) {
 
             <div className='about_hero__divider' aria-hidden='true' />
 
-            <p className='about_hero__text'>
+            <div className='about_hero__text'>
+              {/* Properly mapping multi-line text from dictionary */}
               {t.hero.text.split('\n').map((line, idx) => (
-                <span key={String(idx)}>
-                  {line}
-                  <br />
-                </span>
+                <p key={`hero_line_${idx}`}>{line}</p>
               ))}
-            </p>
+            </div>
 
             <Link className='about_hero__cta' href={`/${lang}/contact`}>
               {t.hero.cta}

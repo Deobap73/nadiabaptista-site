@@ -1,15 +1,21 @@
 // src/components/home/LandingMobile.tsx
+
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { homeImages } from '@/lib/images';
+import type { Lang } from '@/lib/i18n';
+import { getHomeDict } from '@/lib/i18n';
 
 type LandingMobileProps = {
+  lang: Lang;
   onEnter: () => void;
 };
 
-export default function LandingMobile({ onEnter }: LandingMobileProps) {
+export default function LandingMobile({ lang, onEnter }: LandingMobileProps) {
+  const dict = useMemo(() => getHomeDict(lang), [lang]);
+
   useEffect(() => {
     document.body.classList.add('is-landing-mobile');
     return () => {
@@ -20,42 +26,29 @@ export default function LandingMobile({ onEnter }: LandingMobileProps) {
   return (
     <section className='landing-mobile' aria-labelledby='landing-heading'>
       <div className='landing-mobile__inner'>
-        {/* <div className='landing-mobile__logo'>
-          <Image
-            src={homeImages.logoNadia}
-            alt='Assinatura Nadia Baptista Psicóloga'
-            width={240}
-            height={90}
-            priority
-          />
-        </div> */}
-
         <div className='landing-mobile__text-block'>
           <h1 id='landing-heading' className='landing-mobile__title'>
-            Nádia
+            {dict.landingMobile.titleFirst}
             <br />
-            <span>Baptista</span>
+            <span>{dict.landingMobile.titleSecond}</span>
           </h1>
 
-          <div className='landing-mobile__divider' aria-hidden='true'></div>
+          <div className='landing-mobile__divider' aria-hidden='true' />
 
-          <p className='landing-mobile__intro'>
-            Encontre o espaço seguro para se ouvir. Juntos, criaremos o caminho para a sua maior
-            clareza mental.
-          </p>
+          <p className='landing-mobile__intro'>{dict.landingMobile.intro}</p>
         </div>
 
         <div className='landing-mobile__photo'>
           <Image
             src={homeImages.landingMobile}
-            alt='Retrato da psicóloga Nadia Baptista'
+            alt={dict.landingMobile.imageAlt}
             width={360}
             height={520}
             priority
           />
 
           <button type='button' className='landing-mobile__cta btn btn--primary' onClick={onEnter}>
-            Seja bem vindo
+            {dict.landingMobile.cta}
           </button>
         </div>
       </div>

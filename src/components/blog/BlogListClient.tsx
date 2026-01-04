@@ -6,8 +6,11 @@ import { useMemo, useState } from 'react';
 import type { BlogPostPublic, BlogCategory } from '@/types/blog';
 import BlogCard from './BlogCard';
 import BlogCategoryTabs from './BlogCategoryTabs';
+import type { Lang } from '@/lib/i18n';
+import { getBlogDict } from '@/lib/i18n';
 
 type Props = {
+  lang: Lang;
   initialPosts: BlogPostPublic[];
   initialCategories: BlogCategory[];
 };
@@ -20,7 +23,9 @@ function sortByPublishedAtDesc(posts: BlogPostPublic[]): BlogPostPublic[] {
   });
 }
 
-export default function BlogListClient({ initialPosts, initialCategories }: Props) {
+export default function BlogListClient({ lang, initialPosts, initialCategories }: Props) {
+  const dict = getBlogDict(lang);
+
   const [activeCategory, setActiveCategory] = useState<string>('all');
 
   const filtered = useMemo(() => {
@@ -32,27 +37,28 @@ export default function BlogListClient({ initialPosts, initialCategories }: Prop
   }, [initialPosts, activeCategory]);
 
   const tabItems = useMemo(() => {
-    return [{ id: 'all', name: 'All', slug: 'all' }, ...initialCategories];
-  }, [initialCategories]);
+    return [{ id: 'all', name: dict.list.allTab, slug: 'all' }, ...initialCategories];
+  }, [initialCategories, dict.list.allTab]);
 
   return (
-    <section className='blog_list' aria-label='Artigos do blog'>
+    <section className='blog_list' aria-label={dict.list.ariaLabel}>
       <BlogCategoryTabs
+        lang={lang}
         categories={tabItems}
         active={activeCategory}
         onChange={setActiveCategory}
       />
 
       {filtered.length ? (
-        <div className='blog_list__grid' aria-label='Lista de artigos'>
+        <div className='blog_list__grid' aria-label={dict.list.gridAria}>
           {filtered.map((post) => (
-            <BlogCard key={post.id} post={post} />
+            <BlogCard lang={lang} key={post.id} post={post} />
           ))}
         </div>
       ) : (
         <div className='blog_list__empty'>
-          <p className='blog_list__empty_title'>Ainda não há artigos nesta categoria.</p>
-          <p className='blog_list__empty_text'>Volta mais tarde.</p>
+          <p className='blog_list__empty_title'>{dict.list.emptyTitle}</p>
+          <p className='blog_list__empty_text'>{dict.list.emptyText}</p>
         </div>
       )}
     </section>

@@ -4,6 +4,8 @@
 
 import React, { useMemo, useState } from 'react';
 import Toast from '@/components/ui/Toast';
+import type { Lang } from '@/lib/i18n';
+import { getNewsletterDict } from '@/lib/i18n/newsletter';
 
 type NewsletterField = {
   id: string;
@@ -14,6 +16,7 @@ type NewsletterField = {
 };
 
 type NewsletterBannerProps = {
+  lang: Lang;
   headingId: string;
   heading: string;
   description: string;
@@ -34,12 +37,15 @@ function isValidEmail(email: string): boolean {
 }
 
 export default function NewsletterBanner({
+  lang,
   headingId,
   heading,
   description,
   fields,
   buttonLabel,
 }: NewsletterBannerProps) {
+  const dict = useMemo(() => getNewsletterDict(lang), [lang]);
+
   const emailFieldId = useMemo(
     () => fields.find((f) => f.type === 'email')?.id || 'email',
     [fields]
@@ -80,7 +86,7 @@ export default function NewsletterBanner({
     const safeFullName = buildFullName(firstName, lastName);
 
     if (!isValidEmail(safeEmail)) {
-      openToast('Escreve um email válido.');
+      openToast(dict.toast.invalidEmail);
       return;
     }
 
@@ -101,25 +107,25 @@ export default function NewsletterBanner({
       const data = (await res.json()) as ApiResponse;
 
       if (!res.ok || !data.ok) {
-        openToast(data.error || 'Falha ao subscrever. Tenta de novo.');
+        openToast(data.error || dict.toast.subscribeFail);
         setIsSubmitting(false);
         return;
       }
 
       if (data.alreadyActive) {
-        openToast('Já estás subscrito.');
+        openToast(dict.toast.alreadySubscribed);
         setIsSubmitting(false);
         return;
       }
 
-      openToast('Enviámos um email de confirmação. Verifica a tua caixa de entrada.');
+      openToast(dict.toast.confirmationSent);
       setEmail('');
       setFirstName('');
       setLastName('');
       setIsSubmitting(false);
       return;
     } catch {
-      openToast('Falha ao subscrever. Tenta de novo.');
+      openToast(dict.toast.subscribeFail);
       setIsSubmitting(false);
       return;
     }
@@ -166,7 +172,7 @@ export default function NewsletterBanner({
                       type='submit'
                       className='btn btn--primary home-newsletter__button'
                       disabled={isSubmitting}>
-                      {isSubmitting ? 'A enviar...' : buttonLabel}
+                      {isSubmitting ? dict.button.sending : buttonLabel}
                     </button>
                   </div>
                 );
@@ -174,7 +180,6 @@ export default function NewsletterBanner({
 
               const isEmail = field.type === 'email';
               const isFirstName = field.type === 'text' && field.id === firstNameFieldId;
-              const isLastName = field.type === 'text' && field.id === lastNameFieldId;
 
               const value = isEmail ? email : isFirstName ? firstName : lastName;
 

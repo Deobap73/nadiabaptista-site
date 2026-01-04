@@ -5,9 +5,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo } from 'react';
+import type { Lang } from '@/lib/i18n';
+import { getStudiesDict } from '@/lib/i18n';
 import type { PublicConference } from '@/lib/studies/getConferences';
 
 type Props = {
+  lang: Lang;
   items: PublicConference[];
 };
 
@@ -15,7 +18,9 @@ function pickSafe(items: PublicConference[]) {
   return Array.isArray(items) ? items : [];
 }
 
-export default function StudiesConferencesAndSeminarsClient({ items }: Props) {
+export default function StudiesConferencesAndSeminarsClient({ lang, items }: Props) {
+  const dict = getStudiesDict(lang);
+  const base = `/${lang}`;
   const safe = useMemo(() => pickSafe(items), [items]);
 
   const recent = safe[0];
@@ -30,17 +35,20 @@ export default function StudiesConferencesAndSeminarsClient({ items }: Props) {
           <div className='studies_conferences__grid'>
             <header className='studies_conferences__intro'>
               <h2 id='studies_conferences_heading' className='studies_conferences__title'>
-                Conferências e
-                <br />
-                Seminários
+                {dict.conferences.title.split('\n').map((line, i) => (
+                  <span key={`c_${i}`}>
+                    {line}
+                    <br />
+                  </span>
+                ))}
               </h2>
 
-              <p className='studies_conferences__text'>Sem itens por agora.</p>
+              <p className='studies_conferences__text'>{dict.conferences.empty}</p>
             </header>
 
             <div className='studies_conferences__cta'>
-              <Link href='/studies/conferences' className='studies_conferences__button'>
-                Ver todos
+              <Link href={`${base}/studies/conferences`} className='studies_conferences__button'>
+                {dict.conferences.ctaAll}
               </Link>
             </div>
           </div>
@@ -55,19 +63,19 @@ export default function StudiesConferencesAndSeminarsClient({ items }: Props) {
         <div className='studies_conferences__grid'>
           <header className='studies_conferences__intro'>
             <h2 id='studies_conferences_heading' className='studies_conferences__title'>
-              Conferências e
-              <br />
-              Seminários
+              {dict.conferences.title.split('\n').map((line, i) => (
+                <span key={`c2_${i}`}>
+                  {line}
+                  <br />
+                </span>
+              ))}
             </h2>
 
-            <p className='studies_conferences__text'>
-              Participar em eventos académicos ajuda me a manter contacto com novas perspetivas e
-              práticas na psicologia
-            </p>
+            <p className='studies_conferences__text'>{dict.conferences.subtitle}</p>
           </header>
 
           <Link
-            href={`/studies/conferences/${recent.slug}`}
+            href={`${base}/studies/conferences/${recent.slug}`}
             className='studies_conferences__card studies_conferences__card_recent'
             aria-label={recent.title}>
             {recent.imageUrl ? (
@@ -83,7 +91,7 @@ export default function StudiesConferencesAndSeminarsClient({ items }: Props) {
 
           {image2 ? (
             <Link
-              href={`/studies/conferences/${image2.slug}`}
+              href={`${base}/studies/conferences/${image2.slug}`}
               className='studies_conferences__card studies_conferences__card_2'
               aria-label={image2.title}>
               {image2.imageUrl ? (
@@ -100,7 +108,7 @@ export default function StudiesConferencesAndSeminarsClient({ items }: Props) {
 
           {image3 ? (
             <Link
-              href={`/studies/conferences/${image3.slug}`}
+              href={`${base}/studies/conferences/${image3.slug}`}
               className='studies_conferences__card studies_conferences__card_3'
               aria-label={image3.title}>
               {image3.imageUrl ? (
@@ -117,7 +125,7 @@ export default function StudiesConferencesAndSeminarsClient({ items }: Props) {
 
           {image4 ? (
             <Link
-              href={`/studies/conferences/${image4.slug}`}
+              href={`${base}/studies/conferences/${image4.slug}`}
               className='studies_conferences__card studies_conferences__card_4'
               aria-label={image4.title}>
               {image4.imageUrl ? (
@@ -133,8 +141,8 @@ export default function StudiesConferencesAndSeminarsClient({ items }: Props) {
           ) : null}
 
           <div className='studies_conferences__cta'>
-            <Link href='/studies/conferences' className='studies_conferences__button'>
-              Ver todos
+            <Link href={`${base}/studies/conferences`} className='studies_conferences__button'>
+              {dict.conferences.ctaAll}
             </Link>
           </div>
         </div>

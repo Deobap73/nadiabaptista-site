@@ -2,8 +2,14 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
+import type { Lang } from '@/lib/i18n';
+import { getContactDict } from '@/lib/i18n';
+
+type Props = {
+  lang: Lang;
+};
 
 type ContactFormState = {
   name: string;
@@ -19,7 +25,9 @@ const INITIAL_STATE: ContactFormState = {
   message: '',
 };
 
-export default function ContactFormSection() {
+export default function ContactFormSection({ lang }: Props) {
+  const dict = useMemo(() => getContactDict(lang), [lang]);
+
   const [form, setForm] = useState<ContactFormState>(INITIAL_STATE);
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
 
@@ -59,7 +67,7 @@ export default function ContactFormSection() {
   }
 
   return (
-    <section className='contact_form' aria-label='Formulário de contacto'>
+    <section className='contact_form' aria-label={dict.form.ariaSection}>
       <div className='contact_form__wave' aria-hidden='true'>
         <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'>
           <path
@@ -71,40 +79,49 @@ export default function ContactFormSection() {
 
       <div className='contact_form__inner site-container site-container--wide'>
         <div className='contact_form__grid'>
-          <aside className='contact_form__info' aria-label='Informações de contacto'>
+          <aside className='contact_form__info' aria-label={dict.form.ariaInfo}>
             <div className='contact_form__info-block'>
-              <h3 className='contact_form__info-title'>Email</h3>
+              <h3 className='contact_form__info-title'>{dict.form.info.emailTitle}</h3>
               <p className='contact_form__info-text'>Contacto@nadiabaptista.pt</p>
             </div>
 
             <div className='contact_form__info-block'>
-              <h3 className='contact_form__info-title'>Telefone</h3>
+              <h3 className='contact_form__info-title'>{dict.form.info.phoneTitle}</h3>
               <p className='contact_form__info-text'>+351 999 999 999</p>
             </div>
 
             <div className='contact_form__info-block'>
-              <h3 className='contact_form__info-title'>Morada</h3>
+              <h3 className='contact_form__info-title'>{dict.form.info.addressTitle}</h3>
               <p className='contact_form__info-text'>Rua Cooperativa as 7 bicas</p>
               <p className='contact_form__info-text'>Senhora da hora</p>
             </div>
 
             <div className='contact_form__info-block'>
-              <h3 className='contact_form__info-title'>social</h3>
+              <h3 className='contact_form__info-title'>{dict.form.info.socialTitle}</h3>
 
               <div className='contact_form__social'>
-                <a className='contact_form__social-link' href='#' aria-label='Instagram'>
+                <a
+                  className='contact_form__social-link'
+                  href='#'
+                  aria-label={dict.form.info.instagram}>
                   <svg viewBox='0 0 24 24' aria-hidden='true' focusable='false'>
                     <path d='M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm10 2H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3zm-5 4a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm5.5-.9a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2z' />
                   </svg>
                 </a>
 
-                <a className='contact_form__social-link' href='#' aria-label='Facebook'>
+                <a
+                  className='contact_form__social-link'
+                  href='#'
+                  aria-label={dict.form.info.facebook}>
                   <svg viewBox='0 0 24 24' aria-hidden='true' focusable='false'>
                     <path d='M14 8h2V5h-2c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h2.2l.8-3H13V9c0-.6.4-1 1-1z' />
                   </svg>
                 </a>
 
-                <a className='contact_form__social-link' href='#' aria-label='LinkedIn'>
+                <a
+                  className='contact_form__social-link'
+                  href='#'
+                  aria-label={dict.form.info.linkedin}>
                   <svg viewBox='0 0 24 24' aria-hidden='true' focusable='false'>
                     <path d='M6.5 6.5A1.5 1.5 0 1 1 6.5 3a1.5 1.5 0 0 1 0 3.5zM5 8h3v13H5V8zm6 0h3v1.8c.6-1.1 1.8-2.1 3.7-2.1 3 0 4.3 2 4.3 5.2V21h-3v-6.7c0-1.8-.7-3-2.2-3-1.2 0-1.9.8-2.2 1.6-.1.3-.1.7-.1 1.1V21h-3V8z' />
                   </svg>
@@ -115,14 +132,17 @@ export default function ContactFormSection() {
 
           <div className='contact_form__divider' aria-hidden='true' />
 
-          <form className='contact_form__form' onSubmit={handleSubmit} aria-label='Enviar mensagem'>
+          <form
+            className='contact_form__form'
+            onSubmit={handleSubmit}
+            aria-label={dict.form.ariaSend}>
             <div className='contact_form__fields'>
               <div className='contact_form__field'>
                 <input
                   className='contact_form__input'
                   type='text'
                   name='name'
-                  placeholder='Nome'
+                  placeholder={dict.form.placeholders.name}
                   autoComplete='name'
                   value={form.name}
                   onChange={(e) => handleChange('name', e.target.value)}
@@ -136,7 +156,7 @@ export default function ContactFormSection() {
                   className='contact_form__input'
                   type='tel'
                   name='phone'
-                  placeholder='Telefone'
+                  placeholder={dict.form.placeholders.phone}
                   autoComplete='tel'
                   value={form.phone}
                   onChange={(e) => handleChange('phone', e.target.value)}
@@ -148,7 +168,7 @@ export default function ContactFormSection() {
                   className='contact_form__input'
                   type='email'
                   name='email'
-                  placeholder='Email'
+                  placeholder={dict.form.placeholders.email}
                   autoComplete='email'
                   value={form.email}
                   onChange={(e) => handleChange('email', e.target.value)}
@@ -160,7 +180,7 @@ export default function ContactFormSection() {
                 <textarea
                   className='contact_form__textarea'
                   name='message'
-                  placeholder='Mensagem'
+                  placeholder={dict.form.placeholders.message}
                   value={form.message}
                   onChange={(e) => handleChange('message', e.target.value)}
                   required
@@ -173,12 +193,12 @@ export default function ContactFormSection() {
                   className='contact_form__button'
                   type='submit'
                   disabled={status === 'sending'}>
-                  Enviar
+                  {status === 'sending' ? dict.form.button.sending : dict.form.button.send}
                 </button>
 
                 <p className='contact_form__feedback' aria-live='polite'>
-                  {status === 'success' ? 'Mensagem enviada.' : null}
-                  {status === 'error' ? 'Ocorreu um erro. Tente novamente.' : null}
+                  {status === 'success' ? dict.form.feedback.success : null}
+                  {status === 'error' ? dict.form.feedback.error : null}
                 </p>
               </div>
             </div>

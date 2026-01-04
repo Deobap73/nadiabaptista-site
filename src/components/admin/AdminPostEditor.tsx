@@ -157,12 +157,16 @@ export default function AdminPostEditor(props: Props) {
 
         if (!cancelled) {
           setUi('error');
-          setMessage('Não foi possível carregar o artigo.');
+          setMessage(
+            'Não foi possível carregar o artigo. (Explicação: Ocorreu um erro ao tentar carregar o artigo para edição)'
+          );
         }
       } catch {
         if (!cancelled) {
           setUi('error');
-          setMessage('Erro ao carregar.');
+          setMessage(
+            'Erro ao carregar. (Explicação: Ocorreu uma falha de rede ou servidor ao tentar carregar os dados)'
+          );
         }
       }
     }
@@ -206,13 +210,17 @@ export default function AdminPostEditor(props: Props) {
 
       if (!payload.title || !payload.slug) {
         setUi('ready');
-        setMessage('Preenche title e slug.');
+        setMessage(
+          'Preenche o título e o slug. (Explicação: Ambos os campos são obrigatórios para criar ou editar um artigo)'
+        );
         return;
       }
 
       if (!payload.content || !docHasAnyText(payload.content)) {
         setUi('ready');
-        setMessage('Escreve conteúdo no editor.');
+        setMessage(
+          'Escreve conteúdo no editor. (Explicação: O artigo precisa de ter conteúdo textual para ser guardado)'
+        );
         return;
       }
 
@@ -227,12 +235,17 @@ export default function AdminPostEditor(props: Props) {
 
         if (!res.ok || !json.ok) {
           setUi('ready');
-          setMessage(json.error || 'Erro ao criar.');
+          setMessage(
+            json.error ||
+              'Erro ao criar. (Explicação: O servidor não conseguiu processar o pedido de criação)'
+          );
           return;
         }
 
         setUi('ready');
-        setMessage('Criado com sucesso.');
+        setMessage(
+          'Artigo criado com sucesso. (Explicação: O novo artigo foi guardado na base de dados)'
+        );
         return;
       }
 
@@ -246,15 +259,22 @@ export default function AdminPostEditor(props: Props) {
 
       if (!res.ok || !json.ok) {
         setUi('ready');
-        setMessage(json.error || 'Erro ao guardar.');
+        setMessage(
+          json.error ||
+            'Erro ao guardar. (Explicação: O servidor não conseguiu processar a atualização do artigo)'
+        );
         return;
       }
 
       setUi('ready');
-      setMessage('Guardado com sucesso.');
+      setMessage(
+        'Artigo guardado com sucesso. (Explicação: As alterações foram salvas na base de dados)'
+      );
     } catch {
       setUi('ready');
-      setMessage('Erro ao guardar.');
+      setMessage(
+        'Erro ao guardar. (Explicação: Ocorreu uma falha de rede ou servidor ao tentar guardar)'
+      );
     }
   }
 
@@ -270,28 +290,40 @@ export default function AdminPostEditor(props: Props) {
 
       if (!res.ok || !json.ok) {
         setUi('ready');
-        setMessage('Erro ao apagar.');
+        setMessage(
+          'Erro ao apagar. (Explicação: O servidor não conseguiu processar o pedido de eliminação)'
+        );
         return;
       }
 
       setUi('ready');
-      setMessage('Apagado.');
+      setMessage(
+        'Artigo apagado. (Explicação: O artigo foi removido permanentemente da base de dados)'
+      );
     } catch {
       setUi('ready');
-      setMessage('Erro ao apagar.');
+      setMessage(
+        'Erro ao apagar. (Explicação: Ocorreu uma falha de rede ou servidor ao tentar eliminar o artigo)'
+      );
     }
   }
 
   if (ui === 'loading') {
-    return <p className='admin_post__hint'>A carregar</p>;
+    return (
+      <p className='admin_post__hint'>
+        A carregar... (Explicação: A carregar dados do artigo e categorias)
+      </p>
+    );
   }
 
   if (ui === 'error') {
     return (
       <div className='admin_post'>
-        <p className='admin_post__hint'>{message || 'Erro.'}</p>
+        <p className='admin_post__hint'>
+          {message || 'Erro. (Explicação: Ocorreu um erro desconhecido)'}
+        </p>
         <Link className='admin_post__back' href='/admin/blog'>
-          Voltar
+          Voltar à lista de artigos
         </Link>
       </div>
     );
@@ -301,7 +333,7 @@ export default function AdminPostEditor(props: Props) {
     <div className='admin_post'>
       <div className='admin_post__toolbar'>
         <Link className='admin_post__back' href='/admin/blog'>
-          Voltar
+          ← Voltar à lista de artigos (Explicação: Regressar à página de gestão de artigos)
         </Link>
 
         <div className='admin_post__toolbar_actions'>
@@ -311,7 +343,7 @@ export default function AdminPostEditor(props: Props) {
               className='admin_post__danger'
               onClick={handleDelete}
               disabled={ui === 'saving'}>
-              Apagar
+              Apagar artigo (Explicação: Eliminar permanentemente este artigo)
             </button>
           ) : null}
 
@@ -320,7 +352,9 @@ export default function AdminPostEditor(props: Props) {
             className='admin_post__button'
             onClick={handleSave}
             disabled={ui === 'saving'}>
-            {ui === 'saving' ? 'A guardar' : 'Guardar'}
+            {ui === 'saving'
+              ? 'A guardar... (Explicação: A processar e guardar as alterações)'
+              : 'Guardar artigo (Explicação: Salvar todas as alterações feitas)'}
           </button>
         </div>
       </div>
@@ -330,7 +364,9 @@ export default function AdminPostEditor(props: Props) {
       <div className='admin_post__grid'>
         <div className='admin_post__form'>
           <label className='admin_post__field'>
-            <span className='admin_post__label'>Title</span>
+            <span className='admin_post__label'>
+              Título (Explicação: Título principal do artigo, visível aos leitores)
+            </span>
             <input
               className='admin_post__input'
               value={form.title}
@@ -342,7 +378,10 @@ export default function AdminPostEditor(props: Props) {
           </label>
 
           <label className='admin_post__field'>
-            <span className='admin_post__label'>Slug</span>
+            <span className='admin_post__label'>
+              Slug (Explicação: Identificador único para URL, gerado automaticamente a partir do
+              título)
+            </span>
             <input
               className='admin_post__input'
               value={form.slug}
@@ -351,7 +390,9 @@ export default function AdminPostEditor(props: Props) {
           </label>
 
           <label className='admin_post__field'>
-            <span className='admin_post__label'>Excerpt</span>
+            <span className='admin_post__label'>
+              Excerto (Explicação: Breve descrição do artigo, mostrada em listagens)
+            </span>
             <textarea
               className='admin_post__textarea'
               rows={3}
@@ -361,12 +402,16 @@ export default function AdminPostEditor(props: Props) {
           </label>
 
           <label className='admin_post__field'>
-            <span className='admin_post__label'>Category</span>
+            <span className='admin_post__label'>
+              Categoria (Explicação: Grupo temático ao qual pertence o artigo)
+            </span>
             <select
               className='admin_post__input'
               value={form.categoryId}
               onChange={(e) => updateField('categoryId', e.target.value)}>
-              <option value=''>Sem categoria</option>
+              <option value=''>
+                Sem categoria (Explicação: Artigo não associado a nenhuma categoria)
+              </option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -376,22 +421,28 @@ export default function AdminPostEditor(props: Props) {
           </label>
 
           <label className='admin_post__field'>
-            <span className='admin_post__label'>Status</span>
+            <span className='admin_post__label'>
+              Estado (Explicação: Visibilidade do artigo para os leitores)
+            </span>
             <select
               className='admin_post__input'
               value={form.status}
               onChange={(e) => updateField('status', safeStatus(e.target.value))}>
-              <option value='DRAFT'>Draft</option>
-              <option value='PUBLISHED'>Published</option>
+              <option value='DRAFT'>
+                Rascunho (Explicação: Artigo visível apenas na área de administração)
+              </option>
+              <option value='PUBLISHED'>
+                Publicado (Explicação: Artigo visível publicamente no blog)
+              </option>
             </select>
           </label>
 
           <FileUpload
-            label='Cover image'
+            label='Imagem de capa (Explicação: Imagem principal que representa o artigo)'
             context='blog_article'
             valueUrl={form.coverImageUrl || ''}
             disabled={ui === 'saving'}
-            hint='Vai para a pasta blog article no Cloudinary.'
+            hint='Vai para a pasta blog_article no Cloudinary. (Explicação: As imagens são armazenadas no serviço Cloudinary)'
             onUploaded={({ url, publicId }) => {
               updateField('coverImageUrl', url);
               updateField('coverImagePublicId', publicId);
@@ -403,7 +454,9 @@ export default function AdminPostEditor(props: Props) {
           />
 
           <div className='admin_post__field'>
-            <span className='admin_post__label'>Content</span>
+            <span className='admin_post__label'>
+              Conteúdo (Explicação: Corpo principal do artigo com formatação rica)
+            </span>
 
             <RichTextEditor
               value={form.content || EMPTY_DOC}
@@ -414,17 +467,24 @@ export default function AdminPostEditor(props: Props) {
         </div>
 
         <div className='admin_post__preview'>
-          <p className='admin_post__preview_title'>Preview</p>
+          <p className='admin_post__preview_title'>
+            Pré-visualização (Explicação: Como o artigo aparecerá aos leitores)
+          </p>
 
           <div className='admin_post__preview_card'>
-            <p className='admin_post__preview_heading'>{form.title || 'Sem title'}</p>
-
-            <p className='admin_post__preview_meta'>
-              {form.status}
-              {selectedCategory ? `, ${selectedCategory.name}` : ''}
+            <p className='admin_post__preview_heading'>
+              {form.title || 'Sem título (Explicação: Título ainda não definido)'}
             </p>
 
-            <p className='admin_post__preview_excerpt'>{form.excerpt || 'Sem excerpt'}</p>
+            <p className='admin_post__preview_meta'>
+              {form.status === 'DRAFT' ? 'Rascunho' : 'Publicado'}
+              {selectedCategory ? `, ${selectedCategory.name}` : ''}
+              (Explicação: Estado e categoria do artigo)
+            </p>
+
+            <p className='admin_post__preview_excerpt'>
+              {form.excerpt || 'Sem excerto (Explicação: Descrição curta não definida)'}
+            </p>
 
             <div className='admin_post__preview_body'>
               <RichTextRenderer content={form.content || EMPTY_DOC} />

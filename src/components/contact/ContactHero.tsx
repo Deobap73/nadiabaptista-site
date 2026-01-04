@@ -2,8 +2,16 @@
 
 import Image from 'next/image';
 import { contactImages } from '@/lib/images';
+import type { Lang } from '@/lib/i18n';
+import { getContactDict } from '@/lib/i18n';
 
-export default function ContactHero() {
+type Props = {
+  lang: Lang;
+};
+
+export default function ContactHero({ lang }: Props) {
+  const dict = getContactDict(lang);
+
   return (
     <section className='contact_hero'>
       <div className='contact_hero__container site-container site-container--wide'>
@@ -11,7 +19,7 @@ export default function ContactHero() {
           <div className='contact_hero__media'>
             <Image
               src={contactImages.contactHeroDesktop}
-              alt='Retrato profissional em ambiente de trabalho'
+              alt={dict.hero.imageAlt}
               width={560}
               height={560}
               className='contact_hero__image'
@@ -22,16 +30,16 @@ export default function ContactHero() {
 
           <div className='contact_hero__panel'>
             <div className='contact_hero__panel_top'>
-              <h1 className='contact_hero__title'>Entre em contacto comigo</h1>
+              <h1 className='contact_hero__title'>{dict.hero.title}</h1>
             </div>
 
             <div className='contact_hero__panel_bottom'>
               <p className='contact_hero__text'>
-                Envie mensagem através do
+                {dict.hero.textLine1}
                 <br />
-                formulário abaixo e retornarei o contacto
+                {dict.hero.textLine2}
                 <br />
-                logo que possível.
+                {dict.hero.textLine3}
               </p>
             </div>
           </div>
@@ -39,7 +47,7 @@ export default function ContactHero() {
           <div className='contact_hero__media_mobile'>
             <Image
               src={contactImages.contactHeroMobile}
-              alt='Retrato profissional em ambiente de trabalho'
+              alt={dict.hero.imageAlt}
               width={720}
               height={540}
               className='contact_hero__image'

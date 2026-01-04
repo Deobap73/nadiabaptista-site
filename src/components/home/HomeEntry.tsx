@@ -6,15 +6,18 @@ import { useEffect, useState } from 'react';
 import HomeDesktop from './HomeDesktop';
 import LandingMobile from './LandingMobile';
 import HomeMobile from './HomeMobile';
+import type { Lang } from '@/lib/i18n';
 
-export default function HomeEntry() {
+type Props = {
+  lang: Lang;
+};
+
+export default function HomeEntry({ lang }: Props) {
   const [isMobile, setIsMobile] = useState(false);
   const [showMobileHome, setShowMobileHome] = useState(false);
 
   useEffect(() => {
-    const check = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+    const check = () => setIsMobile(window.innerWidth < 768);
 
     check();
     window.addEventListener('resize', check);
@@ -23,12 +26,12 @@ export default function HomeEntry() {
   }, []);
 
   if (!isMobile) {
-    return <HomeDesktop />;
+    return <HomeDesktop lang={lang} />;
   }
 
   if (!showMobileHome) {
-    return <LandingMobile onEnter={() => setShowMobileHome(true)} />;
+    return <LandingMobile lang={lang} onEnter={() => setShowMobileHome(true)} />;
   }
 
-  return <HomeMobile />;
+  return <HomeMobile lang={lang} />;
 }

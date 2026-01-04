@@ -4,9 +4,12 @@
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
+import type { Lang } from '@/lib/i18n';
+import { getStudiesDict } from '@/lib/i18n';
 import type { PublicPracticalExperience } from '@/lib/studies/getPracticalExperiences';
 
 type Props = {
+  lang: Lang;
   items: PublicPracticalExperience[];
 };
 
@@ -26,7 +29,9 @@ function pickDescription(item: PublicPracticalExperience) {
   return text.length > 160 ? `${text.slice(0, 160).trim()}...` : text;
 }
 
-export default function StudiesInternshipsAndVolunteeringClient({ items }: Props) {
+export default function StudiesInternshipsAndVolunteeringClient({ lang, items }: Props) {
+  const dict = getStudiesDict(lang);
+  const base = `/${lang}`;
   const safe = useMemo(() => (Array.isArray(items) ? items : []), [items]);
 
   const [page, setPage] = useState(1);
@@ -52,17 +57,14 @@ export default function StudiesInternshipsAndVolunteeringClient({ items }: Props
       <div className='studies_internships__container site-container site-container--wide'>
         <header className='studies_internships__header'>
           <h2 id='studies_internships_heading' className='studies_internships__title'>
-            Experiência prática
+            {dict.internships.title}
           </h2>
 
-          <p className='studies_internships__subtitle'>
-            Aplicar a teoria em contexto real tem sido fundamental no meu desenvolvimento como
-            futura psicóloga
-          </p>
+          <p className='studies_internships__subtitle'>{dict.internships.subtitle}</p>
         </header>
 
         {safe.length === 0 ? (
-          <p className='studies_internships__subtitle'>Sem itens por agora.</p>
+          <p className='studies_internships__subtitle'>{dict.internships.empty}</p>
         ) : (
           <>
             <div className='studies_internships__grid' role='list'>
@@ -71,18 +73,18 @@ export default function StudiesInternshipsAndVolunteeringClient({ items }: Props
                   <h3 className='studies_internships__card_title'>{item.title}</h3>
 
                   <p className='studies_internships__card_subtitle'>
-                    {pickSubtitle(item) || 'Sem subtitle por agora.'}
+                    {pickSubtitle(item) || dict.internships.fallbackSubtitle}
                   </p>
 
                   <p className='studies_internships__card_text'>
-                    {pickDescription(item) || 'Sem descrição por agora.'}
+                    {pickDescription(item) || dict.internships.fallbackDescription}
                   </p>
 
                   <div className='studies_internships__card_footer'>
                     <Link
                       className='studies_internships__card_link'
-                      href={`/studies/practical-experiences/${item.slug}`}>
-                      Ver detalhe
+                      href={`${base}/studies/practical-experiences/${item.slug}`}>
+                      {dict.internships.btnDetail}
                     </Link>
                   </div>
                 </article>
@@ -92,13 +94,13 @@ export default function StudiesInternshipsAndVolunteeringClient({ items }: Props
             <div className='studies_internships__footer'>
               <nav
                 className='studies_internships__pagination'
-                aria-label='Paginação de experiência prática'>
+                aria-label={dict.internships.pagination.aria}>
                 <button
                   type='button'
                   className='studies_internships__page_btn'
                   onClick={() => goTo(safePage - 1)}
                   disabled={isPrevDisabled}
-                  aria-label='Página anterior'>
+                  aria-label={dict.internships.pagination.prev}>
                   ‹
                 </button>
 
@@ -122,7 +124,7 @@ export default function StudiesInternshipsAndVolunteeringClient({ items }: Props
 
                 {totalPages > 2 ? (
                   <span className='studies_internships__page_ellipsis' aria-hidden='true'>
-                    …
+                    {dict.internships.pagination.ellipsis}
                   </span>
                 ) : null}
 
@@ -131,7 +133,7 @@ export default function StudiesInternshipsAndVolunteeringClient({ items }: Props
                   className='studies_internships__page_btn'
                   onClick={() => goTo(safePage + 1)}
                   disabled={isNextDisabled}
-                  aria-label='Página seguinte'>
+                  aria-label={dict.internships.pagination.next}>
                   ›
                 </button>
               </nav>
@@ -139,8 +141,8 @@ export default function StudiesInternshipsAndVolunteeringClient({ items }: Props
               <div className='studies_internships__cta'>
                 <Link
                   className='studies_internships__cta_btn'
-                  href='/studies/practical-experiences'>
-                  Ver todos
+                  href={`${base}/studies/practical-experiences`}>
+                  {dict.internships.ctaAll}
                 </Link>
               </div>
             </div>

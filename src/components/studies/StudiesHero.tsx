@@ -1,34 +1,34 @@
 // src/components/studies/StudiesHero.tsx
-import Image from 'next/image';
-import { studiesImages } from '../../lib/images';
 
-export default function StudiesHero() {
+import Image from 'next/image';
+import { studiesImages } from '@/lib/images';
+import type { Lang } from '@/lib/i18n';
+import { getStudiesDict } from '@/lib/i18n';
+
+type Props = {
+  lang: Lang;
+};
+
+export default function StudiesHero({ lang }: Props) {
+  const dict = getStudiesDict(lang);
+
   return (
     <section className='studies_hero' aria-labelledby='studies_hero_heading'>
       <div className='studies_hero__container site-container site-container--wide'>
         <div className='studies_hero__layout'>
-          {/* A ordem HTML foi mantida para acessibilidade, mas visualmente controlamos com CSS */}
           <div className='studies_hero__card'>
             <h1 id='studies_hero_heading' className='studies_hero__title'>
-              Investigar Hoje para
-              <br />
-              Cuidar Amanhã
+              {dict.hero.title.split('\n').map((line, i) => (
+                <span key={`t_${i}`}>
+                  {line}
+                  <br />
+                </span>
+              ))}
             </h1>
 
             <div className='studies_hero__text'>
-              <p>
-                A minha jornada académica é intencional e direcionada. Cada disciplina, cada artigo
-                lido e cada projeto de investigação é um passo na construção de uma base sólida e
-                especializada.
-              </p>
-
-              <p>
-                Aqui apresento as áreas específicas de intervenção e investigação que despertam o
-                meu maior interesse, como a [Mencionar uma ou duas áreas, ex: Terapia Cognitivo
-                Comportamental em Ansiedade] e a [Ex: Neurociências Aplicadas]. O estudo aprofundado
-                destes temas é o meu compromisso com a eficácia e humanização da futura prática
-                clínica.
-              </p>
+              <p>{dict.hero.p1}</p>
+              <p>{dict.hero.p2}</p>
             </div>
           </div>
 

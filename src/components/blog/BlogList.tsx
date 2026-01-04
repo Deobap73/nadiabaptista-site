@@ -2,6 +2,7 @@
 
 import type { BlogCategory, BlogPostPublic } from '@/types/blog';
 import BlogListClient from './BlogListClient';
+import type { Lang } from '@/lib/i18n';
 
 type ApiPostsResponse = {
   ok: boolean;
@@ -19,7 +20,11 @@ function getBaseUrl(): string {
   return process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
 }
 
-export default async function BlogList() {
+type Props = {
+  lang: Lang;
+};
+
+export default async function BlogList({ lang }: Props) {
   const baseUrl = getBaseUrl();
 
   let posts: BlogPostPublic[] = [];
@@ -45,5 +50,5 @@ export default async function BlogList() {
     posts = [];
   }
 
-  return <BlogListClient initialPosts={posts} initialCategories={categories} />;
+  return <BlogListClient lang={lang} initialPosts={posts} initialCategories={categories} />;
 }

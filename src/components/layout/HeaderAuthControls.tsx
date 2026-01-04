@@ -1,17 +1,23 @@
 // src/components/layout/HeaderAuthControls.tsx
+
 'use client';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import LoginModal from '@/components/auth/LoginModal';
+import type { Lang } from '@/lib/i18n';
 
 type MeResponse = {
   isAuthenticated: boolean;
   role: 'admin' | 'user' | null;
 };
 
-export default function HeaderAuthControls() {
+type Props = {
+  lang: Lang;
+};
+
+export default function HeaderAuthControls({ lang }: Props) {
   const router = useRouter();
 
   const [me, setMe] = useState<MeResponse>({ isAuthenticated: false, role: null });
@@ -84,6 +90,7 @@ export default function HeaderAuthControls() {
 
       <LoginModal
         key={loginModalKey}
+        lang={lang}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onLoggedIn={handleLoggedIn}

@@ -5,8 +5,11 @@
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import type { PublicDiploma } from '@/lib/portfolio/getDiplomas';
+import type { Lang } from '@/lib/i18n';
+import { getPortfolioDict } from '@/lib/i18n/portfolio';
 
 type Props = {
+  lang: Lang;
   items: PublicDiploma[];
 };
 
@@ -23,7 +26,6 @@ function buildPagination(currentPage: number, totalPages: number): PaginationMod
   }
 
   const pageNumbers: number[] = [1];
-
   if (totalPages >= 2) pageNumbers.push(2);
 
   return {
@@ -34,7 +36,9 @@ function buildPagination(currentPage: number, totalPages: number): PaginationMod
   };
 }
 
-export default function PortfolioDiplomasClient({ items }: Props) {
+export default function PortfolioDiplomasClient({ lang, items }: Props) {
+  const dict = useMemo(() => getPortfolioDict(lang), [lang]);
+
   const itemsPerPage = 3;
   const [page, setPage] = useState(1);
 
@@ -67,13 +71,16 @@ export default function PortfolioDiplomasClient({ items }: Props) {
       <div className='portfolio_diplomas__container site-container'>
         <header className='portfolio_diplomas__header'>
           <h2 id='portfolio_diplomas_heading' className='portfolio_diplomas__title'>
-            Os meus diplomas
+            {dict.diplomas.title}
           </h2>
 
           <p className='portfolio_diplomas__lead'>
-            Sentir se confiante, tanto a nível psicológico como emocional, é o componente chave para
-            a felicidade.
-            <br />O conhecimento e a formação contínua são a base desse caminho.
+            {dict.diplomas.leadLines.map((line, i) => (
+              <span key={i}>
+                {line}
+                <br />
+              </span>
+            ))}
           </p>
         </header>
 
@@ -103,13 +110,13 @@ export default function PortfolioDiplomasClient({ items }: Props) {
               ))}
             </div>
 
-            <nav className='portfolio_diplomas__pagination' aria-label='Paginação de diplomas'>
+            <nav className='portfolio_diplomas__pagination' aria-label={dict.diplomas.pagerLabel}>
               <button
                 type='button'
                 className='portfolio_diplomas__page_btn'
                 onClick={goPrev}
                 disabled={safePage === 1}
-                aria-label='Página anterior'>
+                aria-label={dict.diplomas.prev}>
                 ‹
               </button>
 
@@ -138,13 +145,13 @@ export default function PortfolioDiplomasClient({ items }: Props) {
                 className='portfolio_diplomas__page_btn'
                 onClick={goNext}
                 disabled={safePage === totalPages}
-                aria-label='Página seguinte'>
+                aria-label={dict.diplomas.next}>
                 ›
               </button>
             </nav>
           </>
         ) : (
-          <p className='portfolio_diplomas__empty'>Sem diplomas por agora</p>
+          <p className='portfolio_diplomas__empty'>{dict.diplomas.empty}</p>
         )}
       </div>
     </section>

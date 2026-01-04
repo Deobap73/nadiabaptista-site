@@ -2,8 +2,13 @@
 
 import { getAchievements } from '@/lib/portfolio/getAchievements';
 import PortfolioAchievementsClient from '@/components/portfolio/PortfolioAchievementsClient';
+import type { Lang } from '@/lib/i18n';
 
-export default async function PortfolioAchievements() {
+type Props = {
+  lang: Lang;
+};
+
+export default async function PortfolioAchievements({ lang }: Props) {
   const items = await getAchievements();
-  return <PortfolioAchievementsClient items={items} />;
+  return <PortfolioAchievementsClient lang={lang} items={items} />;
 }

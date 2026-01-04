@@ -2,8 +2,16 @@
 
 import Image from 'next/image';
 import { portfolioImages } from '@/lib/images';
+import type { Lang } from '@/lib/i18n';
+import { getPortfolioDict } from '@/lib/i18n/portfolio';
 
-export default function PortfolioHero() {
+type Props = {
+  lang: Lang;
+};
+
+export default function PortfolioHero({ lang }: Props) {
+  const dict = getPortfolioDict(lang);
+
   return (
     <section className='portfolio_hero' aria-labelledby='portfolio_hero_heading'>
       <div className='portfolio_hero__container site-container site-container--wide'>
@@ -11,23 +19,17 @@ export default function PortfolioHero() {
           <div className='portfolio_hero__content'>
             <header className='portfolio_hero__header'>
               <h1 id='portfolio_hero_heading' className='portfolio_hero__title'>
-                Competências em Formação.
-                <br />
-                O Caminho para a Prática
-                <br />
-                Ética
+                {dict.hero.titleLines.map((line, i) => (
+                  <span key={i}>
+                    {line}
+                    <br />
+                  </span>
+                ))}
               </h1>
             </header>
 
             <div className='portfolio_hero__text'>
-              <p className='portfolio_hero__paragraph'>
-                A Psicologia é uma jornada contínua de aprendizagem e aplicação. Este espaço reflete
-                o meu compromisso com a excelência, apresentando o meu percurso académico, as áreas
-                de investigação que me movem e as experiências práticas que moldam a minha futura
-                prática clínica. A minha formação é a base sólida para o cuidado e a ética
-                profissional que irei oferecer. Conheça as competências e projetos que estou a
-                desenvolver.
-              </p>
+              <p className='portfolio_hero__paragraph'>{dict.hero.paragraph}</p>
             </div>
           </div>
 

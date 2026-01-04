@@ -3,17 +3,24 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { homeImages } from '@/lib/images';
+import type { Lang } from '@/lib/i18n';
+import { getHomeDict, withLangPrefix } from '@/lib/i18n';
 
-export default function HomeAboutHighlight() {
+type Props = {
+  lang: Lang;
+};
+
+export default function HomeAboutHighlight({ lang }: Props) {
+  const dict = getHomeDict(lang);
+
   return (
     <section className='home-about-highlight' aria-labelledby='home-about-highlight-heading'>
       <div className='home-about-highlight__inner site-container site-container--wide'>
-        {/* Imagem */}
         <div className='home-about-highlight__media'>
           <div className='home-about-highlight__image-wrapper'>
             <Image
               src={homeImages.aboutDesktop}
-              alt='Retrato profissional da psicóloga Nádia Baptista'
+              alt={dict.aboutHighlight.imageAlt}
               width={480}
               height={600}
               sizes='(min-width: 1024px) 480px, 100vw'
@@ -23,25 +30,20 @@ export default function HomeAboutHighlight() {
           </div>
         </div>
 
-        {/* Conteúdo de texto */}
         <div className='home-about-highlight__content'>
           <header className='home-about-highlight__header'>
             <h2 id='home-about-highlight-heading' className='home-about-highlight__title'>
-              <span className='home-about-highlight__title-line'>Nádia Baptista</span>
+              <span className='home-about-highlight__title-line'>{dict.aboutHighlight.title}</span>
             </h2>
             <span className='home-about-highlight__divider' aria-hidden='true' />
           </header>
 
-          <p className='home-about-highlight__text'>
-            Defendo uma abordagem à Psicologia que alia o rigor científico da Neuropsicologia à
-            dinâmica do Desporto. O meu foco enquanto estudante é compreender como podemos otimizar
-            processos cognitivos para encontrar soluções práticas e eficazes. Acredito na partilha
-            de ferramentas que capacitem o indivíduo a lidar com desafios de forma autónoma, olhando
-            para as experiências passadas como aprendizagem para potenciar o rendimento futuro.
-          </p>
+          <p className='home-about-highlight__text'>{dict.aboutHighlight.text}</p>
 
-          <Link href='/about' className='home-about-highlight__button btn btn--primary'>
-            Mais informações
+          <Link
+            href={withLangPrefix(lang, '/about')}
+            className='home-about-highlight__button btn btn--primary'>
+            {dict.aboutHighlight.button}
           </Link>
         </div>
       </div>

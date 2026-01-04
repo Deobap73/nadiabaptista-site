@@ -7,6 +7,8 @@ import Link from 'next/link';
 import type { BlogCategory, BlogPostPublic } from '@/types/blog';
 import BlogCard from './BlogCard';
 import BlogCategoryTabs from './BlogCategoryTabs';
+import type { Lang } from '@/lib/i18n';
+import { getBlogDict, withLangPrefix } from '@/lib/i18n';
 
 function sortByNewest(a: BlogPostPublic, b: BlogPostPublic): number {
   const aTime = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
@@ -14,7 +16,14 @@ function sortByNewest(a: BlogPostPublic, b: BlogPostPublic): number {
   return bTime - aTime;
 }
 
-export default function BlogTopArticles({ posts }: { posts: BlogPostPublic[] }) {
+type Props = {
+  lang: Lang;
+  posts: BlogPostPublic[];
+};
+
+export default function BlogTopArticles({ lang, posts }: Props) {
+  const dict = getBlogDict(lang);
+
   const categories = useMemo<BlogCategory[]>(() => {
     const bySlug = new Map<string, BlogCategory>();
 
@@ -57,20 +66,20 @@ export default function BlogTopArticles({ posts }: { posts: BlogPostPublic[] }) 
   if (categories.length === 0) return null;
 
   return (
-    <section className='blog_top' aria-label='Top artigos'>
+    <section className='blog_top' aria-label={dict.top.ariaLabel}>
       <header className='blog_top__header'>
-        <h2 className='blog_top__title'>Top Artigos</h2>
+        <h2 className='blog_top__title'>{dict.top.title}</h2>
 
-        <Link href='/blog' className='blog_top__link'>
-          Mais informações
+        <Link href={withLangPrefix(lang, '/blog')} className='blog_top__link'>
+          {dict.top.more}
         </Link>
       </header>
 
-      <BlogCategoryTabs categories={categories} active={active} onChange={setActive} />
+      <BlogCategoryTabs lang={lang} categories={categories} active={active} onChange={setActive} />
 
-      <div className='blog_top__grid' aria-label='Selecao de artigos por categoria'>
+      <div className='blog_top__grid' aria-label={dict.top.gridAria}>
         {topCards.map((post) => (
-          <BlogCard key={post.slug} post={post} />
+          <BlogCard lang={lang} key={post.slug} post={post} />
         ))}
       </div>
     </section>

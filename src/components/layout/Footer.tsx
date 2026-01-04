@@ -4,36 +4,41 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { homeImages } from '@/lib/images';
 import { SiteIcons } from '@/lib/icons';
+import type { Lang } from '@/lib/i18n';
+import { withLangPrefix } from '@/lib/i18n';
 
 const Instagram = SiteIcons.instagram;
 const Facebook = SiteIcons.facebook;
 const Linkedin = SiteIcons.linkedin;
 
-export default function Footer() {
+type Props = {
+  lang: Lang;
+};
+
+export default function Footer({ lang }: Props) {
   const year = new Date().getFullYear();
+
   return (
     <footer className='site-footer'>
       <div className='site-footer__inner'>
-        {/* Coluna 1 */}
         <div className='site-footer__col'>
           <h3 className='site-footer__title'>Explore</h3>
           <ul className='site-footer__list'>
             <li>
-              <Link href='/'>Home</Link>
+              <Link href={withLangPrefix(lang, '/')}>Home</Link>
             </li>
             <li>
-              <Link href='/about'>Sobre Mim</Link>
+              <Link href={withLangPrefix(lang, '/about')}>Sobre Mim</Link>
             </li>
             <li>
-              <Link href='/blog'>Leia o meu Blog</Link>
+              <Link href={withLangPrefix(lang, '/blog')}>Leia o meu Blog</Link>
             </li>
             <li>
-              <Link href='/contact'>Contacto</Link>
+              <Link href={withLangPrefix(lang, '/contact')}>Contacto</Link>
             </li>
           </ul>
         </div>
 
-        {/* Coluna 2 */}
         <div className='site-footer__col'>
           <h3 className='site-footer__title'>Horários</h3>
           <ul className='site-footer__list'>
@@ -42,7 +47,6 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Coluna 3 */}
         <div className='site-footer__col'>
           <h3 className='site-footer__title'>Contacto</h3>
           <ul className='site-footer__list'>
@@ -52,7 +56,6 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Texto e ícones */}
         <div className='site-footer__col site-footer__col--wide'>
           <p className='site-footer__ethics'>
             Compromisso com o rigor ético e a confidencialidade. Todos os processos são conduzidos
@@ -80,7 +83,7 @@ export default function Footer() {
       </div>
 
       <div className='site-footer__bottom'>
-        <p>© {year} Todos os direitos reservados. Desenvolvido por - </p>
+        <p>© {year} Todos os direitos reservados. Desenvolvido por </p>
 
         <a
           className='footer__link--legal'

@@ -5,8 +5,11 @@ import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ChangeEvent, MouseEvent } from 'react';
 import { homeImages } from '../../lib/images';
+import type { Lang } from '@/lib/i18n';
+import { getAuthDict } from '@/lib/i18n';
 
 type Props = {
+  lang: Lang;
   isOpen: boolean;
   onClose: () => void;
   onLoggedIn: (role: 'admin' | 'user') => void;
@@ -28,7 +31,9 @@ const INITIAL: FormState = {
   errorMessage: null,
 };
 
-export default function LoginModal({ isOpen, onClose, onLoggedIn }: Props) {
+export default function LoginModal({ lang, isOpen, onClose, onLoggedIn }: Props) {
+  const dict = useMemo(() => getAuthDict(lang), [lang]);
+
   const [form, setForm] = useState<FormState>(INITIAL);
 
   const closeAndReset = useCallback(() => {
@@ -72,7 +77,7 @@ export default function LoginModal({ isOpen, onClose, onLoggedIn }: Props) {
         setForm((prev) => ({
           ...prev,
           status: 'error',
-          errorMessage: 'Login inválido. Confirma email e password.',
+          errorMessage: dict.errors.invalid,
         }));
         return;
       }
@@ -85,7 +90,7 @@ export default function LoginModal({ isOpen, onClose, onLoggedIn }: Props) {
       setForm((prev) => ({
         ...prev,
         status: 'error',
-        errorMessage: 'Erro inesperado. Tenta novamente.',
+        errorMessage: dict.errors.unexpected,
       }));
     }
   }
@@ -93,11 +98,11 @@ export default function LoginModal({ isOpen, onClose, onLoggedIn }: Props) {
   if (!isOpen) return null;
 
   return (
-    <div className='auth_modal' role='dialog' aria-modal='true' aria-label='Login'>
+    <div className='auth_modal' role='dialog' aria-modal='true' aria-label={dict.modal.ariaLabel}>
       <button
         className='auth_modal__backdrop'
         type='button'
-        aria-label='Fechar'
+        aria-label={dict.modal.close}
         onClick={closeAndReset}
       />
 
@@ -137,23 +142,23 @@ export default function LoginModal({ isOpen, onClose, onLoggedIn }: Props) {
           </header>
 
           <section className='auth_modal__content'>
-            <h2 className='auth_modal__headline'>Seja Bem vindo de volta</h2>
-            <p className='auth_modal__subheadline'>Faça login com</p>
+            <h2 className='auth_modal__headline'>{dict.headline}</h2>
+            <p className='auth_modal__subheadline'>{dict.subheadline}</p>
 
             <div className='auth_modal__social' aria-hidden='true'>
               <div className='auth_modal__social_placeholder' />
               <div className='auth_modal__social_placeholder' />
             </div>
 
-            <p className='auth_modal__divider'>Ou...</p>
+            <p className='auth_modal__divider'>{dict.divider}</p>
 
             <div className='auth_modal__form'>
               <label className='auth_modal__field'>
-                <span className='auth_modal__label'>Email</span>
+                <span className='auth_modal__label'>{dict.labels.email}</span>
                 <input
                   className='auth_modal__input'
                   type='email'
-                  placeholder='Email'
+                  placeholder={dict.placeholders.email}
                   value={form.email}
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setForm((prev) => ({ ...prev, email: e.target.value }))
@@ -163,11 +168,11 @@ export default function LoginModal({ isOpen, onClose, onLoggedIn }: Props) {
               </label>
 
               <label className='auth_modal__field'>
-                <span className='auth_modal__label'>Password</span>
+                <span className='auth_modal__label'>{dict.labels.password}</span>
                 <input
                   className='auth_modal__input'
                   type='password'
-                  placeholder='Password'
+                  placeholder={dict.placeholders.password}
                   value={form.password}
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setForm((prev) => ({ ...prev, password: e.target.value }))
@@ -190,16 +195,16 @@ export default function LoginModal({ isOpen, onClose, onLoggedIn }: Props) {
                   type='button'
                   onClick={handleSubmit}
                   disabled={!canSubmit}>
-                  {form.status === 'loading' ? 'A entrar...' : 'LOG IN'}
+                  {form.status === 'loading' ? dict.loading : dict.submit}
                 </button>
 
-                <div className='auth_modal__circle'></div>
+                <div className='auth_modal__circle' />
               </div>
 
               <p className='auth_modal__footer'>
-                Não tem conta?{' '}
+                {dict.footer.noAccount}{' '}
                 <button type='button' className='auth_modal__footer_link'>
-                  Crie conta aqui
+                  {dict.footer.create}
                 </button>
               </p>
             </div>

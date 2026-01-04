@@ -1,6 +1,9 @@
 // src/components/shared/QuickLinksSection.tsx
+
 import Link from 'next/link';
 import Image from 'next/image';
+import type { Lang } from '@/lib/i18n';
+import { getQuickLinksDict } from '@/lib/i18n/quickLinks';
 
 export type QuickLinkItem = {
   id: string;
@@ -11,6 +14,7 @@ export type QuickLinkItem = {
 };
 
 type QuickLinksSectionProps = {
+  lang: Lang;
   titleId: string;
   title: string;
   exploreLabel?: string;
@@ -18,21 +22,24 @@ type QuickLinksSectionProps = {
 };
 
 export default function QuickLinksSection({
+  lang,
   titleId,
   title,
-  exploreLabel = 'EXPLORE',
+  exploreLabel,
   items,
 }: QuickLinksSectionProps) {
+  const dict = getQuickLinksDict(lang);
+  const explore = exploreLabel || dict.exploreLabel;
+
   return (
     <section className='quick-links' aria-labelledby={titleId}>
-      {/* Desktop */}
       <div className='quick-links__desktop'>
         <div className='quick-links__container site-container site-container--wide'>
           <div className='quick-links__bg-full' aria-hidden='true'></div>
 
           <div className='quick-links__band'>
             <div className='quick-links__explore'>
-              <span>{exploreLabel}</span>
+              <span>{explore}</span>
             </div>
 
             <div className='quick-links__content'>
@@ -63,7 +70,6 @@ export default function QuickLinksSection({
         </div>
       </div>
 
-      {/* Mobile */}
       <div className='quick-links__mobile' aria-labelledby={`${titleId}-mobile`}>
         <div className='quick-links__mobile-inner site-container site-container--wide'>
           <h2 id={`${titleId}-mobile`} className='quick-links__mobile-title'>

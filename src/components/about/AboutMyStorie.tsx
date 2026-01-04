@@ -2,32 +2,44 @@
 
 import Image from 'next/image';
 import { aboutImages } from '@/lib/images';
+import type { Lang } from '@/lib/i18n';
+import { aboutCopy } from '@/lib/i18n/about';
 
-export default function AboutMyStorie() {
+type Props = {
+  lang: Lang;
+};
+
+export default function AboutMyStorie({ lang }: Props) {
+  const t = aboutCopy[lang];
+
   return (
     <section className='about_mystorie' aria-labelledby='about_mystorie_heading'>
       <div className='about_mystorie__container'>
         <header className='about_mystorie__intro'>
           <h2 id='about_mystorie_heading' className='about_mystorie__title'>
-            UMA TRAJETÓRIA BASEADA
-            <br />
-            NO ACREDITAR
+            {t.myStorie.title.split('\n').map((line, idx) => (
+              <span key={String(idx)}>
+                {line}
+                <br />
+              </span>
+            ))}
           </h2>
         </header>
+
         <div className='about_mystorie__top'>
           <p className='about_mystorie__text'>
-            Alguns dos meus hobbies incluem jogar voleibol, uma atividade que ocupa uma parte
-            importante da minha rotina e que me acompanha há vários anos. <br />
-            Gosto de ouvir música e de descobrir sítios novos, tanto na minha cidade como fora dela.
-            <br />
-            Tenho também gosto por viajar e conhecer diferentes locais, apreciar as suas histórias,
-            culturas e gastronomias e observar como cada lugar tem a sua identidade própria.
+            {t.myStorie.topText.split('\n').map((line, idx) => (
+              <span key={String(idx)}>
+                {line}
+                <br />
+              </span>
+            ))}
           </p>
 
           <div className='about_mystorie__image_top'>
             <Image
               src={aboutImages.aboutMyStorie1}
-              alt='Nádia sentada no chão num ambiente calmo e acolhedor'
+              alt={t.myStorie.imageTopAlt}
               width={980}
               height={640}
               className='about_mystorie__img'
@@ -40,7 +52,7 @@ export default function AboutMyStorie() {
           <div className='about_mystorie__image_bottom'>
             <Image
               src={aboutImages.aboutMyStorie2}
-              alt='Nádia encostada a uma pilha de livros com expressão serena'
+              alt={t.myStorie.imageBottomAlt}
               width={980}
               height={640}
               className='about_mystorie__img'
@@ -50,14 +62,12 @@ export default function AboutMyStorie() {
 
           <div className='about_mystorie__panel'>
             <p className='about_mystorie__panel_text'>
-              Quando concluir a licenciatura, pretendo ingressar num mestrado em Psicologia do
-              Desporto ou em Neuropsicologia, duas áreas que continuo a ponderar. <br />A Psicologia
-              do Desporto atrai-me de forma particular, porque o desporto sempre fez parte da minha
-              vida. <br />
-              Como atleta, reconheço as dificuldades que podem surgir no dia a dia, sobretudo a
-              gestão da pressão, das lesões e de outras exigências que nem sempre recebem o
-              acompanhamento adequado. Gostaria de contribuir para esta área, oferecendo apoio
-              especializado a quem vive estes desafios.
+              {t.myStorie.bottomText.split('\n').map((line, idx) => (
+                <span key={String(idx)}>
+                  {line}
+                  <br />
+                </span>
+              ))}
             </p>
           </div>
         </div>

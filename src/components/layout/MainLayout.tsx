@@ -1,28 +1,23 @@
-// src\components\layout\MainLayout.tsx
+// src/components/layout/MainLayout.tsx
 
 'use client';
 
 import React from 'react';
-import { usePathname } from 'next/navigation';
 import Header from './Header';
 import Footer from './Footer';
+import type { Lang } from '@/lib/i18n';
 
 interface MainLayoutProps {
   children: React.ReactNode;
+  lang: Lang;
 }
 
-export default function MainLayout({ children }: MainLayoutProps) {
-  const pathname = usePathname();
-
-  const isMainBackgroundRoute = pathname === '/' || pathname === '/contact';
-
-  const shellClassName = isMainBackgroundRoute ? 'site-shell site-shell--main-bg' : 'site-shell';
-
+export default function MainLayout({ children, lang }: MainLayoutProps) {
   return (
-    <div className={shellClassName}>
-      <Header />
+    <div className='site-shell'>
+      <Header lang={lang} />
       <main className='site-main'>{children}</main>
-      <Footer />
+      <Footer lang={lang} />
     </div>
   );
 }

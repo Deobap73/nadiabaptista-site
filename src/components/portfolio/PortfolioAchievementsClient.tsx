@@ -5,8 +5,11 @@
 import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import type { PublicAchievement } from '@/lib/portfolio/getAchievements';
+import type { Lang } from '@/lib/i18n';
+import { getPortfolioDict } from '@/lib/i18n/portfolio';
 
 type Props = {
+  lang: Lang;
   items: PublicAchievement[];
 };
 
@@ -31,9 +34,10 @@ function buildPagination(currentPage: number, totalPages: number): PaginationMod
   return { currentPage, totalPages, pageNumbers, showEllipsis };
 }
 
-export default function PortfolioAchievementsClient({ items }: Props) {
-  const itemsPerPage = 3;
+export default function PortfolioAchievementsClient({ lang, items }: Props) {
+  const dict = useMemo(() => getPortfolioDict(lang), [lang]);
 
+  const itemsPerPage = 3;
   const [page, setPage] = useState(1);
 
   const totalPages = Math.max(1, Math.ceil(items.length / itemsPerPage));
@@ -65,12 +69,10 @@ export default function PortfolioAchievementsClient({ items }: Props) {
       <div className='portfolio_achievements__container site-container'>
         <header className='portfolio_achievements__header'>
           <h2 id='portfolio_achievements_heading' className='portfolio_achievements__title'>
-            Conquistas
+            {dict.achievements.title}
           </h2>
 
-          <p className='portfolio_achievements__lead'>
-            Alguns marcos que representam etapas importantes no meu percurso académico e pessoal.
-          </p>
+          <p className='portfolio_achievements__lead'>{dict.achievements.lead}</p>
         </header>
 
         {hasItems ? (
@@ -106,13 +108,13 @@ export default function PortfolioAchievementsClient({ items }: Props) {
 
             <nav
               className='portfolio_achievements__pagination'
-              aria-label='Paginação de conquistas'>
+              aria-label={dict.achievements.pagerLabel}>
               <button
                 type='button'
                 className='portfolio_achievements__page_btn'
                 onClick={goPrev}
                 disabled={safePage === 1}
-                aria-label='Página anterior'>
+                aria-label={dict.achievements.prev}>
                 ‹
               </button>
 
@@ -143,13 +145,13 @@ export default function PortfolioAchievementsClient({ items }: Props) {
                 className='portfolio_achievements__page_btn'
                 onClick={goNext}
                 disabled={safePage === totalPages}
-                aria-label='Página seguinte'>
+                aria-label={dict.achievements.next}>
                 ›
               </button>
             </nav>
           </>
         ) : (
-          <p className='portfolio_achievements__empty'>Sem itens por agora</p>
+          <p className='portfolio_achievements__empty'>{dict.achievements.empty}</p>
         )}
       </div>
     </section>

@@ -2,29 +2,32 @@
 
 import Image from 'next/image';
 import { blogImages } from '../../lib/images';
+import type { Lang } from '@/lib/i18n';
+import { getBlogDict } from '@/lib/i18n';
 
-export default function BlogHero() {
+type Props = {
+  lang: Lang;
+};
+
+export default function BlogHero({ lang }: Props) {
+  const dict = getBlogDict(lang);
+
   return (
     <section className='blog_hero' aria-labelledby='blog_hero_heading'>
       <div className='blog_hero__container site-container site-container--wide'>
         <div className='blog_hero__grid'>
           <header className='blog_hero__content'>
-            <p className='blog_hero__eyebrow'>Mente Forte, Jogo Vencedor</p>
+            <p className='blog_hero__eyebrow'>{dict.hero.eyebrow}</p>
 
             <h1 id='blog_hero_heading' className='blog_hero__title'>
-              A Psicologia em Campo e<br />
-              na Vida
+              {dict.hero.titleLine1}
+              <br />
+              {dict.hero.titleLine2}
             </h1>
 
             <div className='blog_hero__text'>
-              <p>
-                A vitória começa na cabeça. Traduzo conceitos da Psicologia (motivação, ansiedade,
-                coesão de grupo) aplicados no desporto.
-              </p>
-              <p>
-                Do vólei a qualquer modalidade. Um espaço para estudantes, atletas e treinadores que
-                procuram ferramentas científicas para fortalecer o foco e a confiança.
-              </p>
+              <p>{dict.hero.p1}</p>
+              <p>{dict.hero.p2}</p>
             </div>
           </header>
 
@@ -32,7 +35,7 @@ export default function BlogHero() {
             <div className='blog_hero__media_bg' aria-hidden='true' />
             <Image
               src={blogImages.blogHeroDesktop}
-              alt='Retrato da Nádia Baptista em ambiente interior, sentada no chão com bola de voleibol'
+              alt={dict.hero.imageAlt}
               width={560}
               height={560}
               className='blog_hero__image'

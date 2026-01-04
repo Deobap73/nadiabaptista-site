@@ -2,19 +2,28 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import type { BlogPostPublic } from '@/types/blog';
-import RichTextRenderer from '@/components/editor/RichTextRenderer';
+import { notFound } from 'next/navigation';
+import type { Lang } from '@/lib/i18n';
+import { getBlogArticleDict, withLangPrefix } from '@/lib/i18n';
 
 type Props = {
   slug: string;
+  lang: Lang;
 };
 
 type ApiPostResponse = {
   ok: boolean;
-  post?: BlogPostPublic;
+  post?: {
+    title: string;
+    slug: string;
+    excerpt: string | null;
+    content: string;
+    coverImageUrl: string | null;
+    publishedAt: string | null;
+    updatedAt: string;
+    category?: { name: string } | null;
+  };
 };
-
-type FetchState = 'ok' | 'not_found' | 'error';
 
 function getBaseUrl(): string {
   const fromEnv = (process.env.NEXT_PUBLIC_SITE_URL || '').trim();
@@ -22,114 +31,103 @@ function getBaseUrl(): string {
   return process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
 }
 
-function formatDate(value: string | null): string {
-  if (!value) return '';
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return value;
-  return d.toLocaleDateString('pt-PT', { year: 'numeric', month: 'long', day: '2-digit' });
-}
-
-export default async function BlogArticle({ slug }: Props) {
+async function fetchPost(slug: string): Promise<ApiPostResponse | null> {
   const baseUrl = getBaseUrl();
-
-  let state: FetchState = 'error';
-  let post: BlogPostPublic | null = null;
 
   try {
     const res = await fetch(`${baseUrl}/api/post/${slug}`, { cache: 'no-store' });
-
-    if (res.status === 404) {
-      state = 'not_found';
-    } else if (res.ok) {
-      const json = (await res.json()) as ApiPostResponse;
-      if (json.ok && json.post) {
-        post = json.post;
-        state = 'ok';
-      } else {
-        state = 'error';
-      }
-    } else {
-      state = 'error';
-    }
+    if (!res.ok) return null;
+    return (await res.json()) as ApiPostResponse;
   } catch {
-    state = 'error';
+    return null;
+  }
+}
+
+function formatDate(iso: string | null, lang: Lang): string {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+
+  const locale = lang === 'en' ? 'en' : 'pt-PT';
+
+  try {
+    return d.toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric' });
+  } catch {
+    return '';
+  }
+}
+
+export default async function BlogArticle({ slug, lang }: Props) {
+  const dict = getBlogArticleDict(lang);
+  const json = await fetchPost(slug);
+
+  if (!json || !json.ok || !json.post) {
+    notFound();
   }
 
-  if (state === 'not_found') {
-    return (
-      <article className='blog_article' aria-label='Artigo não encontrado'>
-        <div className='blog_article__container site-container'>
-          <div className='blog_article__empty'>
-            <p className='blog_article__empty_title'>Artigo não encontrado.</p>
-            <Link href='/blog' className='blog_article__back'>
-              Voltar ao blog
-            </Link>
-          </div>
-        </div>
-      </article>
-    );
-  }
+  const post = json.post;
 
-  if (state === 'error' || !post) {
-    return (
-      <article className='blog_article' aria-label='Erro ao carregar artigo'>
-        <div className='blog_article__container site-container'>
-          <div className='blog_article__empty'>
-            <p className='blog_article__empty_title'>Não foi possível carregar.</p>
-            <p className='blog_article__empty_text'>Tenta novamente mais tarde.</p>
-            <Link href='/blog' className='blog_article__back'>
-              Voltar ao blog
-            </Link>
-          </div>
-        </div>
-      </article>
-    );
-  }
+  const publishedText = formatDate(post.publishedAt, lang);
+  const updatedText = formatDate(post.updatedAt, lang);
+
+  const blogHref = withLangPrefix(lang, '/blog');
 
   return (
-    <article className='blog_article' aria-label={post.title}>
-      <header className='blog_article__header'>
-        <div className='blog_article__container site-container'>
-          <p className='blog_article__kicker'>Blog</p>
+    <article className='blog_article'>
+      <div className='blog_article__container site-container site-container--wide'>
+        <div className='blog_article__top'>
+          <Link href={blogHref} className='blog_article__back'>
+            {dict.backToBlog}
+          </Link>
+        </div>
 
+        <header className='blog_article__header'>
           <h1 className='blog_article__title'>{post.title}</h1>
 
+          {post.excerpt ? <p className='blog_article__excerpt'>{post.excerpt}</p> : null}
+
           <div className='blog_article__meta'>
-            <span className='blog_article__date'>{formatDate(post.publishedAt)}</span>
-            <span className='blog_article__reading'>{post.readingTimeMinutes} min</span>
+            {publishedText ? (
+              <span className='blog_article__meta_item'>
+                {dict.published}: {publishedText}
+              </span>
+            ) : null}
+
+            {updatedText ? (
+              <span className='blog_article__meta_item'>
+                {dict.updated}: {updatedText}
+              </span>
+            ) : null}
+
+            {post.category?.name ? (
+              <span className='blog_article__meta_item'>{post.category.name}</span>
+            ) : null}
           </div>
+        </header>
 
-          {post.category ? (
-            <div className='blog_article__tags' aria-label='Categoria'>
-              <span className='blog_article__tag'>{post.category.name}</span>
-            </div>
-          ) : null}
-        </div>
-      </header>
-
-      <div className='blog_article__container site-container'>
         {post.coverImageUrl ? (
           <div className='blog_article__cover'>
             <Image
               src={post.coverImageUrl}
-              alt={post.title}
-              fill
+              alt=''
+              width={1200}
+              height={720}
               className='blog_article__cover_image'
-              sizes='(min-width: 1024px) 960px, 100vw'
+              sizes='(min-width: 1024px) 1100px, 100vw'
               priority
             />
           </div>
         ) : null}
 
         <div className='blog_article__content'>
-          <RichTextRenderer content={post.content} />
+          <div dangerouslySetInnerHTML={{ __html: post.content }} />
         </div>
 
-        <footer className='blog_article__footer'>
-          <Link href='/blog' className='blog_article__back'>
-            Voltar ao blog
+        <div className='blog_article__bottom'>
+          <Link href={blogHref} className='blog_article__back'>
+            {dict.backToBlog}
           </Link>
-        </footer>
+        </div>
       </div>
     </article>
   );

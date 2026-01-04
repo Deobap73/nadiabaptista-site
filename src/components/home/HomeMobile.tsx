@@ -5,15 +5,20 @@ import HomeHowICanHelp from './HomeHowICanHelp';
 import HomeQuickLinks from './HomeQuickLinks';
 import HomeAboutHighlight from './HomeAboutHighlight';
 import HomeNewsletterBanner from './HomeNewsletterBanner';
+import type { Lang } from '@/lib/i18n';
 
-export default function HomeMobile() {
+type Props = {
+  lang: Lang;
+};
+
+export default function HomeMobile({ lang }: Props) {
   return (
     <main>
-      <HomeHero />
-      <HomeHowICanHelp />
-      <HomeQuickLinks />
-      <HomeAboutHighlight />
-      <HomeNewsletterBanner />
+      <HomeHero lang={lang} />
+      <HomeHowICanHelp lang={lang} />
+      <HomeQuickLinks lang={lang} />
+      <HomeAboutHighlight lang={lang} />
+      <HomeNewsletterBanner lang={lang} />
     </main>
   );
 }

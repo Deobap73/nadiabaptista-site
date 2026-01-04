@@ -3,14 +3,16 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useId, useRef, useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 import type { CSSProperties } from 'react';
 import Toast from '../ui/Toast';
 import { useMe } from '@/lib/auth/useMe';
+import type { Lang } from '@/lib/i18n';
 
 type BrainNavMenuProps = {
   align?: 'left' | 'right';
+  lang: Lang;
 };
 
 type MenuItem = {
@@ -49,46 +51,6 @@ type IconOffset = {
   x?: number;
   y?: number;
 };
-
-const BASE_MENU_ITEMS: MenuItem[] = [
-  { id: 'blog', label: 'BLOG', href: '/blog', icon: '/nav/Blog.svg', x: 120, y: 54, delayMs: 40 },
-  {
-    id: 'about',
-    label: 'SOBRE MIM',
-    href: '/about',
-    icon: '/nav/AboutMe.svg',
-    x: 132,
-    y: 112,
-    delayMs: 90,
-  },
-  {
-    id: 'projects',
-    label: 'PROJECTOS',
-    href: '/portfolio',
-    icon: '/nav/Projectos.svg',
-    x: 170,
-    y: 198,
-    delayMs: 140,
-  },
-  {
-    id: 'studies',
-    label: 'STUDIES',
-    href: '/studies',
-    icon: '/nav/Studies.svg',
-    x: 260,
-    y: 198,
-    delayMs: 190,
-  },
-  {
-    id: 'contact',
-    label: 'CONTACTO',
-    href: '/contact',
-    icon: '/nav/Contact.svg',
-    x: 312,
-    y: 126,
-    delayMs: 240,
-  },
-];
 
 const ICON_OFFSETS: Record<string, IconOffset> = {
   blog: { x: 0, y: 10 },
@@ -145,6 +107,24 @@ function buildGeometry(items: MenuItem[]): Geometry {
   return { width, height, cx, cy, nodes };
 }
 
+function writeCookie(name: string, value: string) {
+  if (typeof document === 'undefined') return;
+  const v = encodeURIComponent(value);
+  document.cookie = `${name}=${v}; path=/; max-age=31536000; samesite=lax`;
+}
+
+function htmlLang(lang: Lang): string {
+  return lang === 'en' ? 'en' : 'pt-PT';
+}
+
+function stripLangPrefix(pathname: string): string {
+  if (pathname === '/pt') return '/';
+  if (pathname === '/en') return '/';
+  if (pathname.startsWith('/pt/')) return pathname.slice(3) || '/';
+  if (pathname.startsWith('/en/')) return pathname.slice(3) || '/';
+  return pathname;
+}
+
 function isActiveRoute(pathname: string, href: string) {
   if (href === '/') return pathname === '/';
   if (pathname === href) return true;
@@ -152,39 +132,72 @@ function isActiveRoute(pathname: string, href: string) {
   return false;
 }
 
-function readCookie(name: string): string {
-  if (typeof document === 'undefined') return '';
-  const parts = document.cookie.split(';').map((p) => p.trim());
-  const hit = parts.find((p) => p.startsWith(`${name}=`));
-  if (!hit) return '';
-  return decodeURIComponent(hit.slice(name.length + 1));
+function switchLangPath(pathname: string, nextLang: Lang): string {
+  if (pathname === '/pt') return '/en';
+  if (pathname === '/en') return '/pt';
+  if (pathname.startsWith('/pt/')) return pathname.replace('/pt/', `/${nextLang}/`);
+  if (pathname.startsWith('/en/')) return pathname.replace('/en/', `/${nextLang}/`);
+  return `/${nextLang}${pathname}`;
 }
 
-function writeCookie(name: string, value: string) {
-  if (typeof document === 'undefined') return;
-  const v = encodeURIComponent(value);
-  document.cookie = `${name}=${v}; path=/; max-age=31536000; samesite=lax`;
+function getBaseItems(lang: Lang): MenuItem[] {
+  return [
+    {
+      id: 'blog',
+      label: 'BLOG',
+      href: `/${lang}/blog`,
+      icon: '/nav/Blog.svg',
+      x: 120,
+      y: 54,
+      delayMs: 40,
+    },
+    {
+      id: 'about',
+      label: lang === 'pt' ? 'SOBRE MIM' : 'ABOUT',
+      href: `/${lang}/about`,
+      icon: '/nav/AboutMe.svg',
+      x: 132,
+      y: 112,
+      delayMs: 90,
+    },
+    {
+      id: 'projects',
+      label: lang === 'pt' ? 'PROJECTOS' : 'PROJECTS',
+      href: `/${lang}/portfolio`,
+      icon: '/nav/Projectos.svg',
+      x: 170,
+      y: 198,
+      delayMs: 140,
+    },
+    {
+      id: 'studies',
+      label: 'STUDIES',
+      href: `/${lang}/studies`,
+      icon: '/nav/Studies.svg',
+      x: 260,
+      y: 198,
+      delayMs: 190,
+    },
+    {
+      id: 'contact',
+      label: lang === 'pt' ? 'CONTACTO' : 'CONTACT',
+      href: `/${lang}/contact`,
+      icon: '/nav/Contact.svg',
+      x: 312,
+      y: 126,
+      delayMs: 240,
+    },
+  ];
 }
 
-function normalizeLang(v: string): 'pt' | 'en' {
-  const s = (v || '').trim().toLowerCase();
-  if (s.startsWith('en')) return 'en';
-  return 'pt';
+function getToastText(key: 'logout' | 'lang_pt' | 'lang_en', lang: Lang): string {
+  if (key === 'logout') return lang === 'pt' ? 'Sessão terminada.' : 'Session ended.';
+  if (key === 'lang_pt') return lang === 'pt' ? 'Idioma PT ativo.' : 'PT language active.';
+  return lang === 'pt' ? 'Idioma EN ativo.' : 'EN language active.';
 }
 
-function getInitialLang(): 'pt' | 'en' {
-  if (typeof document === 'undefined') return 'pt';
-
-  const fromCookie = normalizeLang(readCookie('nb_lang'));
-  if (fromCookie) return fromCookie;
-
-  const fromHtml = normalizeLang(document.documentElement.lang || '');
-  if (fromHtml) return fromHtml;
-
-  return 'pt';
-}
-
-export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
+export default function BrainNavMenu({ align = 'right', lang }: BrainNavMenuProps) {
+  const router = useRouter();
   const pathname = usePathname() || '/';
 
   const [isOpen, setIsOpen] = useState(false);
@@ -192,8 +205,6 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
 
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-
-  const [lang, setLang] = useState<'pt' | 'en'>('pt');
 
   const panelId = useId();
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -203,47 +214,47 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
   const isAuthenticated = me.isAuthenticated;
 
   useEffect(() => {
-    setLang(getInitialLang());
-  }, []);
-
-  useEffect(() => {
     if (typeof document === 'undefined') return;
-    document.documentElement.lang = lang;
+    document.documentElement.lang = htmlLang(lang);
     writeCookie('nb_lang', lang);
     window.dispatchEvent(new CustomEvent('nb_lang_changed', { detail: { lang } }));
   }, [lang]);
 
-  const authItem: MenuItem = isAuthenticated
-    ? {
-        id: 'logout',
-        label: 'LOGOUT',
-        icon: '/nav/LogOut.svg',
-        x: 334,
-        y: 56,
-        delayMs: 290,
-        action: 'logout',
-      }
-    : {
-        id: 'login',
-        label: 'LOGIN',
-        icon: '/nav/LogIn.svg',
-        x: 334,
-        y: 56,
-        delayMs: 290,
-        action: 'login',
-      };
+  const menuItems: MenuItem[] = useMemo(() => {
+    const authItem: MenuItem = isAuthenticated
+      ? {
+          id: 'logout',
+          label: 'LOGOUT',
+          icon: '/nav/LogOut.svg',
+          x: 334,
+          y: 56,
+          delayMs: 290,
+          action: 'logout',
+        }
+      : {
+          id: 'login',
+          label: 'LOGIN',
+          icon: '/nav/LogIn.svg',
+          x: 334,
+          y: 56,
+          delayMs: 290,
+          action: 'login',
+        };
 
-  const langItem: MenuItem = {
-    id: 'lang',
-    label: lang === 'pt' ? '' : '',
-    icon: lang === 'pt' ? '/nav/PT.svg' : '/nav/EN.svg',
-    x: 230,
-    y: 14,
-    delayMs: 0,
-    action: 'lang',
-  };
+    const langItem: MenuItem = {
+      id: 'lang',
+      label: '',
+      icon: lang === 'pt' ? '/nav/PT.svg' : '/nav/EN.svg',
+      x: 230,
+      y: 14,
+      delayMs: 0,
+      action: 'lang',
+    };
 
-  const menuItems: MenuItem[] = [langItem, ...BASE_MENU_ITEMS, authItem];
+    return [langItem, ...getBaseItems(lang), authItem];
+  }, [isAuthenticated, lang]);
+
+  const geometry = useMemo(() => buildGeometry(menuItems), [menuItems]);
 
   function closeMenu({ focusButton }: { focusButton: boolean }) {
     setIsOpen(false);
@@ -263,7 +274,7 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
       window.dispatchEvent(new CustomEvent('nb_auth_changed'));
-      showToast('Sessão terminada.');
+      showToast(getToastText('logout', lang));
     } finally {
       closeMenu({ focusButton: false });
     }
@@ -275,8 +286,13 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
   }
 
   function handleToggleLang() {
-    setLang((prev) => (prev === 'pt' ? 'en' : 'pt'));
-    showToast(lang === 'pt' ? 'Idioma definido para EN.' : 'Idioma definido para PT.');
+    const nextLang: Lang = lang === 'pt' ? 'en' : 'pt';
+    writeCookie('nb_lang', nextLang);
+
+    const nextPath = switchLangPath(pathname, nextLang);
+    router.push(nextPath);
+
+    showToast(nextLang === 'pt' ? getToastText('lang_pt', lang) : getToastText('lang_en', lang));
     closeMenu({ focusButton: false });
   }
 
@@ -305,8 +321,8 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
     function onPointerDown(e: MouseEvent | PointerEvent) {
       const root = rootRef.current;
       if (!isDesktop) return;
-
       if (!root) return;
+
       const target = e.target as Node | null;
       if (!target) return;
 
@@ -338,7 +354,7 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
     closeMenu({ focusButton: false });
   }
 
-  const geometry = buildGeometry(menuItems);
+  const cleanPath = stripLangPrefix(pathname);
 
   if (!isDesktop) {
     return (
@@ -348,7 +364,7 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
           className={`brain_menu__mobile_toggle brain_menu__mobile_toggle--${align}`}
           onClick={toggleMenu}
           aria-expanded={isOpen}
-          aria-label='Abrir menu'>
+          aria-label={lang === 'pt' ? 'Abrir menu' : 'Open menu'}>
           <Image src='/nav/Brain.svg' alt='Menu' width={44} height={44} />
         </button>
 
@@ -369,7 +385,7 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
                             type='button'
                             className='brain_menu__mobile_link'
                             onClick={handleToggleLang}
-                            aria-label='Mudar idioma'>
+                            aria-label={lang === 'pt' ? 'Mudar idioma' : 'Switch language'}>
                             <span className='brain_menu__mobile_icon'>
                               <Image src={item.icon} alt='' width={24} height={24} />
                             </span>
@@ -410,8 +426,8 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
                       );
                     }
 
-                    const href = item.href || '/';
-                    const active = isActiveRoute(pathname, href);
+                    const href = item.href || `/${lang}`;
+                    const active = isActiveRoute(cleanPath, stripLangPrefix(href));
 
                     return (
                       <li key={item.id} className='brain_menu__mobile_item'>
@@ -455,7 +471,7 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
           onClick={toggleMenu}
           aria-expanded={isOpen}
           aria-controls={panelId}
-          aria-label='Abrir menu'>
+          aria-label={lang === 'pt' ? 'Abrir menu' : 'Open menu'}>
           <span className='brain_menu__brain' aria-hidden='true'>
             <Image src='/nav/Brain.svg' alt='' width={44} height={44} />
           </span>
@@ -490,7 +506,7 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
                     style={cssNodePosition(n.x, n.y, n.delayMs, n.id)}
                     tabIndex={isOpen ? 0 : -1}
                     onClick={handleToggleLang}
-                    aria-label='Mudar idioma'>
+                    aria-label={lang === 'pt' ? 'Mudar idioma' : 'Switch language'}>
                     <span className='brain_menu__node_icon' aria-hidden='true'>
                       <Image src={n.icon} alt='' width={22} height={22} />
                     </span>
@@ -519,13 +535,14 @@ export default function BrainNavMenu({ align = 'right' }: BrainNavMenuProps) {
                 );
               }
 
-              const href = n.href || '/';
+              const href = n.href || `/${lang}`;
+              const active = isActiveRoute(cleanPath, stripLangPrefix(href));
 
               return (
                 <Link
                   key={n.id}
                   href={href}
-                  className='brain_menu__node'
+                  className={`brain_menu__node${active ? ' brain_menu__node--active' : ''}`}
                   style={cssNodePosition(n.x, n.y, n.delayMs, n.id)}
                   tabIndex={isOpen ? 0 : -1}
                   onClick={handleNodeClick}>

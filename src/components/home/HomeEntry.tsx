@@ -3,6 +3,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import HomeDesktop from './HomeDesktop';
 import LandingMobile from './LandingMobile';
 import HomeMobile from './HomeMobile';
@@ -13,8 +14,17 @@ type Props = {
 };
 
 export default function HomeEntry({ lang }: Props) {
+  const searchParams = useSearchParams();
+
   const [isMobile, setIsMobile] = useState(false);
   const [showMobileHome, setShowMobileHome] = useState(false);
+
+  useEffect(() => {
+    const shouldOpen = searchParams.get('open_login') === '1';
+    if (!shouldOpen) return;
+
+    window.dispatchEvent(new Event('nb_open_login_modal'));
+  }, [searchParams]);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);

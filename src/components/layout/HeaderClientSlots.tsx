@@ -97,12 +97,12 @@ export default function HeaderClientSlots({ lang }: Props) {
     <>
       <div className='site-header__slot site-header__slot--left'>
         {align === 'left' ? <BrainNavMenu align='left' lang={lang} /> : null}
-        {isAdmin && opposite === 'left' ? <AdminShortcut /> : null}
+        {isAdmin && opposite === 'left' ? <AdminShortcut lang={lang} /> : null}
       </div>
 
       <div className='site-header__slot site-header__slot--right'>
         {align === 'right' ? <BrainNavMenu align='right' lang={lang} /> : null}
-        {isAdmin && opposite === 'right' ? <AdminShortcut /> : null}
+        {isAdmin && opposite === 'right' ? <AdminShortcut lang={lang} /> : null}
       </div>
 
       <LoginModal

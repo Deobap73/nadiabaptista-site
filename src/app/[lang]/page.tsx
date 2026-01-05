@@ -18,32 +18,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { lang } = await params;
   const locale = safeLang(lang);
 
-  if (locale === 'en') {
-    return {
-      title: 'Home · Nadia Baptista · Psychology student in Porto',
-      description:
-        'Homepage of Nadia Baptista, psychology student in Porto. Learn about her studies, portfolio, blog and how to get in touch.',
-      alternates: {
-        canonical: '/en',
-        languages: {
-          'pt-PT': '/pt',
-          en: '/en',
-        },
-      },
-    };
-  }
-
   return {
-    title: 'Início · Nádia Baptista · Psicologia no Porto',
-    description:
-      'Página inicial de Nádia Baptista. Explora estudos, portfólio, blog e como entrar em contacto.',
-    alternates: {
-      canonical: '/pt',
-      languages: {
-        'pt-PT': '/pt',
-        en: '/en',
-      },
-    },
+    title: locale === 'en' ? 'Home' : 'Início',
   };
 }
 
@@ -58,6 +34,7 @@ export default async function HomePage({ params }: PageProps) {
         type='application/ld+json'
         dangerouslySetInnerHTML={{ __html: toJsonLd(websiteJsonLd()) }}
       />
+
       <Script
         id='jsonld-person'
         type='application/ld+json'

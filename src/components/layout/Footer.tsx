@@ -61,22 +61,40 @@ export default function Footer({ lang }: Props) {
               ? 'Commitment to ethical rigor and confidentiality, following the Psychology code of ethics.'
               : 'Compromisso com o rigor ético e a confidencialidade segundo o código de ética profissional.'}
           </p>
+
           <div className='site-footer__social'>
-            <Link href='#' aria-label='Instagram'>
+            <a
+              id='footer_social_instagram'
+              href='#'
+              aria-label='Instagram'
+              target='_blank'
+              rel='noopener noreferrer'>
               <span className='site-footer__icon'>
                 <Instagram />
               </span>
-            </Link>
-            <Link href='#' aria-label='Facebook'>
+            </a>
+
+            <a
+              id='footer_social_facebook'
+              href='#'
+              aria-label='Facebook'
+              target='_blank'
+              rel='noopener noreferrer'>
               <span className='site-footer__icon'>
                 <Facebook />
               </span>
-            </Link>
-            <Link href='#' aria-label='LinkedIn'>
+            </a>
+
+            <a
+              id='footer_social_linkedin'
+              href='#'
+              aria-label='LinkedIn'
+              target='_blank'
+              rel='noopener noreferrer'>
               <span className='site-footer__icon'>
                 <Linkedin />
               </span>
-            </Link>
+            </a>
           </div>
         </div>
       </div>
@@ -85,7 +103,12 @@ export default function Footer({ lang }: Props) {
         <p>
           © {year} {isEn ? 'All rights reserved.' : 'Todos os direitos reservados.'} Developed by{' '}
         </p>
-        <a href='https://thehumantechblog.com' target='_blank' rel='noopener noreferrer'>
+
+        <a
+          id='footer_dev_link'
+          href='https://thehumantechblog.com'
+          target='_blank'
+          rel='noopener noreferrer'>
           <Image
             src={homeImages.logo_theHumanTechDigitals}
             alt='The Human Tech Digitals'

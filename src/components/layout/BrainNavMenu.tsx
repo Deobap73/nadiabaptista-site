@@ -271,7 +271,10 @@ export default function BrainNavMenu({ align = 'right', lang }: BrainNavMenuProp
 
               {geometry.nodes.map((n) => {
                 const active = isActiveRoute(pathname, n.href || '');
+                const trackingId = `brain_menu_${n.id}`;
+
                 const commonProps = {
+                  id: trackingId,
                   className: `brain_menu__node ${active ? 'brain_menu__node--active' : ''}`,
                   style: cssNodePosition(n.x, n.y, n.delayMs, n.id),
                   tabIndex: 0 as const,
@@ -351,40 +354,47 @@ export default function BrainNavMenu({ align = 'right', lang }: BrainNavMenuProp
               data-open='true'>
               <nav className='brain_menu__mobile_nav open'>
                 <ul className='brain_menu__mobile_list'>
-                  {menuItems.map((item) => (
-                    <li key={item.id} className='brain_menu__mobile_item'>
-                      {item.action === 'lang' ? (
-                        <Link
-                          href={item.href || '#'}
-                          className='brain_menu__mobile_link'
-                          onClick={handleToggleLang}>
-                          <Image src={item.icon} alt='' width={24} height={24} />
-                        </Link>
-                      ) : item.action === 'login' || item.action === 'logout' ? (
-                        <button
-                          type='button'
-                          className='brain_menu__mobile_link'
-                          onClick={() =>
-                            item.action === 'login'
-                              ? window.dispatchEvent(new CustomEvent('nb_open_login_modal'))
-                              : void handleLogout()
-                          }>
-                          <Image src={item.icon} alt='' width={24} height={24} />
-                        </button>
-                      ) : (
-                        <Link
-                          href={item.href || '#'}
-                          className={`brain_menu__mobile_link ${
-                            isActiveRoute(pathname, item.href || '')
-                              ? 'brain_menu__mobile_link--active'
-                              : ''
-                          }`}
-                          onClick={() => setIsMobileOpen(false)}>
-                          <Image src={item.icon} alt='' width={24} height={24} />
-                        </Link>
-                      )}
-                    </li>
-                  ))}
+                  {menuItems.map((item) => {
+                    const trackingId = `brain_menu_${item.id}`;
+
+                    return (
+                      <li key={item.id} className='brain_menu__mobile_item'>
+                        {item.action === 'lang' ? (
+                          <Link
+                            id={trackingId}
+                            href={item.href || '#'}
+                            className='brain_menu__mobile_link'
+                            onClick={handleToggleLang}>
+                            <Image src={item.icon} alt='' width={24} height={24} />
+                          </Link>
+                        ) : item.action === 'login' || item.action === 'logout' ? (
+                          <button
+                            id={trackingId}
+                            type='button'
+                            className='brain_menu__mobile_link'
+                            onClick={() =>
+                              item.action === 'login'
+                                ? window.dispatchEvent(new CustomEvent('nb_open_login_modal'))
+                                : void handleLogout()
+                            }>
+                            <Image src={item.icon} alt='' width={24} height={24} />
+                          </button>
+                        ) : (
+                          <Link
+                            id={trackingId}
+                            href={item.href || '#'}
+                            className={`brain_menu__mobile_link ${
+                              isActiveRoute(pathname, item.href || '')
+                                ? 'brain_menu__mobile_link--active'
+                                : ''
+                            }`}
+                            onClick={() => setIsMobileOpen(false)}>
+                            <Image src={item.icon} alt='' width={24} height={24} />
+                          </Link>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               </nav>
             </aside>

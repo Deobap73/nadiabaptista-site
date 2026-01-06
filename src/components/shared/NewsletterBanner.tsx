@@ -169,6 +169,7 @@ export default function NewsletterBanner({
                 return (
                   <div key={field.id} className={groupClass}>
                     <button
+                      id='newsletter_subscribe_button'
                       type='submit'
                       className='btn btn--primary home-newsletter__button'
                       disabled={isSubmitting}>

@@ -287,10 +287,12 @@ export default function BrainNavMenu({ align = 'right', lang }: BrainNavMenuProp
                       {...commonProps}
                       href={n.href || '#'}
                       onClick={handleToggleLang}>
-                      <span className='brain_menu__node_icon'>
+                      <span id={trackingId} className='brain_menu__node_icon'>
                         <Image src={n.icon} alt='' width={22} height={22} />
                       </span>
-                      <span className='brain_menu__node_label'>{n.label}</span>
+                      <span id={trackingId} className='brain_menu__node_label'>
+                        {n.label}
+                      </span>
                     </Link>
                   );
                 }
@@ -306,10 +308,12 @@ export default function BrainNavMenu({ align = 'right', lang }: BrainNavMenuProp
                           ? window.dispatchEvent(new CustomEvent('nb_open_login_modal'))
                           : void handleLogout()
                       }>
-                      <span className='brain_menu__node_icon'>
+                      <span id={trackingId} className='brain_menu__node_icon'>
                         <Image src={n.icon} alt='' width={22} height={22} />
                       </span>
-                      <span className='brain_menu__node_label'>{n.label}</span>
+                      <span id={trackingId} className='brain_menu__node_label'>
+                        {n.label}
+                      </span>
                     </button>
                   );
                 }
@@ -320,10 +324,12 @@ export default function BrainNavMenu({ align = 'right', lang }: BrainNavMenuProp
                     {...commonProps}
                     href={n.href || '#'}
                     onClick={() => setIsDesktopOpen(false)}>
-                    <span className='brain_menu__node_icon'>
+                    <span id={trackingId} className='brain_menu__node_icon'>
                       <Image src={n.icon} alt='' width={22} height={22} />
                     </span>
-                    <span className='brain_menu__node_label'>{n.label}</span>
+                    <span id={trackingId} className='brain_menu__node_label'>
+                      {n.label}
+                    </span>
                   </Link>
                 );
               })}
@@ -365,7 +371,9 @@ export default function BrainNavMenu({ align = 'right', lang }: BrainNavMenuProp
                             href={item.href || '#'}
                             className='brain_menu__mobile_link'
                             onClick={handleToggleLang}>
-                            <Image src={item.icon} alt='' width={24} height={24} />
+                            <span id={trackingId}>
+                              <Image src={item.icon} alt='' width={24} height={24} />
+                            </span>
                           </Link>
                         ) : item.action === 'login' || item.action === 'logout' ? (
                           <button
@@ -377,7 +385,9 @@ export default function BrainNavMenu({ align = 'right', lang }: BrainNavMenuProp
                                 ? window.dispatchEvent(new CustomEvent('nb_open_login_modal'))
                                 : void handleLogout()
                             }>
-                            <Image src={item.icon} alt='' width={24} height={24} />
+                            <span id={trackingId}>
+                              <Image src={item.icon} alt='' width={24} height={24} />
+                            </span>
                           </button>
                         ) : (
                           <Link
@@ -389,7 +399,9 @@ export default function BrainNavMenu({ align = 'right', lang }: BrainNavMenuProp
                                 : ''
                             }`}
                             onClick={() => setIsMobileOpen(false)}>
-                            <Image src={item.icon} alt='' width={24} height={24} />
+                            <span id={trackingId}>
+                              <Image src={item.icon} alt='' width={24} height={24} />
+                            </span>
                           </Link>
                         )}
                       </li>

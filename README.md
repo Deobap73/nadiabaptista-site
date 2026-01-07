@@ -92,27 +92,56 @@ Footer stacks vertically with clear separation between elements.
 
 ### Content
 
-- Blog uses mock data in the current phase
-- Architecture prepared for Prisma and PostgreSQL
+- Blog powered by Prisma and PostgreSQL
+- Server rendered blog list and article pages for SEO
+- Dynamic sitemap generation from database content
 
 ### Email
 
 - Contact form handled via Route Handler
 - Server side email delivery using environment variables
 
-### SEO
+---
 
-- Metadata handled with Next.js metadata API
-- Language specific metadata and alternates
-- Blog slugs implemented
-- Mobile SEO considered from the start
-- Sitemap and robots planned for later phase
+## SEO and Analytics
 
-### Internationalization
+The project includes a complete technical SEO and analytics foundation, implemented following best practices.
+
+### Technical SEO
+
+- Metadata handled with Next.js Metadata API
+- Per page canonical URLs
+- Open Graph metadata for social sharing
+- Dynamic sitemap generated via Prisma
+- robots.txt served via Next.js route
+- Server side rendering for blog content
+- Structured data using JSON-LD:
+  - WebSite schema
+  - Person schema (future psychologist, psychology student)
+  - BlogPosting schema for articles
+
+### Google Analytics and Tag Management
+
+- Google Tag Manager integrated at the application layout level
+- Google Analytics 4 configured and fired via GTM
+- No direct GA scripts in the codebase
+- Centralized tracking logic for scalability
+- Ready for future events such as:
+  - Page views
+  - Scroll depth
+  - Contact interactions
+  - Form submissions
+  - Blog reading behavior
+
+Tracking is injected safely using Next.js Script component and a noscript fallback to ensure full coverage.
+
+---
+
+## Internationalization
 
 The website is fully internationalized using language based routing.
 
-- Language routes are handled via the `/[lang]` segment
+- Language routes handled via the `/[lang]` segment
 - Currently supported languages:
   - Portuguese `pt`
   - English `en`
@@ -120,8 +149,8 @@ The website is fully internationalized using language based routing.
   - Its own layout
   - Language specific metadata
   - Correct canonical and alternate links
-- SEO friendly language alternates are defined using Next.js metadata API
-- Text content is progressively externalized per language
+- SEO friendly language alternates defined using Next.js metadata API
+- Text content progressively externalized per language
 - Navigation, pages and UI components are language aware
 
 This structure allows the site to scale naturally to additional languages without refactoring core architecture.
@@ -143,7 +172,7 @@ This structure allows the site to scale naturally to additional languages withou
 ### Cloudinary
 
 - Server side Cloudinary configuration
-- Upload API route that accepts FormData and returns url and publicId
+- Upload API route accepting FormData and returning url and publicId
 - Public pages and blog content use Cloudinary URLs for images
 
 ### Admin and Auth Foundations
@@ -166,11 +195,12 @@ These items exist as a foundation, not as a finished admin panel.
 - Mobile landing flow
 - Studies page
 - Portfolio page
-- Blog with mock posts
+- Blog with database content
 - Contact page
 - Cloudinary integration
 - Design system
 - Internationalization foundation
+- Technical SEO and analytics setup
 
 ### Phase 2: Pre Clinical Presence
 
@@ -182,7 +212,7 @@ These items exist as a foundation, not as a finished admin panel.
 ### Phase 3: Clinical Practice
 
 - Appointment booking system
-- Database powered blog
+- Advanced content strategy
 - Local SEO for Porto
 - Full admin panel
 
@@ -243,6 +273,7 @@ src/
     form/
     auth/
     admin/
+    seo/
 
   styles/
     globals.scss
@@ -255,6 +286,7 @@ src/
     blog/
     auth/
     prisma/
+    seo/
 
   types/
 ```
@@ -275,6 +307,8 @@ npm start
 ## Environment Variables
 
 ```env
+NEXT_PUBLIC_GTM_ID=
+
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=

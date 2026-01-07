@@ -64,14 +64,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         },
       ],
     },
+    // src/app/[lang]/layout.tsx
+
     icons: {
-      apple: '/icons/apple-icon-180.png',
+      apple: [{ url: '/icons/apple-icon-180.png', sizes: '180x180', type: 'image/png' }],
       icon: [
-        { url: '/favicon.ico', sizes: 'any' },
+        // Provide explicit size for the 96x96 icon to help Google recognition
+        { url: '/favicon.ico', sizes: '96x96', type: 'image/x-icon' },
         { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
         { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
       ],
-      other: [{ rel: 'mask-icon', url: '/icons/maskable-icon-192.png' }],
+      shortcut: ['/favicon.ico'], // Explicit shortcut icon for older crawlers
+      other: [
+        {
+          rel: 'mask-icon',
+          url: '/icons/maskable-icon-192.png',
+        },
+      ],
     },
   };
 }

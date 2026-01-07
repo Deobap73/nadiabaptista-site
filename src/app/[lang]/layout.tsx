@@ -67,14 +67,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     // src/app/[lang]/layout.tsx
 
     icons: {
-      apple: [{ url: '/icons/apple-icon-180.png', sizes: '180x180', type: 'image/png' }],
       icon: [
-        // Provide explicit size for the 96x96 icon to help Google recognition
-        { url: '/favicon.ico', sizes: '96x96', type: 'image/x-icon' },
-        { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
-        { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+        {
+          url: '/favicon.ico',
+          sizes: '96x96',
+          type: 'image/x-icon',
+        },
       ],
-      shortcut: ['/favicon.ico'], // Explicit shortcut icon for older crawlers
+      apple: [{ url: '/icons/apple-icon-180.png', sizes: '180x180', type: 'image/png' }],
+      shortcut: '/favicon.ico', // Adiciona o rel="shortcut icon" de forma limpa
       other: [
         {
           rel: 'mask-icon',

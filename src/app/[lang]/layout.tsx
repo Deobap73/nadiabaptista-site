@@ -64,7 +64,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         },
       ],
     },
-    // src/app/[lang]/layout.tsx
 
     icons: {
       icon: [

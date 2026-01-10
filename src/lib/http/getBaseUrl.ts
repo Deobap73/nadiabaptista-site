@@ -1,9 +1,22 @@
 // src/lib/http/getBaseUrl.ts
+
 import { headers } from 'next/headers';
 
-export async function getBaseUrl() {
-  const envUrl = (process.env.NEXT_PUBLIC_SITE_URL || '').trim();
+function toOrigin(raw: string): string {
+  const value = (raw || '').trim();
+  if (!value) return '';
 
+  try {
+    // If someone sets https://site.com/pt, this returns https://site.com
+    return new URL(value).origin;
+  } catch {
+    // Fallback, remove trailing slashes
+    return value.replace(/\/+$/, '');
+  }
+}
+
+export async function getBaseUrl(): Promise<string> {
+  const envUrl = toOrigin(process.env.NEXT_PUBLIC_SITE_URL || '');
   if (envUrl) return envUrl;
 
   try {

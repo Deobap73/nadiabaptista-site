@@ -3,13 +3,22 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
 import { notFound } from 'next/navigation';
+
 import BlogArticle from '@/components/blog/BlogArticle';
 import { blogPostJsonLd, toJsonLd } from '@/lib/seo/jsonLd';
+
 import type { Lang } from '@/lib/i18n';
 import { normalizeLang } from '@/lib/i18n';
 
+import { getBaseUrl } from '@/lib/http/getBaseUrl';
+
+type RouteParams = {
+  lang: string;
+  slug: string;
+};
+
 type PageProps = {
-  params: { lang: string; slug: string };
+  params: Promise<RouteParams>;
 };
 
 type ApiPostResponse = {
@@ -26,14 +35,8 @@ type ApiPostResponse = {
 
 export const dynamicParams = true;
 
-function getBaseUrl(): string {
-  const fromEnv = (process.env.NEXT_PUBLIC_SITE_URL || '').trim();
-  if (fromEnv) return fromEnv;
-  return process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
-}
-
 async function fetchPost(slug: string): Promise<ApiPostResponse | null> {
-  const baseUrl = getBaseUrl();
+  const baseUrl = await getBaseUrl();
 
   try {
     const res = await fetch(`${baseUrl}/api/post/${slug}`, { cache: 'no-store' });
@@ -44,17 +47,15 @@ async function fetchPost(slug: string): Promise<ApiPostResponse | null> {
   }
 }
 
-function siteOrigin(): string {
-  const fromEnv = (process.env.NEXT_PUBLIC_SITE_URL || '').trim();
-  if (fromEnv) return fromEnv.replace(/\/+$/, '');
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return 'http://localhost:3000';
+async function siteOrigin(): Promise<string> {
+  const baseUrl = await getBaseUrl();
+  return baseUrl.replace(/\/+$/, '');
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { lang, slug } = await params; // Idealmente aguardar params em versões recentes
-  const safeLang = normalizeLang(lang) as Lang;
+  const { lang, slug } = await params;
 
+  const safeLang = normalizeLang(lang) as Lang;
   const json = await fetchPost(slug);
 
   if (!json || !json.ok || !json.post) {
@@ -65,11 +66,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const post = json.post;
-  const origin = siteOrigin();
+  const origin = await siteOrigin();
 
-  // Imagem de Fallback caso o post não tenha capa
   const defaultOgImage =
     'https://res.cloudinary.com/dleir1jqn/image/upload/v1767350948/NadiaBaptista-site/og-image.webp';
+
   const postImage = post.coverImageUrl || defaultOgImage;
 
   return {
@@ -110,8 +111,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
-  const lang = normalizeLang(params.lang) as Lang;
-  const slug = params.slug;
+  const { lang, slug } = await params;
+
+  const safeLang = normalizeLang(lang) as Lang;
 
   if (!slug) notFound();
 
@@ -120,8 +122,8 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   if (!post) notFound();
 
-  const origin = siteOrigin();
-  const url = `${origin}/${lang}/blog/${post.slug}`;
+  const origin = await siteOrigin();
+  const url = `${origin}/${safeLang}/blog/${post.slug}`;
 
   const jsonLd = blogPostJsonLd({
     title: post.title,
@@ -139,8 +141,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         type='application/ld+json'
         dangerouslySetInnerHTML={{ __html: toJsonLd(jsonLd) }}
       />
-
-      <BlogArticle slug={slug} lang={lang} />
+      <BlogArticle slug={slug} lang={safeLang} />
     </main>
   );
 }

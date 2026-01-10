@@ -2,6 +2,7 @@
 
 'use client';
 
+import { useEffect } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import type { JSONContent } from '@tiptap/core';
 
@@ -21,20 +22,25 @@ import { common, createLowlight } from 'lowlight';
 
 const lowlight = createLowlight(common);
 
-import { useEffect } from 'react';
-
 type Props = {
   content: JSONContent | null;
 };
+
+function safeStringify(value: unknown): string {
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return '';
+  }
+}
 
 export default function RichTextRenderer({ content }: Props) {
   const editor = useEditor({
     editable: false,
     content: content || undefined,
+    immediatelyRender: false,
     extensions: [
-      StarterKit.configure({
-        codeBlock: false,
-      }),
+      StarterKit.configure({ codeBlock: false }),
       Underline,
       Link.configure({
         openOnClick: true,
@@ -42,18 +48,12 @@ export default function RichTextRenderer({ content }: Props) {
         linkOnPaste: true,
       }),
       Image,
-      TextAlign.configure({
-        types: ['heading', 'paragraph'],
-      }),
-      Table.configure({
-        resizable: true,
-      }),
+      TextAlign.configure({ types: ['heading', 'paragraph'] }),
+      Table.configure({ resizable: true }),
       TableRow,
       TableHeader,
       TableCell,
-      CodeBlockLowlight.configure({
-        lowlight,
-      }),
+      CodeBlockLowlight.configure({ lowlight }),
     ],
     editorProps: {
       attributes: {
@@ -66,11 +66,10 @@ export default function RichTextRenderer({ content }: Props) {
     if (!editor) return;
     if (!content) return;
 
-    try {
-      const current = JSON.stringify(editor.getJSON());
-      const next = JSON.stringify(content);
-      if (current !== next) editor.commands.setContent(content);
-    } catch {
+    const current = safeStringify(editor.getJSON());
+    const next = safeStringify(content);
+
+    if (current !== next) {
       editor.commands.setContent(content);
     }
   }, [content, editor]);

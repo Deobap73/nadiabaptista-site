@@ -3,8 +3,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+
 import type { Lang } from '@/lib/i18n';
 import { getBlogArticleDict, withLangPrefix } from '@/lib/i18n';
+
+import { getBaseUrl } from '@/lib/http/getBaseUrl';
+import RichTextRenderer from '@/components/editor/RichTextRenderer';
+
+import type { RichTextDoc } from '@/types/blog';
 
 type Props = {
   slug: string;
@@ -17,7 +23,7 @@ type ApiPostResponse = {
     title: string;
     slug: string;
     excerpt: string | null;
-    content: string;
+    content: RichTextDoc;
     coverImageUrl: string | null;
     publishedAt: string | null;
     updatedAt: string;
@@ -25,14 +31,8 @@ type ApiPostResponse = {
   };
 };
 
-function getBaseUrl(): string {
-  const fromEnv = (process.env.NEXT_PUBLIC_SITE_URL || '').trim();
-  if (fromEnv) return fromEnv;
-  return process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
-}
-
 async function fetchPost(slug: string): Promise<ApiPostResponse | null> {
-  const baseUrl = getBaseUrl();
+  const baseUrl = await getBaseUrl();
 
   try {
     const res = await fetch(`${baseUrl}/api/post/${slug}`, { cache: 'no-store' });
@@ -61,9 +61,7 @@ export default async function BlogArticle({ slug, lang }: Props) {
   const dict = getBlogArticleDict(lang);
   const json = await fetchPost(slug);
 
-  if (!json || !json.ok || !json.post) {
-    notFound();
-  }
+  if (!json || !json.ok || !json.post) notFound();
 
   const post = json.post;
 
@@ -120,7 +118,7 @@ export default async function BlogArticle({ slug, lang }: Props) {
         ) : null}
 
         <div className='blog_article__content'>
-          <div dangerouslySetInnerHTML={{ __html: post.content }} />
+          <RichTextRenderer content={post.content} />
         </div>
 
         <div className='blog_article__bottom'>

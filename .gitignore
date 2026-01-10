@@ -17,6 +17,7 @@ dist
 dist-ssr
 out
 .next
+scripts/
 
 # Turbopack cache
 .turbo

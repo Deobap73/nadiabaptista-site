@@ -25,7 +25,7 @@ export default function GoogleTagManager({ gtmId }: Props) {
             
             gtag('consent', 'default', {
               'ad_storage': 'denied',
-              'analytics_storage': 'denied',
+              'analytics_storage': 'granted',
               'personalization_storage': 'denied',
               'ad_user_data': 'denied',
               'ad_personalization': 'denied',

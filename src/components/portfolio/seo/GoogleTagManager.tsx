@@ -1,3 +1,5 @@
+// src\components\portfolio\seo\GoogleTagManager.tsx
+
 import Script from 'next/script';
 
 type Props = {
@@ -25,7 +27,7 @@ export default function GoogleTagManager({ gtmId }: Props) {
             
             gtag('consent', 'default', {
               'ad_storage': 'denied',
-              'analytics_storage': 'granted',
+              'analytics_storage': 'denied',
               'personalization_storage': 'denied',
               'ad_user_data': 'denied',
               'ad_personalization': 'denied',

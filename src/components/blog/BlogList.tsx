@@ -41,7 +41,7 @@ export default async function BlogList({ lang }: Props) {
   }
 
   try {
-    const postsRes = await fetch(`${baseUrl}/api/posts`, { cache: 'no-store' });
+    const postsRes = await fetch(`${baseUrl}/api/post`, { cache: 'no-store' });
     if (postsRes.ok) {
       const postsJson = (await postsRes.json()) as ApiPostsResponse;
       if (postsJson.ok) posts = postsJson.posts;

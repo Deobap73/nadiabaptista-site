@@ -2,15 +2,17 @@
 
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import type { JSONContent } from '@tiptap/core';
-import StarterKit from '@tiptap/starter-kit';
 
+import StarterKit from '@tiptap/starter-kit';
 import { Link } from '@tiptap/extension-link';
 import { Underline } from '@tiptap/extension-underline';
 import { Image } from '@tiptap/extension-image';
 import { Placeholder } from '@tiptap/extension-placeholder';
 import { TextAlign } from '@tiptap/extension-text-align';
+import { TextStyle } from '@tiptap/extension-text-style';
 
 import { Table } from '@tiptap/extension-table';
 import { TableRow } from '@tiptap/extension-table-row';
@@ -19,8 +21,6 @@ import { TableCell } from '@tiptap/extension-table-cell';
 
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
 import { common, createLowlight } from 'lowlight';
-
-const lowlight = createLowlight(common);
 
 import {
   Bold,
@@ -49,6 +49,8 @@ import {
   Quote,
 } from 'lucide-react';
 
+import { FontSize } from './extensions/FontSize';
+
 type Props = {
   value: JSONContent | null;
   onChange: (value: JSONContent) => void;
@@ -60,6 +62,15 @@ const EMPTY_DOC: JSONContent = {
   content: [{ type: 'paragraph' }],
 };
 
+const FONT_SIZES: Array<{ label: string; value: string }> = [
+  { label: 'Small', value: '0.875rem' },
+  { label: 'Normal', value: '1rem' },
+  { label: 'Large', value: '1.25rem' },
+  { label: 'XL', value: '1.5rem' },
+];
+
+const lowlight = createLowlight(common);
+
 export default function RichTextEditor({ value, onChange, disabled }: Props) {
   const editor = useEditor({
     editable: !disabled,
@@ -67,6 +78,8 @@ export default function RichTextEditor({ value, onChange, disabled }: Props) {
       StarterKit.configure({
         codeBlock: false,
       }),
+      TextStyle,
+      FontSize,
       Underline,
       Link.configure({
         openOnClick: false,
@@ -104,17 +117,40 @@ export default function RichTextEditor({ value, onChange, disabled }: Props) {
     },
   });
 
+  const [fontSizeValue, setFontSizeValue] = useState<string>('');
+
+  useEffect(() => {
+    if (!editor) return;
+
+    const sync = () => {
+      const attrs = editor.getAttributes('textStyle') as { fontSize?: string | null };
+      setFontSizeValue(attrs.fontSize || '');
+    };
+
+    sync();
+
+    editor.on('selectionUpdate', sync);
+    editor.on('transaction', sync);
+
+    return () => {
+      editor.off('selectionUpdate', sync);
+      editor.off('transaction', sync);
+    };
+  }, [editor]);
+
   if (!editor) return null;
 
   function promptImageUrl() {
     const url = window.prompt('URL da imagem:');
-    if (!url) return;
-    editor.chain().focus().setImage({ src: url }).run();
+    const clean = (url || '').trim();
+    if (!clean) return;
+
+    editor.chain().focus().setImage({ src: clean }).run();
   }
 
   function promptLinkUrl() {
-    const previousUrl = editor.getAttributes('link').href as string | undefined;
-    const url = window.prompt('URL do link', previousUrl || '');
+    const prev = editor.getAttributes('link') as { href?: string };
+    const url = window.prompt('URL do link', prev.href || '');
 
     if (url === null) return;
 
@@ -172,6 +208,34 @@ export default function RichTextEditor({ value, onChange, disabled }: Props) {
             disabled={disabled}>
             <Strikethrough size={18} />
           </ToolbarButton>
+        </div>
+
+        <div className='rich_editor__group'>
+          <select
+            className='rich_editor__select'
+            value={fontSizeValue}
+            onChange={(e) => {
+              const next = e.target.value;
+
+              setFontSizeValue(next);
+
+              if (!next) {
+                editor.chain().focus().setMark('textStyle', { fontSize: null }).run();
+                return;
+              }
+
+              editor.chain().focus().setMark('textStyle', { fontSize: next }).run();
+            }}
+            disabled={disabled}
+            aria-label='Font size'
+            title='Font size'>
+            <option value=''>Default</option>
+            {FONT_SIZES.map((s) => (
+              <option key={s.value} value={s.value}>
+                {s.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className='rich_editor__group'>
@@ -270,7 +334,7 @@ export default function RichTextEditor({ value, onChange, disabled }: Props) {
         </div>
 
         <div className='rich_editor__group'>
-          <ToolbarButton label='Image' onClick={promptImageUrl} disabled={disabled}>
+          <ToolbarButton label='Insert image' onClick={promptImageUrl} disabled={disabled}>
             <PlusSquare size={18} />
           </ToolbarButton>
         </div>

@@ -16,7 +16,7 @@ const PT: PortfolioItem[] = [
     imageUrl: portfolioImages.portfolio_1,
     imageAlt: 'Material de estudo organizado sobre uma secretária',
   },
-  {
+  /* {
     id: 'outro-item',
     title: 'OUTRO MOMENTO MARCANTE',
     paragraphs: [
@@ -25,7 +25,7 @@ const PT: PortfolioItem[] = [
     ],
     imageUrl: portfolioImages.portfolio_1,
     imageAlt: 'Mesa de trabalho com computador e materiais de estudo',
-  },
+  }, */
 ];
 
 const EN: PortfolioItem[] = [
@@ -40,7 +40,7 @@ const EN: PortfolioItem[] = [
     imageUrl: portfolioImages.portfolio_1,
     imageAlt: 'Organised study materials on a desk',
   },
-  {
+  /* {
     id: 'outro-item',
     title: 'ANOTHER IMPORTANT MOMENT',
     paragraphs: [
@@ -49,7 +49,7 @@ const EN: PortfolioItem[] = [
     ],
     imageUrl: portfolioImages.portfolio_1,
     imageAlt: 'Workspace desk with computer and study materials',
-  },
+  }, */
 ];
 
 export function getPortfolioItems(lang: Lang): PortfolioItem[] {

@@ -5,7 +5,7 @@
 import { useRef, useState } from 'react';
 import Image from 'next/image';
 import { uploadImage } from '@/lib/cloudinary/uploadClient';
-import type { UploadContext } from '@/lib/cloudinary/uploadClient';
+import type { UploadContext, SequenceKind } from '@/lib/cloudinary/uploadClient';
 
 type UploadedValue = {
   url: string;
@@ -22,6 +22,8 @@ type Props = {
   accept?: string;
   hint?: string;
 
+  sequenceKind?: SequenceKind;
+
   onUploaded: (value: UploadedValue) => void;
   onRemove?: () => void;
 };
@@ -33,6 +35,7 @@ export default function FileUpload({
   disabled = false,
   accept = 'image/*',
   hint,
+  sequenceKind,
   onUploaded,
   onRemove,
 }: Props) {
@@ -45,7 +48,7 @@ export default function FileUpload({
     setStatus('uploading');
     setMessage('');
 
-    const result = await uploadImage(file, context);
+    const result = await uploadImage(file, context, { sequenceKind });
 
     if (!result.ok) {
       setStatus('error');

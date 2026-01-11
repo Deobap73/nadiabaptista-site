@@ -63,16 +63,24 @@ const INITIAL_FORM: FormState = {
 };
 
 function normalizeSlug(value: string): string {
-  return (value || '')
+  const hyphenChar = String.fromCharCode(45);
+  const hyphenPlus = new RegExp(`${hyphenChar}+`, 'g');
+  const trimHyphens = new RegExp(`^${hyphenChar}+|${hyphenChar}+$`, 'g');
+  const spaces = /\s+/g;
+  const nonAllowed = /[^a-z0-9\s]/g;
+
+  const cleaned = (value || '')
     .trim()
     .toLowerCase()
-    .replace(/\s+/g, ' ')
-    .replace(/[^a-z0-9\s]/g, '')
-    .replace(/\s+/g, ' ')
+    .replace(spaces, ' ')
+    .replace(nonAllowed, '')
+    .replace(spaces, ' ')
     .trim()
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
+    .replace(spaces, hyphenChar)
+    .replace(hyphenPlus, hyphenChar)
+    .replace(trimHyphens, '');
+
+  return cleaned;
 }
 
 function safeStatus(value: string): PostStatus {
@@ -456,6 +464,7 @@ export default function AdminPostEditor(props: Props) {
             <FileUpload
               label='Imagem de capa'
               context='blog_article'
+              sequenceKind='post_cover'
               valueUrl={form.coverImageUrl}
               disabled={ui === 'saving'}
               onUploaded={({ url, publicId }) => {

@@ -4,6 +4,8 @@ import { NextResponse } from 'next/server';
 import { cloudinary } from '@/lib/cloudinary/cloudinaryServer';
 import type { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
 import { randomUUID } from 'crypto';
+import { prisma } from '@/lib/prisma';
+import { isAdminRequest } from '@/app/api/admin/shared/requireAdminApi';
 
 export const runtime = 'nodejs';
 
@@ -15,6 +17,15 @@ type UploadContext =
   | 'contact'
   | 'portfolio'
   | 'studies';
+
+type SequenceKind =
+  | 'post_cover'
+  | 'academic_project_image'
+  | 'diploma_image'
+  | 'achievement_image'
+  | 'conference_image'
+  | 'practical_experience_image'
+  | 'avatar_image';
 
 function getBaseFolder(): string {
   const hyphenChar = String.fromCharCode(45);
@@ -46,11 +57,39 @@ function isAllowedContext(value: string): value is UploadContext {
   );
 }
 
+const SEQUENCE_PREFIX: Record<SequenceKind, string> = {
+  post_cover: 'Post',
+  academic_project_image: 'Project',
+  diploma_image: 'Diploma',
+  achievement_image: 'Achievement',
+  conference_image: 'Conference',
+  practical_experience_image: 'Experience',
+  avatar_image: 'Avatar',
+};
+
+function isAllowedSequenceKind(value: string): value is SequenceKind {
+  return Boolean((SEQUENCE_PREFIX as Record<string, string | undefined>)[value]);
+}
+
 function makeUniquePublicId(): string {
   const suffix = randomUUID();
   const now = Date.now();
   return `img_${now}_${suffix}`;
 }
+
+type JsonOk = {
+  ok: true;
+  url: string;
+  publicId: string;
+  context: UploadContext;
+  folder: string;
+  displayName: string | null;
+};
+
+type JsonFail = {
+  ok: false;
+  error: string;
+};
 
 export async function POST(req: Request) {
   try {
@@ -58,9 +97,10 @@ export async function POST(req: Request) {
 
     const file = formData.get('file');
     const contextRaw = String(formData.get('context') || 'blog');
+    const sequenceKindRaw = String(formData.get('sequenceKind') || '').trim();
 
     if (!file || !(file instanceof File)) {
-      return NextResponse.json({ ok: false, error: 'Missing file' }, { status: 400 });
+      return NextResponse.json<JsonFail>({ ok: false, error: 'Missing file' }, { status: 400 });
     }
 
     const context = isAllowedContext(contextRaw) ? contextRaw : 'blog';
@@ -69,8 +109,36 @@ export async function POST(req: Request) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // muito importante, gerar aqui dentro do POST
-    const publicId = makeUniquePublicId();
+    let publicIdBase = '';
+    let displayName = '';
+
+    if (sequenceKindRaw) {
+      if (!isAllowedSequenceKind(sequenceKindRaw)) {
+        return NextResponse.json<JsonFail>(
+          { ok: false, error: 'Invalid sequenceKind' },
+          { status: 400 }
+        );
+      }
+
+      const isAdmin = await isAdminRequest();
+      if (!isAdmin) {
+        return NextResponse.json<JsonFail>({ ok: false, error: 'Unauthorized' }, { status: 401 });
+      }
+
+      const ticket = await prisma.uploadTicket.create({
+        data: { kind: sequenceKindRaw },
+        select: { id: true },
+      });
+
+      const prefix = SEQUENCE_PREFIX[sequenceKindRaw];
+      const name = `${prefix}_${ticket.id}`;
+
+      publicIdBase = name;
+      displayName = name;
+    } else {
+      publicIdBase = makeUniquePublicId();
+      displayName = '';
+    }
 
     const result = await new Promise<{ secure_url: string; public_id: string }>(
       (resolve, reject) => {
@@ -78,11 +146,10 @@ export async function POST(req: Request) {
           {
             folder,
             resource_type: 'image',
-
-            public_id: publicId,
+            public_id: publicIdBase,
+            display_name: displayName || undefined,
 
             overwrite: false,
-
             use_filename: false,
             unique_filename: false,
           },
@@ -100,14 +167,15 @@ export async function POST(req: Request) {
       }
     );
 
-    return NextResponse.json({
+    return NextResponse.json<JsonOk>({
       ok: true,
       url: result.secure_url,
       publicId: result.public_id,
       context,
       folder,
+      displayName: displayName || null,
     });
   } catch {
-    return NextResponse.json({ ok: false, error: 'Server error' }, { status: 500 });
+    return NextResponse.json<JsonFail>({ ok: false, error: 'Server error' }, { status: 500 });
   }
 }

@@ -3,6 +3,9 @@
 import { NextResponse } from 'next/server';
 import { cloudinary } from '@/lib/cloudinary/cloudinaryServer';
 import type { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
+import { randomUUID } from 'crypto';
+
+export const runtime = 'nodejs';
 
 type UploadContext =
   | 'home'
@@ -24,10 +27,15 @@ function resolveFolder(context: UploadContext): string {
   if (context === 'home') return `${base}/home`;
   if (context === 'about') return `${base}/about`;
   if (context === 'blog') return `${base}/blog`;
-  if (context === 'blog_article') return `${base}/blog/article`;
+
+  // Ajuste para bater certo com a pasta que queres no Cloudinary
+  if (context === 'blog_article') return `${base}/blog/Articles`;
+
   if (context === 'contact') return `${base}/contact`;
   if (context === 'portfolio') return `${base}/portfolio`;
-  return `${base}/Studies`;
+
+  // Mantém consistência
+  return `${base}/studies`;
 }
 
 function isAllowedContext(value: string): value is UploadContext {
@@ -40,6 +48,14 @@ function isAllowedContext(value: string): value is UploadContext {
     value === 'portfolio' ||
     value === 'studies'
   );
+}
+
+function makeUniquePublicId(): string {
+  try {
+    return `img_${randomUUID()}`;
+  } catch {
+    return `img_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+  }
 }
 
 export async function POST(req: Request) {
@@ -59,10 +75,23 @@ export async function POST(req: Request) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
+    const publicId = makeUniquePublicId();
+
     const result = await new Promise<{ secure_url: string; public_id: string }>(
       (resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
-          { folder, resource_type: 'image' },
+          {
+            folder,
+            resource_type: 'image',
+
+            // nomes únicos e sem overwrite acidental
+            public_id: publicId,
+            overwrite: false,
+
+            // garante comportamento consistente
+            use_filename: false,
+            unique_filename: true,
+          },
           (error: UploadApiErrorResponse | undefined, uploaded: UploadApiResponse | undefined) => {
             if (error || !uploaded) {
               reject(error || new Error('Upload failed'));

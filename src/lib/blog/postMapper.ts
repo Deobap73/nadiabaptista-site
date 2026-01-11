@@ -53,32 +53,54 @@ function estimateReadingTimeMinutes(doc: RichTextDoc): number {
 
 export function mapPostToPublic(input: {
   id: string;
-  title: string;
   slug: string;
-  excerpt: string | null;
-  content: RichTextDoc;
+
   status: 'DRAFT' | 'PUBLISHED';
   publishedAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
+
   coverImageUrl: string | null;
+  coverImagePublicId: string | null;
+
   category: { id: string; name: string; slug: string } | null;
+
+  translation: {
+    title: string;
+    excerpt: string | null;
+    content: RichTextDoc;
+  };
+
+  translations?: Array<{
+    lang: 'pt' | 'en';
+    title: string;
+    excerpt: string | null;
+    content: RichTextDoc;
+  }>;
 }): BlogPostPublic {
   return {
     id: input.id,
-    title: input.title,
     slug: input.slug,
-    excerpt: input.excerpt,
-    content: input.content,
+
     status: input.status,
     publishedAt: input.publishedAt ? input.publishedAt.toISOString() : null,
     createdAt: input.createdAt.toISOString(),
     updatedAt: input.updatedAt.toISOString(),
+
     category: input.category
       ? { id: input.category.id, name: input.category.name, slug: input.category.slug }
       : null,
+
     coverImageUrl: input.coverImageUrl,
-    readingTimeMinutes: estimateReadingTimeMinutes(input.content),
+    coverImagePublicId: input.coverImagePublicId,
+
+    title: input.translation.title,
+    excerpt: input.translation.excerpt,
+    content: input.translation.content,
+
+    readingTimeMinutes: estimateReadingTimeMinutes(input.translation.content),
+
+    translations: input.translations ?? [],
   };
 }
 

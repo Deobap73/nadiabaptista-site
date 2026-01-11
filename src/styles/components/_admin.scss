@@ -15,7 +15,7 @@
 .admin_shell {
   display: grid;
   grid-template-columns: 260px 1fr;
-  min-height: calc(100vh - 0px);
+  min-height: 100vh;
 
   &__nav {
     border-right: 1px solid var(--color-border-subtle);
@@ -80,7 +80,6 @@
     font-weight: 500;
     font-style: italic;
     color: var(--colorText);
-    line-height: 1.05;
   }
 
   &__text {
@@ -89,50 +88,10 @@
     opacity: 0.9;
     max-width: 720px;
   }
-
-  &__cta {
-    padding-top: var(--space-8);
-  }
-
-  &__cta_link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 44px;
-    padding: 10px 16px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-family: var(--fontBody);
-    color: var(--colorBackground);
-    background: var(--colorPrimary);
-  }
 }
 
 /* ********************************************************** */
-/* Responsive */
-/* ********************************************************** */
-
-@media (max-width: 900px) {
-  .admin_shell {
-    grid-template-columns: 1fr;
-
-    &__nav {
-      border-right: 0;
-      border-bottom: 1px solid var(--color-border-subtle);
-    }
-
-    &__nav_inner {
-      position: static;
-    }
-
-    &__content {
-      padding: var(--space-24);
-    }
-  }
-}
-
-/* ********************************************************** */
-/* Admin blog */
+/* Admin blog list */
 /* ********************************************************** */
 
 .admin_blog {
@@ -174,16 +133,15 @@
   &__row_title {
     font-family: var(--fontHeading);
     font-size: 1.2rem;
-    color: var(--colorText);
     margin: 0;
+    color: var(--colorText);
   }
 
   &__row_meta {
     font-family: var(--fontBody);
     font-size: 0.9rem;
-    color: var(--colorText);
     opacity: 0.8;
-    margin: 4px 0 0;
+    margin-top: 4px;
   }
 
   &__row_actions {
@@ -193,9 +151,9 @@
   }
 
   &__link {
-    text-decoration: none;
     font-family: var(--fontBody);
     color: var(--colorPrimary);
+    text-decoration: none;
   }
 
   &__empty_title,
@@ -205,6 +163,10 @@
     opacity: 0.85;
   }
 }
+
+/* ********************************************************** */
+/* Admin post editor */
+/* ********************************************************** */
 
 .admin_post {
   &__toolbar {
@@ -222,9 +184,9 @@
   }
 
   &__back {
-    text-decoration: none;
     font-family: var(--fontBody);
     color: var(--colorPrimary);
+    text-decoration: none;
   }
 
   &__button {
@@ -242,7 +204,6 @@
     border-radius: 999px;
     border: 1px solid var(--color-border-subtle);
     background: transparent;
-    color: var(--colorText);
     font-family: var(--fontBody);
     cursor: pointer;
   }
@@ -250,15 +211,48 @@
   &__message,
   &__hint {
     font-family: var(--fontBody);
-    color: var(--colorText);
+    margin-bottom: var(--space-16);
     opacity: 0.9;
-    margin: 0 0 var(--space-16);
   }
+
+  /* Panel + tabs */
+
+  &__panel {
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 16px;
+    background: var(--colorBackground);
+    overflow: hidden;
+  }
+
+  &__tabs {
+    display: flex;
+    gap: 10px;
+    padding: 10px 12px 0;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  &__tab {
+    min-width: 72px;
+    height: 36px;
+    border-radius: 10px 10px 0 0;
+    border: 1px solid var(--color-border-subtle);
+    border-bottom: 0;
+    background: rgba(197, 211, 214, 0.18);
+    font-family: var(--fontBody);
+    cursor: pointer;
+  }
+
+  &__tab_active {
+    background: var(--colorBackground);
+  }
+
+  /* Grid */
 
   &__grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--space-24);
+    padding: var(--space-16);
   }
 
   &__form {
@@ -276,18 +270,15 @@
   &__label {
     font-family: var(--fontBody);
     font-size: 0.9rem;
-    color: var(--colorText);
     opacity: 0.9;
   }
 
   &__input,
   &__textarea {
-    width: 100%;
     padding: 10px 12px;
     border-radius: 12px;
     border: 1px solid var(--color-border-subtle);
     font-family: var(--fontBody);
-    color: var(--colorText);
     background: var(--colorBackground);
   }
 
@@ -295,53 +286,37 @@
     resize: vertical;
   }
 
+  /* Preview */
+
   &__preview_title {
     font-family: var(--fontBody);
-    color: var(--colorText);
     opacity: 0.8;
-    margin: 0 0 var(--space-12);
+    margin-bottom: var(--space-12);
   }
 
   &__preview_card {
     border: 1px solid var(--color-border-subtle);
     border-radius: 16px;
     padding: var(--space-16);
-    background: var(--colorBackground);
   }
 
   &__preview_heading {
     font-family: var(--fontHeading);
     font-size: 1.4rem;
-    margin: 0 0 6px;
-    color: var(--colorText);
+    margin-bottom: 6px;
   }
 
   &__preview_meta {
     font-family: var(--fontBody);
     font-size: 0.9rem;
-    margin: 0 0 var(--space-12);
     opacity: 0.8;
-    color: var(--colorText);
-  }
-
-  &__preview_image {
-    border-radius: 14px;
-    overflow: hidden;
-    border: 1px solid var(--color-border-subtle);
     margin-bottom: var(--space-12);
-
-    img {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
   }
 
   &__preview_excerpt {
     font-family: var(--fontBody);
-    margin: 0 0 var(--space-12);
+    margin-bottom: var(--space-12);
     opacity: 0.9;
-    color: var(--colorText);
   }
 
   &__preview_body {
@@ -352,8 +327,54 @@
     p {
       margin: 0;
       font-family: var(--fontBody);
-      color: var(--colorText);
-      opacity: 0.9;
+    }
+  }
+
+  &__lang_hint {
+    padding: 0 var(--space-16) var(--space-16);
+    font-family: var(--fontBody);
+    font-size: 0.9rem;
+    opacity: 0.75;
+  }
+}
+
+/* ********************************************************** */
+/* Responsive */
+/* ********************************************************** */
+
+@media (max-width: 900px) {
+  .admin_shell {
+    grid-template-columns: 1fr;
+
+    &__nav {
+      border-right: 0;
+      border-bottom: 1px solid var(--color-border-subtle);
+    }
+
+    &__content {
+      padding: var(--space-24);
+    }
+  }
+
+  .admin_post {
+    &__toolbar {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    &__toolbar_actions {
+      width: 100%;
+      justify-content: flex-end;
+    }
+    &__select_hint {
+      margin: 6px 0 0;
+      font-family: var(--fontBody);
+      font-size: 0.9rem;
+      opacity: 0.75;
+    }
+
+    &__preview {
+      display: none;
     }
   }
 }

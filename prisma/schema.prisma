@@ -33,12 +33,14 @@ model Category {
   posts     Post[]
 }
 
+enum PostLang {
+  pt
+  en
+}
+
 model Post {
   id                 String     @id @default(cuid())
-  title              String
   slug               String     @unique
-  excerpt            String?
-  content            Json       @db.JsonB
   status             PostStatus @default(DRAFT)
   coverImageUrl      String?
   coverImagePublicId String?
@@ -48,11 +50,29 @@ model Post {
   categoryId         String?
   authorId           String?
 
-  author   User?     @relation(fields: [authorId], references: [id])
-  category Category? @relation(fields: [categoryId], references: [id])
+  author       User?             @relation(fields: [authorId], references: [id])
+  category     Category?         @relation(fields: [categoryId], references: [id])
+  translations PostTranslation[]
 
   @@index([status, publishedAt])
   @@index([categoryId])
+}
+
+model PostTranslation {
+  id        String   @id @default(cuid())
+  postId    String
+  lang      PostLang
+  title     String
+  excerpt   String?
+  content   Json     @db.JsonB
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, lang])
+  @@index([lang])
+  @@index([postId])
 }
 
 model Diploma {
@@ -239,7 +259,6 @@ model NewsletterDelivery {
   @@unique([eventId, subscriberId])
   @@index([createdAt])
 }
-
 
 enum UserRole {
   ADMIN

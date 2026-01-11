@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import type { JSONContent } from '@tiptap/core';
 
@@ -71,8 +71,19 @@ const FONT_SIZES: Array<{ label: string; value: string }> = [
 
 const lowlight = createLowlight(common);
 
+function jsonEqual(a: unknown, b: unknown): boolean {
+  try {
+    return JSON.stringify(a) === JSON.stringify(b);
+  } catch {
+    return false;
+  }
+}
+
 export default function RichTextEditor({ value, onChange, disabled }: Props) {
+  const [fontSizeValue, setFontSizeValue] = useState<string>('');
+
   const editor = useEditor({
+    immediatelyRender: false,
     editable: !disabled,
     extensions: [
       StarterKit.configure({
@@ -117,7 +128,21 @@ export default function RichTextEditor({ value, onChange, disabled }: Props) {
     },
   });
 
-  const [fontSizeValue, setFontSizeValue] = useState<string>('');
+  useEffect(() => {
+    if (!editor) return;
+    editor.setEditable(!disabled);
+  }, [editor, disabled]);
+
+  useEffect(() => {
+    if (!editor) return;
+
+    const next = value || EMPTY_DOC;
+    const current = editor.getJSON();
+
+    if (!jsonEqual(current, next)) {
+      editor.commands.setContent(next, { emitUpdate: false });
+    }
+  }, [editor, value]);
 
   useEffect(() => {
     if (!editor) return;
@@ -138,18 +163,22 @@ export default function RichTextEditor({ value, onChange, disabled }: Props) {
     };
   }, [editor]);
 
-  if (!editor) return null;
+  if (!editor) {
+    return <div className='rich_editor' />;
+  }
+
+  const ed = editor;
 
   function promptImageUrl() {
     const url = window.prompt('URL da imagem:');
     const clean = (url || '').trim();
     if (!clean) return;
 
-    editor.chain().focus().setImage({ src: clean }).run();
+    ed.chain().focus().setImage({ src: clean }).run();
   }
 
   function promptLinkUrl() {
-    const prev = editor.getAttributes('link') as { href?: string };
+    const prev = ed.getAttributes('link') as { href?: string };
     const url = window.prompt('URL do link', prev.href || '');
 
     if (url === null) return;
@@ -157,21 +186,21 @@ export default function RichTextEditor({ value, onChange, disabled }: Props) {
     const clean = (url || '').trim();
 
     if (!clean) {
-      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+      ed.chain().focus().extendMarkRange('link').unsetLink().run();
       return;
     }
 
-    editor.chain().focus().extendMarkRange('link').setLink({ href: clean }).run();
+    ed.chain().focus().extendMarkRange('link').setLink({ href: clean }).run();
   }
 
-  const canUndo = editor.can().chain().focus().undo().run();
-  const canRedo = editor.can().chain().focus().redo().run();
+  const canUndo = ed.can().chain().focus().undo().run();
+  const canRedo = ed.can().chain().focus().redo().run();
 
-  const canAddRow = editor.can().chain().focus().addRowAfter().run();
-  const canAddColumn = editor.can().chain().focus().addColumnAfter().run();
-  const canDeleteTable = editor.can().chain().focus().deleteTable().run();
-  const canMerge = editor.can().chain().focus().mergeCells().run();
-  const canSplit = editor.can().chain().focus().splitCell().run();
+  const canAddRow = ed.can().chain().focus().addRowAfter().run();
+  const canAddColumn = ed.can().chain().focus().addColumnAfter().run();
+  const canDeleteTable = ed.can().chain().focus().deleteTable().run();
+  const canMerge = ed.can().chain().focus().mergeCells().run();
+  const canSplit = ed.can().chain().focus().splitCell().run();
 
   return (
     <div className='rich_editor'>
@@ -179,32 +208,32 @@ export default function RichTextEditor({ value, onChange, disabled }: Props) {
         <div className='rich_editor__group'>
           <ToolbarButton
             label='Bold'
-            onClick={() => editor.chain().focus().toggleBold().run()}
-            isActive={editor.isActive('bold')}
+            onClick={() => ed.chain().focus().toggleBold().run()}
+            isActive={ed.isActive('bold')}
             disabled={disabled}>
             <Bold size={18} />
           </ToolbarButton>
 
           <ToolbarButton
             label='Italic'
-            onClick={() => editor.chain().focus().toggleItalic().run()}
-            isActive={editor.isActive('italic')}
+            onClick={() => ed.chain().focus().toggleItalic().run()}
+            isActive={ed.isActive('italic')}
             disabled={disabled}>
             <Italic size={18} />
           </ToolbarButton>
 
           <ToolbarButton
             label='Underline'
-            onClick={() => editor.chain().focus().toggleUnderline().run()}
-            isActive={editor.isActive('underline')}
+            onClick={() => ed.chain().focus().toggleUnderline().run()}
+            isActive={ed.isActive('underline')}
             disabled={disabled}>
             <UnderlineIcon size={18} />
           </ToolbarButton>
 
           <ToolbarButton
             label='Strikethrough'
-            onClick={() => editor.chain().focus().toggleStrike().run()}
-            isActive={editor.isActive('strike')}
+            onClick={() => ed.chain().focus().toggleStrike().run()}
+            isActive={ed.isActive('strike')}
             disabled={disabled}>
             <Strikethrough size={18} />
           </ToolbarButton>
@@ -220,11 +249,11 @@ export default function RichTextEditor({ value, onChange, disabled }: Props) {
               setFontSizeValue(next);
 
               if (!next) {
-                editor.chain().focus().setMark('textStyle', { fontSize: null }).run();
+                ed.chain().focus().setMark('textStyle', { fontSize: null }).run();
                 return;
               }
 
-              editor.chain().focus().setMark('textStyle', { fontSize: next }).run();
+              ed.chain().focus().setMark('textStyle', { fontSize: next }).run();
             }}
             disabled={disabled}
             aria-label='Font size'
@@ -241,24 +270,24 @@ export default function RichTextEditor({ value, onChange, disabled }: Props) {
         <div className='rich_editor__group'>
           <ToolbarButton
             label='List'
-            onClick={() => editor.chain().focus().toggleBulletList().run()}
-            isActive={editor.isActive('bulletList')}
+            onClick={() => ed.chain().focus().toggleBulletList().run()}
+            isActive={ed.isActive('bulletList')}
             disabled={disabled}>
             <List size={18} />
           </ToolbarButton>
 
           <ToolbarButton
             label='List ordered'
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            isActive={editor.isActive('orderedList')}
+            onClick={() => ed.chain().focus().toggleOrderedList().run()}
+            isActive={ed.isActive('orderedList')}
             disabled={disabled}>
             <ListOrdered size={18} />
           </ToolbarButton>
 
           <ToolbarButton
             label='Quote'
-            onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            isActive={editor.isActive('blockquote')}
+            onClick={() => ed.chain().focus().toggleBlockquote().run()}
+            isActive={ed.isActive('blockquote')}
             disabled={disabled}>
             <Quote size={18} />
           </ToolbarButton>
@@ -267,32 +296,32 @@ export default function RichTextEditor({ value, onChange, disabled }: Props) {
         <div className='rich_editor__group'>
           <ToolbarButton
             label='Align left'
-            onClick={() => editor.chain().focus().setTextAlign('left').run()}
-            isActive={editor.isActive({ textAlign: 'left' })}
+            onClick={() => ed.chain().focus().setTextAlign('left').run()}
+            isActive={ed.isActive({ textAlign: 'left' })}
             disabled={disabled}>
             <AlignLeft size={18} />
           </ToolbarButton>
 
           <ToolbarButton
             label='Align center'
-            onClick={() => editor.chain().focus().setTextAlign('center').run()}
-            isActive={editor.isActive({ textAlign: 'center' })}
+            onClick={() => ed.chain().focus().setTextAlign('center').run()}
+            isActive={ed.isActive({ textAlign: 'center' })}
             disabled={disabled}>
             <AlignCenter size={18} />
           </ToolbarButton>
 
           <ToolbarButton
             label='Align right'
-            onClick={() => editor.chain().focus().setTextAlign('right').run()}
-            isActive={editor.isActive({ textAlign: 'right' })}
+            onClick={() => ed.chain().focus().setTextAlign('right').run()}
+            isActive={ed.isActive({ textAlign: 'right' })}
             disabled={disabled}>
             <AlignRight size={18} />
           </ToolbarButton>
 
           <ToolbarButton
             label='Align justify'
-            onClick={() => editor.chain().focus().setTextAlign('justify').run()}
-            isActive={editor.isActive({ textAlign: 'justify' })}
+            onClick={() => ed.chain().focus().setTextAlign('justify').run()}
+            isActive={ed.isActive({ textAlign: 'justify' })}
             disabled={disabled}>
             <AlignJustify size={18} />
           </ToolbarButton>
@@ -301,16 +330,16 @@ export default function RichTextEditor({ value, onChange, disabled }: Props) {
         <div className='rich_editor__group'>
           <ToolbarButton
             label='Code block'
-            onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-            isActive={editor.isActive('codeBlock')}
+            onClick={() => ed.chain().focus().toggleCodeBlock().run()}
+            isActive={ed.isActive('codeBlock')}
             disabled={disabled}>
             <Code2 size={18} />
           </ToolbarButton>
 
           <ToolbarButton
             label='Inline code'
-            onClick={() => editor.chain().focus().toggleCode().run()}
-            isActive={editor.isActive('code')}
+            onClick={() => ed.chain().focus().toggleCode().run()}
+            isActive={ed.isActive('code')}
             disabled={disabled}>
             <Code size={18} />
           </ToolbarButton>
@@ -320,15 +349,15 @@ export default function RichTextEditor({ value, onChange, disabled }: Props) {
           <ToolbarButton
             label='Link'
             onClick={promptLinkUrl}
-            isActive={editor.isActive('link')}
+            isActive={ed.isActive('link')}
             disabled={disabled}>
             <LinkIcon size={18} />
           </ToolbarButton>
 
           <ToolbarButton
             label='Unlink'
-            onClick={() => editor.chain().focus().unsetLink().run()}
-            disabled={disabled || !editor.isActive('link')}>
+            onClick={() => ed.chain().focus().unsetLink().run()}
+            disabled={Boolean(disabled) || !ed.isActive('link')}>
             <Unlink size={18} />
           </ToolbarButton>
         </div>
@@ -343,7 +372,7 @@ export default function RichTextEditor({ value, onChange, disabled }: Props) {
           <ToolbarButton
             label='Insert table'
             onClick={() =>
-              editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+              ed.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
             }
             disabled={disabled}>
             <TableIcon size={18} />
@@ -351,36 +380,36 @@ export default function RichTextEditor({ value, onChange, disabled }: Props) {
 
           <ToolbarButton
             label='Add row'
-            onClick={() => editor.chain().focus().addRowAfter().run()}
-            disabled={disabled || !canAddRow}>
+            onClick={() => ed.chain().focus().addRowAfter().run()}
+            disabled={Boolean(disabled) || !canAddRow}>
             <Rows size={18} />
           </ToolbarButton>
 
           <ToolbarButton
             label='Add column'
-            onClick={() => editor.chain().focus().addColumnAfter().run()}
-            disabled={disabled || !canAddColumn}>
+            onClick={() => ed.chain().focus().addColumnAfter().run()}
+            disabled={Boolean(disabled) || !canAddColumn}>
             <Columns size={18} />
           </ToolbarButton>
 
           <ToolbarButton
             label='Merge cells'
-            onClick={() => editor.chain().focus().mergeCells().run()}
-            disabled={disabled || !canMerge}>
+            onClick={() => ed.chain().focus().mergeCells().run()}
+            disabled={Boolean(disabled) || !canMerge}>
             <Merge size={18} />
           </ToolbarButton>
 
           <ToolbarButton
             label='Split cell'
-            onClick={() => editor.chain().focus().splitCell().run()}
-            disabled={disabled || !canSplit}>
+            onClick={() => ed.chain().focus().splitCell().run()}
+            disabled={Boolean(disabled) || !canSplit}>
             <Split size={18} />
           </ToolbarButton>
 
           <ToolbarButton
             label='Delete table'
-            onClick={() => editor.chain().focus().deleteTable().run()}
-            disabled={disabled || !canDeleteTable}>
+            onClick={() => ed.chain().focus().deleteTable().run()}
+            disabled={Boolean(disabled) || !canDeleteTable}>
             <Trash2 size={18} />
           </ToolbarButton>
         </div>
@@ -390,22 +419,22 @@ export default function RichTextEditor({ value, onChange, disabled }: Props) {
         <div className='rich_editor__group'>
           <ToolbarButton
             label='Undo'
-            onClick={() => editor.chain().focus().undo().run()}
-            disabled={disabled || !canUndo}>
+            onClick={() => ed.chain().focus().undo().run()}
+            disabled={Boolean(disabled) || !canUndo}>
             <Undo2 size={18} />
           </ToolbarButton>
 
           <ToolbarButton
             label='Redo'
-            onClick={() => editor.chain().focus().redo().run()}
-            disabled={disabled || !canRedo}>
+            onClick={() => ed.chain().focus().redo().run()}
+            disabled={Boolean(disabled) || !canRedo}>
             <Redo2 size={18} />
           </ToolbarButton>
         </div>
       </div>
 
       <div className={`rich_editor__content ${disabled ? 'rich_editor__content_disabled' : ''}`}>
-        <EditorContent editor={editor} />
+        <EditorContent editor={ed} />
       </div>
     </div>
   );

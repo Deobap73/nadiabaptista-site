@@ -31,11 +31,11 @@ type ApiPostResponse = {
   };
 };
 
-async function fetchPost(slug: string): Promise<ApiPostResponse | null> {
+async function fetchPost(slug: string, lang: Lang): Promise<ApiPostResponse | null> {
   const baseUrl = await getBaseUrl();
 
   try {
-    const res = await fetch(`${baseUrl}/api/post/${slug}`, { cache: 'no-store' });
+    const res = await fetch(`${baseUrl}/api/post/${slug}?lang=${lang}`, { cache: 'no-store' });
     if (!res.ok) return null;
     return (await res.json()) as ApiPostResponse;
   } catch {
@@ -59,7 +59,7 @@ function formatDate(iso: string | null, lang: Lang): string {
 
 export default async function BlogArticle({ slug, lang }: Props) {
   const dict = getBlogArticleDict(lang);
-  const json = await fetchPost(slug);
+  const json = await fetchPost(slug, lang);
 
   if (!json || !json.ok || !json.post) notFound();
 

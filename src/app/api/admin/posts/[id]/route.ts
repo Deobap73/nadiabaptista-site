@@ -3,12 +3,12 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { mapPostToPublic, normalizeSlug } from '@/lib/blog/postMapper';
-import type { Prisma } from '@prisma/client';
 import { isAdminRequest } from '../../shared/requireAdminApi';
 import {
   createNewsletterEventIfMissing,
   deliverNewsletterEvent,
 } from '@/lib/newsletter/newsletterService';
+import type { BlogLang, RichTextDoc } from '@/types/blog';
 
 export const runtime = 'nodejs';
 
@@ -16,63 +16,51 @@ type RouteContext = {
   params: Promise<{ id: string }>;
 };
 
-type UpdateBody = {
+type TranslationInput = {
   title?: string;
-  slug?: string;
   excerpt?: string | null;
   content?: unknown;
+};
+
+type UpdateBody = {
+  slug?: string;
   status?: 'DRAFT' | 'PUBLISHED';
   categoryId?: string | null;
   coverImageUrl?: string | null;
   coverImagePublicId?: string | null;
+  translations?: Partial<Record<BlogLang, TranslationInput>>;
 };
 
-type CategoryLite = { id: string; name: string; slug: string };
-
-type DbUpdateContent = Prisma.PostUpdateInput['content'];
-
-function isDocLikeObject(value: unknown): value is Record<string, unknown> {
-  if (!value) return false;
-  if (typeof value !== 'object') return false;
-
-  try {
-    const raw = JSON.stringify(value);
-    return raw.includes('"type"') && raw.includes('"doc"');
-  } catch {
-    return false;
-  }
+function isDocLike(value: unknown): value is RichTextDoc {
+  return (
+    Boolean(value) && typeof value === 'object' && (value as { type?: unknown }).type === 'doc'
+  );
 }
 
-function parseRichDoc(value: unknown): Record<string, unknown> | null {
+function safeDocOrNull(value: unknown): RichTextDoc | null {
   if (!value) return null;
-
-  if (typeof value === 'string') {
-    try {
-      const parsed = JSON.parse(value) as unknown;
-      return isDocLikeObject(parsed) ? (parsed as Record<string, unknown>) : null;
-    } catch {
-      return null;
-    }
-  }
-
-  if (isDocLikeObject(value)) return value;
-
+  if (isDocLike(value)) return value;
   return null;
 }
 
-function serializeForDbUpdate(doc: Record<string, unknown>): DbUpdateContent {
-  return JSON.stringify(doc) as unknown as DbUpdateContent;
-}
+function hasAnyText(doc: RichTextDoc | null): boolean {
+  if (!doc) return false;
 
-async function getCategoryLite(categoryId: string | null): Promise<CategoryLite | null> {
-  if (!categoryId) return null;
+  try {
+    const raw = JSON.stringify(doc);
+    if (!raw.includes('"text"')) return false;
 
-  const cat = await prisma.category.findUnique({
-    where: { id: categoryId },
-    select: { id: true, name: true, slug: true },
-  });
+    const matches = raw.match(/"text"\s*:\s*"(.*?)"/g) || [];
+    const joined = matches
+      .join(' ')
+      .replace(/"text"\s*:\s*"/g, '')
+      .replace(/"/g, '')
+      .trim();
 
-  return cat ? { id: cat.id, name: cat.name, slug: cat.slug } : null;
+    return joined.length > 0;
+  } catch {
+    return false;
+  }
 }
 
 export async function PUT(req: NextRequest, context: RouteContext) {
@@ -86,11 +74,8 @@ export async function PUT(req: NextRequest, context: RouteContext) {
 
     const existing = await prisma.post.findUnique({
       where: { id },
-      select: {
-        id: true,
-        slug: true,
-        publishedAt: true,
-        status: true,
+      include: {
+        translations: { select: { lang: true, title: true, excerpt: true, content: true } },
       },
     });
 
@@ -109,67 +94,128 @@ export async function PUT(req: NextRequest, context: RouteContext) {
       }
     }
 
+    const ptExisting = existing.translations.find((t) => t.lang === 'pt') || null;
+    if (!ptExisting) {
+      return NextResponse.json({ ok: false, error: 'Missing PT translation' }, { status: 400 });
+    }
+
+    const ptNext = body.translations?.pt || {};
+    const enNext = body.translations?.en || {};
+
+    const ptTitle = (ptNext.title !== undefined ? ptNext.title : ptExisting.title).trim();
+    const ptDocRaw =
+      ptNext.content !== undefined
+        ? safeDocOrNull(ptNext.content)
+        : safeDocOrNull(ptExisting.content);
+
+    if (!ptTitle || !ptDocRaw || !hasAnyText(ptDocRaw)) {
+      return NextResponse.json({ ok: false, error: 'PT fields missing' }, { status: 400 });
+    }
+
     const nextStatus = body.status === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT';
     const publishedAt = nextStatus === 'PUBLISHED' ? existing.publishedAt || new Date() : null;
 
-    let nextContentForDb: DbUpdateContent | undefined = undefined;
-
-    if (body.content !== undefined) {
-      const doc = parseRichDoc(body.content);
-      if (!doc) {
-        return NextResponse.json({ ok: false, error: 'Invalid content' }, { status: 400 });
-      }
-      nextContentForDb = serializeForDbUpdate(doc);
-    }
+    const enTitle = (enNext.title || '').trim();
+    const enDoc = safeDocOrNull(enNext.content);
+    const wantsUpsertEn = Boolean(enTitle) && Boolean(enDoc) && hasAnyText(enDoc);
 
     const updated = await prisma.post.update({
       where: { id },
       data: {
-        title: body.title !== undefined ? body.title.trim() : undefined,
         slug: nextSlug,
-        excerpt: body.excerpt !== undefined ? body.excerpt : undefined,
-        content: body.content !== undefined ? nextContentForDb : undefined,
         status: nextStatus,
         publishedAt,
         categoryId: body.categoryId !== undefined ? body.categoryId : undefined,
         coverImageUrl: body.coverImageUrl !== undefined ? body.coverImageUrl : undefined,
         coverImagePublicId:
           body.coverImagePublicId !== undefined ? body.coverImagePublicId : undefined,
+
+        translations: {
+          upsert: [
+            {
+              where: { postId_lang: { postId: id, lang: 'pt' } },
+              create: {
+                lang: 'pt',
+                title: ptTitle,
+                excerpt: ptNext.excerpt ?? null,
+                content: ptDocRaw,
+              },
+              update: {
+                title: ptNext.title !== undefined ? ptNext.title.trim() : undefined,
+                excerpt: ptNext.excerpt !== undefined ? ptNext.excerpt : undefined,
+                content: ptNext.content !== undefined ? ptDocRaw : undefined,
+              },
+            },
+          ],
+          ...(wantsUpsertEn
+            ? {
+                upsert: [
+                  {
+                    where: { postId_lang: { postId: id, lang: 'pt' } },
+                    create: {
+                      lang: 'pt',
+                      title: ptTitle,
+                      excerpt: ptNext.excerpt ?? null,
+                      content: ptDocRaw,
+                    },
+                    update: {
+                      title: ptNext.title !== undefined ? ptNext.title.trim() : undefined,
+                      excerpt: ptNext.excerpt !== undefined ? ptNext.excerpt : undefined,
+                      content: ptNext.content !== undefined ? ptDocRaw : undefined,
+                    },
+                  },
+                  {
+                    where: { postId_lang: { postId: id, lang: 'en' } },
+                    create: {
+                      lang: 'en',
+                      title: enTitle,
+                      excerpt: enNext.excerpt ?? null,
+                      content: enDoc!,
+                    },
+                    update: {
+                      title: enTitle,
+                      excerpt: enNext.excerpt ?? null,
+                      content: enDoc!,
+                    },
+                  },
+                ],
+              }
+            : {}),
+        },
       },
-      select: {
-        id: true,
-        title: true,
-        slug: true,
-        excerpt: true,
-        content: true,
-        status: true,
-        publishedAt: true,
-        createdAt: true,
-        updatedAt: true,
-        coverImageUrl: true,
-        categoryId: true,
+      include: {
+        category: { select: { id: true, name: true, slug: true } },
+        translations: { select: { lang: true, title: true, excerpt: true, content: true } },
       },
     });
 
-    const category = await getCategoryLite(updated.categoryId);
+    const ptUpdated = updated.translations.find((t) => t.lang === 'pt')!;
 
-    const safeDoc = parseRichDoc(updated.content) || {
-      type: 'doc',
-      content: [{ type: 'paragraph' }],
-    };
+    const translations = updated.translations.map((t) => ({
+      lang: t.lang,
+      title: t.title,
+      excerpt: t.excerpt ?? null,
+      content: isDocLike(t.content) ? t.content : { type: 'doc', content: [{ type: 'paragraph' }] },
+    }));
 
     const data = mapPostToPublic({
       id: updated.id,
-      title: updated.title,
       slug: updated.slug,
-      excerpt: updated.excerpt,
-      content: safeDoc,
       status: updated.status,
       publishedAt: updated.publishedAt,
       createdAt: updated.createdAt,
       updatedAt: updated.updatedAt,
       coverImageUrl: updated.coverImageUrl,
-      category,
+      coverImagePublicId: updated.coverImagePublicId,
+      category: updated.category,
+      translation: {
+        title: ptUpdated.title,
+        excerpt: ptUpdated.excerpt ?? null,
+        content: isDocLike(ptUpdated.content)
+          ? ptUpdated.content
+          : { type: 'doc', content: [{ type: 'paragraph' }] },
+      },
+      translations,
     });
 
     const becamePublished = existing.status === 'DRAFT' && nextStatus === 'PUBLISHED';
@@ -178,13 +224,11 @@ export async function PUT(req: NextRequest, context: RouteContext) {
       const ev = await createNewsletterEventIfMissing({
         kind: 'POST',
         entityId: updated.id,
-        title: updated.title,
+        title: ptUpdated.title,
         urlPath: `/blog/${updated.slug}`,
       });
 
-      if (ev.ok) {
-        await deliverNewsletterEvent(ev.eventId);
-      }
+      if (ev.ok) await deliverNewsletterEvent(ev.eventId);
     }
 
     return NextResponse.json({ ok: true, post: data });

@@ -4,12 +4,12 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import type { BlogCategory, BlogPostAdmin, PostStatus, RichTextDoc } from '@/types/blog';
+
+import type { BlogCategory, BlogLang, BlogPostAdmin, PostStatus, RichTextDoc } from '@/types/blog';
+
 import FileUpload from '@/components/form/FileUpload';
 import RichTextEditor from '@/components/editor/RichTextEditor';
 import RichTextRenderer from '@/components/editor/RichTextRenderer';
-
-type Mode = 'create' | 'edit';
 
 type Props = { mode: 'create' } | { mode: 'edit'; id: string };
 
@@ -29,15 +29,20 @@ type ApiPostResponse = {
   error?: string;
 };
 
-type FormState = {
+type TranslationState = {
   title: string;
-  slug: string;
   excerpt: string;
-  content: RichTextDoc | null;
+  content: RichTextDoc;
+};
+
+type FormState = {
+  slug: string;
   status: PostStatus;
   categoryId: string;
   coverImageUrl: string;
   coverImagePublicId: string;
+
+  translations: Record<BlogLang, TranslationState>;
 };
 
 const EMPTY_DOC: RichTextDoc = {
@@ -46,24 +51,28 @@ const EMPTY_DOC: RichTextDoc = {
 };
 
 const INITIAL_FORM: FormState = {
-  title: '',
   slug: '',
-  excerpt: '',
-  content: null,
   status: 'DRAFT',
   categoryId: '',
   coverImageUrl: '',
   coverImagePublicId: '',
+  translations: {
+    pt: { title: '', excerpt: '', content: EMPTY_DOC },
+    en: { title: '', excerpt: '', content: EMPTY_DOC },
+  },
 };
 
 function normalizeSlug(value: string): string {
   return (value || '')
     .trim()
     .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
     .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9\-]/g, '')
-    .replace(/\-+/g, '-')
-    .replace(/^\-+|\-+$/g, '');
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
 }
 
 function safeStatus(value: string): PostStatus {
@@ -71,15 +80,9 @@ function safeStatus(value: string): PostStatus {
 }
 
 function isDocLike(value: unknown): value is RichTextDoc {
-  if (!value) return false;
-  if (typeof value !== 'object') return false;
-
-  try {
-    const raw = JSON.stringify(value);
-    return raw.includes('"type"') && raw.includes('"doc"');
-  } catch {
-    return false;
-  }
+  return (
+    Boolean(value) && typeof value === 'object' && (value as { type?: unknown }).type === 'doc'
+  );
 }
 
 function docHasAnyText(doc: RichTextDoc | null): boolean {
@@ -89,8 +92,8 @@ function docHasAnyText(doc: RichTextDoc | null): boolean {
     const raw = JSON.stringify(doc);
     if (!raw.includes('"text"')) return false;
 
-    const textMatches = raw.match(/"text"\s*:\s*"(.*?)"/g) || [];
-    const joined = textMatches
+    const matches = raw.match(/"text"\s*:\s*"(.*?)"/g) || [];
+    const joined = matches
       .join(' ')
       .replace(/"text"\s*:\s*"/g, '')
       .replace(/"/g, '')
@@ -102,16 +105,26 @@ function docHasAnyText(doc: RichTextDoc | null): boolean {
   }
 }
 
+function pickTranslation(post: BlogPostAdmin, lang: BlogLang): TranslationState {
+  const t = post.translations?.find((x) => x.lang === lang) || null;
+
+  return {
+    title: t?.title || '',
+    excerpt: t?.excerpt || '',
+    content: t?.content && isDocLike(t.content) ? t.content : EMPTY_DOC,
+  };
+}
+
 export default function AdminPostEditor(props: Props) {
-  const mode: Mode = props.mode;
+  const isEdit = props.mode === 'edit';
+  const postId = isEdit ? props.id : '';
+
+  const [activeLang, setActiveLang] = useState<BlogLang>('pt');
 
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
   const [categories, setCategories] = useState<BlogCategory[]>([]);
   const [ui, setUi] = useState<'loading' | 'ready' | 'saving' | 'error'>('loading');
   const [message, setMessage] = useState<string>('');
-
-  const isEdit = props.mode === 'edit';
-  const postId = props.mode === 'edit' ? props.id : '';
 
   useEffect(() => {
     let cancelled = false;
@@ -127,10 +140,7 @@ export default function AdminPostEditor(props: Props) {
         if (!cancelled && catsJson.ok) setCategories(catsJson.categories);
 
         if (!isEdit) {
-          if (!cancelled) {
-            setForm((prev) => ({ ...prev, content: prev.content || EMPTY_DOC }));
-            setUi('ready');
-          }
+          if (!cancelled) setUi('ready');
           return;
         }
 
@@ -142,14 +152,15 @@ export default function AdminPostEditor(props: Props) {
 
         if (!cancelled && target) {
           setForm({
-            title: target.title,
             slug: target.slug,
-            excerpt: target.excerpt || '',
-            content: isDocLike(target.content) ? target.content : EMPTY_DOC,
             status: target.status,
             categoryId: target.category ? target.category.id : '',
             coverImageUrl: target.coverImageUrl || '',
-            coverImagePublicId: '',
+            coverImagePublicId: target.coverImagePublicId || '',
+            translations: {
+              pt: pickTranslation(target, 'pt'),
+              en: pickTranslation(target, 'en'),
+            },
           });
           setUi('ready');
           return;
@@ -157,16 +168,12 @@ export default function AdminPostEditor(props: Props) {
 
         if (!cancelled) {
           setUi('error');
-          setMessage(
-            'Não foi possível carregar o artigo. (Ocorreu um erro ao tentar carregar o artigo para edição)'
-          );
+          setMessage('Não foi possível carregar o artigo.');
         }
       } catch {
         if (!cancelled) {
           setUi('error');
-          setMessage(
-            'Erro ao carregar. (Ocorreu uma falha de rede ou servidor ao tentar carregar os dados)'
-          );
+          setMessage('Erro de rede ao carregar os dados.');
         }
       }
     }
@@ -182,14 +189,36 @@ export default function AdminPostEditor(props: Props) {
     return categories.find((c) => c.id === form.categoryId) || null;
   }, [categories, form.categoryId]);
 
-  function updateField<K extends keyof FormState>(key: K, value: FormState[K]) {
+  const activeTranslation = form.translations[activeLang];
+
+  function updateShared<K extends keyof Omit<FormState, 'translations'>>(
+    key: K,
+    value: FormState[K]
+  ) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  function autoSlugFromTitleIfEmpty(nextTitle: string) {
+  function updateTranslation<K extends keyof TranslationState>(
+    lang: BlogLang,
+    key: K,
+    value: TranslationState[K]
+  ) {
+    setForm((prev) => ({
+      ...prev,
+      translations: {
+        ...prev.translations,
+        [lang]: {
+          ...prev.translations[lang],
+          [key]: value,
+        },
+      },
+    }));
+  }
+
+  function autoSlugFromPtTitleIfEmpty(nextTitle: string) {
     if (isEdit) return;
     if (form.slug.trim()) return;
-    updateField('slug', normalizeSlug(nextTitle));
+    updateShared('slug', normalizeSlug(nextTitle));
   }
 
   async function handleSave() {
@@ -197,57 +226,52 @@ export default function AdminPostEditor(props: Props) {
     setMessage('');
 
     try {
+      const pt = form.translations.pt;
+      const en = form.translations.en;
+
+      const ptTitle = pt.title.trim();
+      const ptDoc = pt.content;
+
+      if (!ptTitle || !form.slug.trim()) {
+        setUi('ready');
+        setMessage('Preenche o título PT e o slug.');
+        return;
+      }
+
+      if (!ptDoc || !docHasAnyText(ptDoc)) {
+        setUi('ready');
+        setMessage('O conteúdo PT precisa de ter texto.');
+        return;
+      }
+
+      const enTitle = en.title.trim();
+      const enHasContent = docHasAnyText(en.content);
+
       const payload = {
-        title: form.title.trim(),
         slug: form.slug.trim(),
-        excerpt: form.excerpt.trim() || null,
-        content: form.content,
         status: form.status,
         categoryId: form.categoryId || null,
         coverImageUrl: form.coverImageUrl || null,
         coverImagePublicId: form.coverImagePublicId || null,
+        translations: {
+          pt: {
+            title: ptTitle,
+            excerpt: pt.excerpt.trim() || null,
+            content: ptDoc,
+          },
+          en:
+            enTitle && enHasContent
+              ? {
+                  title: enTitle,
+                  excerpt: en.excerpt.trim() || null,
+                  content: en.content,
+                }
+              : undefined,
+        },
       };
 
-      if (!payload.title || !payload.slug) {
-        setUi('ready');
-        setMessage(
-          'Preenche o título e o slug. (Ambos os campos são obrigatórios para criar ou editar um artigo)'
-        );
-        return;
-      }
-
-      if (!payload.content || !docHasAnyText(payload.content)) {
-        setUi('ready');
-        setMessage(
-          'Escreve conteúdo no editor. (O artigo precisa de ter conteúdo textual para ser guardado)'
-        );
-        return;
-      }
-
-      if (mode === 'create') {
-        const res = await fetch('/api/admin/posts', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-
-        const json = (await res.json()) as ApiPostResponse;
-
-        if (!res.ok || !json.ok) {
-          setUi('ready');
-          setMessage(
-            json.error || 'Erro ao criar. (O servidor não conseguiu processar o pedido de criação)'
-          );
-          return;
-        }
-
-        setUi('ready');
-        setMessage('Artigo criado com sucesso. (O novo artigo foi guardado na base de dados)');
-        return;
-      }
-
-      const res = await fetch(`/api/admin/posts/${postId}`, {
-        method: 'PUT',
+      const res = await fetch(isEdit ? `/api/admin/posts/${postId}` : '/api/admin/posts', {
+        method: isEdit ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
@@ -256,18 +280,15 @@ export default function AdminPostEditor(props: Props) {
 
       if (!res.ok || !json.ok) {
         setUi('ready');
-        setMessage(
-          json.error ||
-            'Erro ao guardar. (O servidor não conseguiu processar a atualização do artigo)'
-        );
+        setMessage(json.error || 'Erro ao guardar.');
         return;
       }
 
       setUi('ready');
-      setMessage('Artigo guardado com sucesso. (As alterações foram salvas na base de dados)');
+      setMessage(isEdit ? 'Artigo atualizado com sucesso.' : 'Artigo criado com sucesso.');
     } catch {
       setUi('ready');
-      setMessage('Erro ao guardar. (Ocorreu uma falha de rede ou servidor ao tentar guardar)');
+      setMessage('Erro de rede ao guardar.');
     }
   }
 
@@ -283,30 +304,26 @@ export default function AdminPostEditor(props: Props) {
 
       if (!res.ok || !json.ok) {
         setUi('ready');
-        setMessage('Erro ao apagar. (O servidor não conseguiu processar o pedido de eliminação)');
+        setMessage('Erro ao apagar o artigo.');
         return;
       }
 
       setUi('ready');
-      setMessage('Artigo apagado. (O artigo foi removido permanentemente da base de dados)');
+      setMessage('Artigo apagado.');
     } catch {
       setUi('ready');
-      setMessage(
-        'Erro ao apagar. (Ocorreu uma falha de rede ou servidor ao tentar eliminar o artigo)'
-      );
+      setMessage('Erro de rede ao apagar.');
     }
   }
 
   if (ui === 'loading') {
-    return (
-      <p className='admin_post__hint'>A carregar... (A carregar dados do artigo e categorias)</p>
-    );
+    return <p className='admin_post__hint'>A carregar…</p>;
   }
 
   if (ui === 'error') {
     return (
       <div className='admin_post'>
-        <p className='admin_post__hint'>{message || 'Erro. (Ocorreu um erro desconhecido)'}</p>
+        <p className='admin_post__hint'>{message}</p>
         <Link className='admin_post__back' href='/admin/blog'>
           Voltar à lista de artigos
         </Link>
@@ -318,7 +335,7 @@ export default function AdminPostEditor(props: Props) {
     <div className='admin_post'>
       <div className='admin_post__toolbar'>
         <Link className='admin_post__back' href='/admin/blog'>
-          ← Regressar à página de gestão de artigos
+          ← Regressar à gestão de artigos
         </Link>
 
         <div className='admin_post__toolbar_actions'>
@@ -328,7 +345,7 @@ export default function AdminPostEditor(props: Props) {
               className='admin_post__danger'
               onClick={handleDelete}
               disabled={ui === 'saving'}>
-              Apagar artigo (Eliminar permanentemente este artigo)
+              Apagar artigo
             </button>
           ) : null}
 
@@ -337,138 +354,151 @@ export default function AdminPostEditor(props: Props) {
             className='admin_post__button'
             onClick={handleSave}
             disabled={ui === 'saving'}>
-            {ui === 'saving'
-              ? 'A guardar... (A processar e guardar as alterações)'
-              : 'Guardar artigo (Salvar todas as alterações feitas)'}
+            {ui === 'saving' ? 'A guardar…' : 'Guardar artigo (Salvar todas as alterações feitas)'}
           </button>
         </div>
       </div>
 
       {message ? <p className='admin_post__message'>{message}</p> : null}
 
-      <div className='admin_post__grid'>
-        <div className='admin_post__form'>
-          <label className='admin_post__field'>
-            <span className='admin_post__label'>
-              Título <em>(Título principal do artigo, visível aos leitores)</em>
-            </span>
-            <input
-              className='admin_post__input'
-              value={form.title}
-              onChange={(e) => {
-                updateField('title', e.target.value);
-                autoSlugFromTitleIfEmpty(e.target.value);
-              }}
-            />
-          </label>
+      <div className='admin_post__panel'>
+        <div className='admin_post__tabs'>
+          <button
+            type='button'
+            className={`admin_post__tab ${activeLang === 'pt' ? 'admin_post__tab_active' : ''}`}
+            onClick={() => setActiveLang('pt')}
+            disabled={ui === 'saving'}>
+            PT
+          </button>
 
-          <label className='admin_post__field'>
-            <span className='admin_post__label'>
-              Slug{' '}
-              <em>(Identificador único para URL, é gerado automaticamente a partir do título)</em>
-            </span>
-            <input
-              className='admin_post__input'
-              value={form.slug}
-              onChange={(e) => updateField('slug', normalizeSlug(e.target.value))}
-            />
-          </label>
-
-          <label className='admin_post__field'>
-            <span className='admin_post__label'>
-              Breve descrição do artigo, vai ser mostrado na listagens
-            </span>
-            <textarea
-              className='admin_post__textarea'
-              rows={3}
-              value={form.excerpt}
-              onChange={(e) => updateField('excerpt', e.target.value)}
-            />
-          </label>
-
-          <label className='admin_post__field'>
-            <span className='admin_post__label'>
-              Categoria <em>(Grupo temático ao qual pertence o artigo)</em>
-            </span>
-            <select
-              className='admin_post__input'
-              value={form.categoryId}
-              onChange={(e) => updateField('categoryId', e.target.value)}>
-              <option value=''></option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className='admin_post__field'>
-            <span className='admin_post__label'>
-              Estado <em>(Visibilidade do artigo para os leitores)</em>
-            </span>
-            <select
-              className='admin_post__input'
-              value={form.status}
-              onChange={(e) => updateField('status', safeStatus(e.target.value))}>
-              <option value='DRAFT'></option>
-              <option value='PUBLISHED'>
-                Publicado <em>(Artigo visível publicamente no blog)</em>
-              </option>
-            </select>
-          </label>
-
-          <FileUpload
-            label='Imagem de capa (Imagem principal que representa o artigo)'
-            context='blog_article'
-            valueUrl={form.coverImageUrl || ''}
-            disabled={ui === 'saving'}
-            hint='Vai para a pasta blog_article no Cloudinary. <em>(As imagens são armazenadas no serviço Cloudinary)</em>'
-            onUploaded={({ url, publicId }) => {
-              updateField('coverImageUrl', url);
-              updateField('coverImagePublicId', publicId);
-            }}
-            onRemove={() => {
-              updateField('coverImageUrl', '');
-              updateField('coverImagePublicId', '');
-            }}
-          />
-
-          <div className='admin_post__field'>
-            <span className='admin_post__label'>
-              Conteúdo <em>(Corpo principal do artigo com formatação rica)</em>
-            </span>
-
-            <RichTextEditor
-              value={form.content || EMPTY_DOC}
-              disabled={ui === 'saving'}
-              onChange={(next) => updateField('content', next)}
-            />
-          </div>
+          <button
+            type='button'
+            className={`admin_post__tab ${activeLang === 'en' ? 'admin_post__tab_active' : ''}`}
+            onClick={() => setActiveLang('en')}
+            disabled={ui === 'saving'}>
+            EN
+          </button>
         </div>
 
-        <div className='admin_post__preview'>
-          <p className='admin_post__preview_title'>
-            Pré-visualização <em>(Como o artigo aparecerá aos leitores)</em>
+        {activeLang === 'en' ? (
+          <p className='admin_post__lang_hint'>
+            O PT é obrigatório. O EN pode ser criado mais tarde, no mesmo artigo.
           </p>
+        ) : (
+          <p className='admin_post__lang_hint'>PT é o idioma principal e é obrigatório.</p>
+        )}
 
-          <div className='admin_post__preview_card'>
-            <p className='admin_post__preview_heading'>
-              {form.title || '(Título ainda não definido)'}
-            </p>
+        <div className='admin_post__grid'>
+          <div className='admin_post__form'>
+            <label className='admin_post__field'>
+              <span className='admin_post__label'>Título</span>
+              <input
+                className='admin_post__input'
+                value={activeTranslation.title}
+                onChange={(e) => {
+                  updateTranslation(activeLang, 'title', e.target.value);
+                  if (activeLang === 'pt') autoSlugFromPtTitleIfEmpty(e.target.value);
+                }}
+              />
+            </label>
 
-            <p className='admin_post__preview_meta'>
-              {form.status === 'DRAFT' ? 'Rascunho' : 'Publicado'}
-              {selectedCategory ? `, ${selectedCategory.name}` : ''}
-              (Estado e categoria do artigo)
-            </p>
+            <label className='admin_post__field'>
+              <span className='admin_post__label'>Slug</span>
+              <input
+                className='admin_post__input'
+                value={form.slug}
+                onChange={(e) => updateShared('slug', normalizeSlug(e.target.value))}
+              />
+            </label>
 
-            <p className='admin_post__preview_excerpt'>
-              {form.excerpt || '(Descrição curta não definida)'}
-            </p>
+            <label className='admin_post__field'>
+              <span className='admin_post__label'>Descrição curta</span>
+              <textarea
+                className='admin_post__textarea'
+                rows={3}
+                value={activeTranslation.excerpt}
+                onChange={(e) => updateTranslation(activeLang, 'excerpt', e.target.value)}
+              />
+            </label>
 
-            <div className='admin_post__preview_body'>
-              <RichTextRenderer content={form.content || EMPTY_DOC} />
+            <label className='admin_post__field'>
+              <span className='admin_post__label'>Categoria</span>
+              <select
+                className='admin_post__input'
+                value={form.categoryId}
+                onChange={(e) => updateShared('categoryId', e.target.value)}>
+                <option value=''></option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className='admin_post__field'>
+              <span className='admin_post__label'>Estado</span>
+              <select
+                className='admin_post__input'
+                value={form.status}
+                onChange={(e) => updateShared('status', safeStatus(e.target.value))}>
+                <option value='DRAFT'>Rascunho</option>
+                <option value='PUBLISHED'>Publicado</option>
+              </select>
+
+              <p className='admin_post__select_hint'>
+                {form.status === 'PUBLISHED'
+                  ? 'Artigo visível publicamente no blog.'
+                  : 'Artigo ainda não visível para leitores.'}
+              </p>
+            </label>
+
+            <FileUpload
+              label='Imagem de capa'
+              context='blog_article'
+              valueUrl={form.coverImageUrl}
+              disabled={ui === 'saving'}
+              onUploaded={({ url, publicId }) => {
+                updateShared('coverImageUrl', url);
+                updateShared('coverImagePublicId', publicId);
+              }}
+              onRemove={() => {
+                updateShared('coverImageUrl', '');
+                updateShared('coverImagePublicId', '');
+              }}
+            />
+
+            <div className='admin_post__field'>
+              <span className='admin_post__label'>Conteúdo</span>
+              <RichTextEditor
+                value={activeTranslation.content || EMPTY_DOC}
+                disabled={ui === 'saving'}
+                onChange={(next) => updateTranslation(activeLang, 'content', next)}
+              />
+            </div>
+          </div>
+
+          <div className='admin_post__preview'>
+            <p className='admin_post__preview_title'>Pré visualização</p>
+
+            <div className='admin_post__preview_card'>
+              <p className='admin_post__preview_heading'>
+                {activeTranslation.title || '(Título ainda não definido)'}
+              </p>
+
+              <p className='admin_post__preview_meta'>
+                {form.status === 'DRAFT' ? 'Rascunho' : 'Publicado'}
+                {selectedCategory ? `, ${selectedCategory.name}` : ''}
+                {activeLang === 'en' ? ', EN' : ', PT'}
+              </p>
+
+              <p className='admin_post__preview_excerpt'>
+                {activeTranslation.excerpt || '(Descrição curta não definida)'}
+              </p>
+
+              <div className='admin_post__preview_body'>
+                <RichTextRenderer content={activeTranslation.content || EMPTY_DOC} />
+              </div>
             </div>
           </div>
         </div>

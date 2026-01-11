@@ -9,8 +9,8 @@ import { getBlogArticleDict, withLangPrefix } from '@/lib/i18n';
 
 import { getBaseUrl } from '@/lib/http/getBaseUrl';
 import RichTextRenderer from '@/components/editor/RichTextRenderer';
-
 import type { RichTextDoc } from '@/types/blog';
+import BlogReactions from '@/components/blog/BlogReactions';
 
 type Props = {
   slug: string;
@@ -120,7 +120,7 @@ export default async function BlogArticle({ slug, lang }: Props) {
         <div className='blog_article__content'>
           <RichTextRenderer content={post.content} />
         </div>
-
+        <BlogReactions slug={slug} lang={lang} />
         <div className='blog_article__bottom'>
           <Link href={blogHref} className='blog_article__back'>
             {dict.backToBlog}

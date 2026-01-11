@@ -39,20 +39,24 @@ enum PostLang {
 }
 
 model Post {
-  id                 String     @id @default(cuid())
-  slug               String     @unique
-  status             PostStatus @default(DRAFT)
-  coverImageUrl      String?
-  coverImagePublicId String?
-  publishedAt        DateTime?
-  createdAt          DateTime   @default(now())
-  updatedAt          DateTime   @updatedAt
-  categoryId         String?
-  authorId           String?
+  id                  String            @id @default(cuid())
+  slug                String            @unique
+  status              PostStatus        @default(DRAFT)
+  coverImageUrl       String?
+  coverImagePublicId  String?
+  publishedAt         DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  categoryId          String?
+  authorId            String?
 
-  author       User?             @relation(fields: [authorId], references: [id])
-  category     Category?         @relation(fields: [categoryId], references: [id])
-  translations PostTranslation[]
+  author        User?             @relation(fields: [authorId], references: [id])
+  category      Category?         @relation(fields: [categoryId], references: [id])
+  translations  PostTranslation[]
+  
+  // Relações adicionadas para corrigir o erro P1012
+  reactions     PostReaction[]
+  reactionVotes PostReactionVote[]
 
   @@index([status, publishedAt])
   @@index([categoryId])
@@ -73,6 +77,34 @@ model PostTranslation {
   @@unique([postId, lang])
   @@index([lang])
   @@index([postId])
+}
+
+model PostReaction {
+  id        String   @id @default(cuid())
+  postId    String
+  emoji     String
+  count     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, emoji])
+  @@index([postId])
+}
+
+model PostReactionVote {
+  id         String   @id @default(cuid())
+  postId     String
+  emoji      String
+  voterHash  String
+  createdAt  DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, emoji, voterHash])
+  @@index([postId])
+  @@index([voterHash])
 }
 
 model Diploma {
@@ -179,14 +211,14 @@ model Message {
 }
 
 model ContactMessage {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   name      String
   phone     String?
   email     String
   message   String
-  status    String   @default("PENDING")
+  status    String    @default("PENDING")
   sendError String?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
   sentAt    DateTime?
 
   @@index([createdAt])
@@ -211,20 +243,16 @@ model Subscriber {
   id                String                     @id @default(cuid())
   email             String                     @unique
   name              String?
-  status            NewsletterSubscriberStatus  @default(PENDING)
-
+  status            NewsletterSubscriberStatus @default(PENDING)
   confirmTokenHash  String?
   confirmExpiresAt  DateTime?
-
   unsubTokenHash    String?
-
   confirmedAt       DateTime?
   unsubscribedAt    DateTime?
-
   createdAt         DateTime                   @default(now())
   updatedAt         DateTime                   @updatedAt
 
-  deliveries        NewsletterDelivery[]
+  deliveries NewsletterDelivery[]
 
   @@index([status])
   @@index([createdAt])
@@ -253,8 +281,8 @@ model NewsletterDelivery {
   error        String?
   createdAt    DateTime        @default(now())
 
-  event        NewsletterEvent @relation(fields: [eventId], references: [id])
-  subscriber   Subscriber      @relation(fields: [subscriberId], references: [id])
+  event      NewsletterEvent @relation(fields: [eventId], references: [id])
+  subscriber Subscriber      @relation(fields: [subscriberId], references: [id])
 
   @@unique([eventId, subscriberId])
   @@index([createdAt])

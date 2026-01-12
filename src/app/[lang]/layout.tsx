@@ -56,7 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'website',
       images: [
         {
-          url: 'https://res.cloudinary.com/dleir1jqn/image/upload/v1767350948/NadiaBaptista-site/og-image.webp',
+          url: 'https://res.cloudinary.com/dleir1jqn/image/upload/v1768224684/NadiaBaptista-site/og-image.webp',
           width: 1200,
           height: 630,
           alt: 'Nádia Baptista',

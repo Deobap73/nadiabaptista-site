@@ -353,7 +353,7 @@
   &__item {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
     padding: 10px 14px;
     border-radius: 999px;
     border: 2px solid var(--color-border-subtle);
@@ -379,12 +379,12 @@
   }
 
   &__emoji {
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1;
   }
 
   &__count {
-    min-width: 18px;
+    min-width: 12px;
     text-align: center;
     color: var(--colorTextMuted);
   }

@@ -36,7 +36,6 @@ type TranslationState = {
 };
 
 type FormState = {
-  slug: string;
   status: PostStatus;
   categoryId: string;
   coverImageUrl: string;
@@ -51,7 +50,6 @@ const EMPTY_DOC: RichTextDoc = {
 };
 
 const INITIAL_FORM: FormState = {
-  slug: '',
   status: 'DRAFT',
   categoryId: '',
   coverImageUrl: '',
@@ -61,27 +59,6 @@ const INITIAL_FORM: FormState = {
     en: { title: '', excerpt: '', content: EMPTY_DOC },
   },
 };
-
-function normalizeSlug(value: string): string {
-  const hyphenChar = String.fromCharCode(45);
-  const hyphenPlus = new RegExp(`${hyphenChar}+`, 'g');
-  const trimHyphens = new RegExp(`^${hyphenChar}+|${hyphenChar}+$`, 'g');
-  const spaces = /\s+/g;
-  const nonAllowed = /[^a-z0-9\s]/g;
-
-  const cleaned = (value || '')
-    .trim()
-    .toLowerCase()
-    .replace(spaces, ' ')
-    .replace(nonAllowed, '')
-    .replace(spaces, ' ')
-    .trim()
-    .replace(spaces, hyphenChar)
-    .replace(hyphenPlus, hyphenChar)
-    .replace(trimHyphens, '');
-
-  return cleaned;
-}
 
 function safeStatus(value: string): PostStatus {
   return value === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT';
@@ -133,6 +110,7 @@ export default function AdminPostEditor(props: Props) {
   const [categories, setCategories] = useState<BlogCategory[]>([]);
   const [ui, setUi] = useState<'loading' | 'ready' | 'saving' | 'error'>('loading');
   const [message, setMessage] = useState<string>('');
+  const [generatedSlug, setGeneratedSlug] = useState<string>('');
 
   useEffect(() => {
     let cancelled = false;
@@ -148,7 +126,11 @@ export default function AdminPostEditor(props: Props) {
         if (!cancelled && catsJson.ok) setCategories(catsJson.categories);
 
         if (!isEdit) {
-          if (!cancelled) setUi('ready');
+          if (!cancelled) {
+            setForm(INITIAL_FORM);
+            setGeneratedSlug('');
+            setUi('ready');
+          }
           return;
         }
 
@@ -160,7 +142,6 @@ export default function AdminPostEditor(props: Props) {
 
         if (!cancelled && target) {
           setForm({
-            slug: target.slug,
             status: target.status,
             categoryId: target.category ? target.category.id : '',
             coverImageUrl: target.coverImageUrl || '',
@@ -170,6 +151,7 @@ export default function AdminPostEditor(props: Props) {
               en: pickTranslation(target, 'en'),
             },
           });
+          setGeneratedSlug(target.slug);
           setUi('ready');
           return;
         }
@@ -201,7 +183,7 @@ export default function AdminPostEditor(props: Props) {
 
   function updateShared<K extends keyof Omit<FormState, 'translations'>>(
     key: K,
-    value: FormState[K]
+    value: FormState[K],
   ) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
@@ -209,7 +191,7 @@ export default function AdminPostEditor(props: Props) {
   function updateTranslation<K extends keyof TranslationState>(
     lang: BlogLang,
     key: K,
-    value: TranslationState[K]
+    value: TranslationState[K],
   ) {
     setForm((prev) => ({
       ...prev,
@@ -223,12 +205,6 @@ export default function AdminPostEditor(props: Props) {
     }));
   }
 
-  function autoSlugFromPtTitleIfEmpty(nextTitle: string) {
-    if (isEdit) return;
-    if (form.slug.trim()) return;
-    updateShared('slug', normalizeSlug(nextTitle));
-  }
-
   async function handleSave() {
     setUi('saving');
     setMessage('');
@@ -240,9 +216,9 @@ export default function AdminPostEditor(props: Props) {
       const ptTitle = pt.title.trim();
       const ptDoc = pt.content;
 
-      if (!ptTitle || !form.slug.trim()) {
+      if (!ptTitle) {
         setUi('ready');
-        setMessage('Preenche o título PT e o slug.');
+        setMessage('Preenche o título PT.');
         return;
       }
 
@@ -256,7 +232,6 @@ export default function AdminPostEditor(props: Props) {
       const enHasContent = docHasAnyText(en.content);
 
       const payload = {
-        slug: form.slug.trim(),
         status: form.status,
         categoryId: form.categoryId || null,
         coverImageUrl: form.coverImageUrl || null,
@@ -286,11 +261,13 @@ export default function AdminPostEditor(props: Props) {
 
       const json = (await res.json()) as ApiPostResponse;
 
-      if (!res.ok || !json.ok) {
+      if (!res.ok || !json.ok || !json.post) {
         setUi('ready');
         setMessage(json.error || 'Erro ao guardar.');
         return;
       }
+
+      setGeneratedSlug(json.post.slug);
 
       setUi('ready');
       setMessage(isEdit ? 'Artigo atualizado com sucesso.' : 'Artigo criado com sucesso.');
@@ -403,21 +380,15 @@ export default function AdminPostEditor(props: Props) {
               <input
                 className='admin_post__input'
                 value={activeTranslation.title}
-                onChange={(e) => {
-                  updateTranslation(activeLang, 'title', e.target.value);
-                  if (activeLang === 'pt') autoSlugFromPtTitleIfEmpty(e.target.value);
-                }}
+                onChange={(e) => updateTranslation(activeLang, 'title', e.target.value)}
               />
             </label>
 
-            <label className='admin_post__field'>
+            <div className='admin_post__field'>
               <span className='admin_post__label'>Slug</span>
-              <input
-                className='admin_post__input'
-                value={form.slug}
-                onChange={(e) => updateShared('slug', normalizeSlug(e.target.value))}
-              />
-            </label>
+              <input className='admin_post__input' value={generatedSlug} readOnly />
+              <p className='admin_post__select_hint'>Gerado automaticamente pelo sistema.</p>
+            </div>
 
             <label className='admin_post__field'>
               <span className='admin_post__label'>Descrição curta</span>

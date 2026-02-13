@@ -197,9 +197,12 @@
 }
 
 .blog_card__body {
+  min-height: 300px;
   padding: var(--space-16);
-  display: grid;
+  display: flex;
   gap: var(--space-10);
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .blog_card__meta {

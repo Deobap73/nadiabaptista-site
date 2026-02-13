@@ -6,6 +6,7 @@ import { mapPostToPublic } from '@/lib/blog/postMapper';
 import { isAdminRequest } from '../shared/requireAdminApi';
 import type { RichTextDoc } from '@/types/blog';
 import { PostLang } from '@prisma/client';
+import { slugifyFromTitle, ensureUniquePostSlug } from '@/lib/blog/slug';
 
 export const runtime = 'nodejs';
 
@@ -16,7 +17,6 @@ type TranslationInput = {
 };
 
 type CreateBody = {
-  slug?: string;
   status?: 'DRAFT' | 'PUBLISHED';
   categoryId?: string | null;
   coverImageUrl?: string | null;
@@ -64,15 +64,8 @@ function hasAnyText(doc: RichTextDoc | null): boolean {
   }
 }
 
-function normalizeSlug(value: string): string {
-  return (value || '')
-    .trim()
-    .toLowerCase()
-    .replace(/^\/+|\/+$/g, '');
-}
-
 function mapDbTranslationsToApi(
-  translations: Array<{ lang: PostLang; title: string; excerpt: string | null; content: unknown }>
+  translations: Array<{ lang: PostLang; title: string; excerpt: string | null; content: unknown }>,
 ): Array<{ lang: 'pt' | 'en'; title: string; excerpt: string | null; content: RichTextDoc }> {
   return translations.map((t) => {
     const lang: 'pt' | 'en' = t.lang === PostLang.en ? 'en' : 'pt';
@@ -141,16 +134,6 @@ export async function POST(req: Request) {
 
     const body = (await req.json()) as CreateBody;
 
-    const slug = normalizeSlug(body.slug || '');
-    if (!slug) {
-      return NextResponse.json({ ok: false, error: 'Missing slug' }, { status: 400 });
-    }
-
-    const existing = await prisma.post.findUnique({ where: { slug }, select: { id: true } });
-    if (existing) {
-      return NextResponse.json({ ok: false, error: 'Slug already exists' }, { status: 409 });
-    }
-
     const pt = body.translations?.pt || {};
     const ptTitle = (pt.title || '').trim();
     const ptDoc = safeDocOrNull(pt.content);
@@ -159,10 +142,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: 'PT fields missing' }, { status: 400 });
     }
 
+    const baseSlug = slugifyFromTitle(ptTitle);
+    if (!baseSlug) {
+      return NextResponse.json({ ok: false, error: 'Missing slug' }, { status: 400 });
+    }
+
+    const slug = await ensureUniquePostSlug(baseSlug);
+
     const en = body.translations?.en || {};
     const enTitle = (en.title || '').trim();
     const enDoc = safeDocOrNull(en.content);
-
     const canCreateEn = Boolean(enTitle) && Boolean(enDoc) && hasAnyText(enDoc);
 
     const status = body.status === 'PUBLISHED' ? 'PUBLISHED' : 'DRAFT';
